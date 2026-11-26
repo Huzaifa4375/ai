@@ -46,9 +46,9 @@ button:active{transform:scale(.98)}
     radial-gradient(600px 280px at 50% 0%, rgba(99,102,241,.2), transparent),
     radial-gradient(500px 260px at 85% 15%, rgba(16,185,129,.12), transparent),
     var(--bg);
-  display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;
+  display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto;
 }
-#auth.hide{display:none}
+#auth.show{display:flex}
 
 .auth-card{
   width:min(400px,100%);
@@ -77,7 +77,6 @@ button:active{transform:scale(.98)}
   color:#ecfdf5;font-weight:600;font-size:13.5px;
   display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.demo-btn:hover{border-color:var(--mint)}
 
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
 .tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
@@ -270,7 +269,7 @@ header{
   </div>
 </div>
 
-<div id="ws" class="hide">
+<div id="ws">
   <aside id="side">
     <div class="s-head">
       <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px">G</div>
@@ -280,8 +279,8 @@ header{
     <div id="c-list"></div>
     <div class="s-foot">
       <button type="button" id="b-prof">
-        <span class="av" id="s-av">G</span>
-        <span class="u-nm" id="s-nm">User</span>
+        <span class="av" id="s-av">D</span>
+        <span class="u-nm" id="s-nm">Demo User</span>
       </button>
       <button type="button" id="b-set">⚙ Settings &amp; API Key</button>
       <button type="button" id="b-out" style="color:var(--err)">↪ Sign out</button>
@@ -292,9 +291,22 @@ header{
     <header>
       <button type="button" id="m-btn">☰</button>
       <div id="c-title">New chat</div>
-      <button type="button" id="m-pill"></button>
+      <button type="button" id="m-pill">gemini-3.8-flash</button>
     </header>
-    <div id="scroll"><div class="col" id="msgs"></div></div>
+    <div id="scroll">
+      <div class="col" id="msgs">
+        <div class="empty">
+          <h1>Hello Demo User</h1>
+          <p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p>
+          <div class="chips">
+            <button type="button" class="chip">Write a Python script to parse JSON</button>
+            <button type="button" class="chip">Show a Linux command to check disk space</button>
+            <button type="button" class="chip">Draft a clean README</button>
+            <button type="button" class="chip">Explain async/await simply</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="comp">
       <div class="cbox">
         <textarea id="inp" rows="1" placeholder="Message Gavio AI…"></textarea>
@@ -338,10 +350,10 @@ header{
   <div class="mcard">
     <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" id="prof-x">✕</button></h2>
     <div style="display:flex;align-items:center;gap:12px">
-      <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px"></div>
+      <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">D</div>
       <div>
-        <div id="p-nm" style="font-weight:600"></div>
-        <div id="p-em" style="color:var(--mut);font-size:13px"></div>
+        <div id="p-nm" style="font-weight:600">Demo User</div>
+        <div id="p-em" style="color:var(--mut);font-size:13px">demo@gavio.ai</div>
       </div>
     </div>
     <div class="mrow">
@@ -382,10 +394,13 @@ header{
     return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
   }
 
-  let accs = { users: {}, user: null };
+  let accs = { users: {}, user: { email: "demo@gavio.ai", name: "Demo User" } };
   try {
     const p = JSON.parse(rd("gavio_acc_v1") || "null");
-    if (p && typeof p === "object") { accs.users = p.users || {}; accs.user = p.user || null; }
+    if (p && typeof p === "object") {
+      accs.users = p.users || {};
+      if ("user" in p) accs.user = p.user;
+    }
   } catch {}
   function saveAccs(){ wr("gavio_acc_v1", JSON.stringify(accs)); }
 
@@ -413,7 +428,7 @@ header{
 
   function applyAuth(){
     const on = Boolean(accs.user && accs.user.email);
-    \$("auth").classList.toggle("hide", on);
+    \$("auth").classList.toggle("show", !on);
     \$("ws").classList.toggle("hide", !on);
     if (on){
       const nm = accs.user.name || accs.user.email;
@@ -755,6 +770,10 @@ header{
   $("prof-x").addEventListener("click", () => $("ov-prof").classList.remove("open"));
   $("prof-out").addEventListener("click", exitApp);
   $("b-out").addEventListener("click", exitApp);
+
+  document.querySelectorAll("#msgs .chip").forEach(b => {
+    b.addEventListener("click", () => sendMsg(b.textContent));
+  });
 
   applyAuth();
 })();
