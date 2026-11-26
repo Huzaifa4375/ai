@@ -6,26 +6,25 @@
 <title>Gavio AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
-  --bg:#08080a;
-  --panel:#111114;
-  --side:#050507;
-  --line:#232329;
-  --text:#f3f2ef;
-  --mute:#93918b;
-  --accent:#d97757;
-  --accent-hover:#e58667;
-  --accent-ink:#09090b;
-  --user:#1b1b20;
-  --code:#050507;
-  --err:#fda29b;
-  --errbg:#2b1111;
-  --ok:#7ce3a1;
-  --shadow:0 20px 50px rgba(0,0,0,.75);
+  --bg:#06070a;
+  --panel:#0e1017;
+  --panel-2:#151822;
+  --side:#040507;
+  --line:#1f2433;
+  --text:#f4f6fb;
+  --mute:#8b93a7;
+  --accent:#6366f1;
+  --accent-2:#818cf8;
+  --accent-ink:#ffffff;
+  --user:#191d2b;
+  --code:#050609;
+  --err:#ff7b8e;
+  --errbg:#281016;
+  --ok:#4ade80;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -33,352 +32,346 @@ html,body{height:100%;margin:0}
 body{
   background:var(--bg);
   color:var(--text);
-  font:15px/1.62 "Instrument Sans",system-ui,-apple-system,sans-serif;
+  font:15px/1.6 "Inter",system-ui,-apple-system,sans-serif;
   display:flex;
   overflow:hidden;
-  -webkit-font-smoothing:antialiased;
 }
 button,input,textarea{font:inherit;color:inherit}
-button{
-  cursor:pointer;
-  transition:background-color .14s ease,border-color .14s ease,color .14s ease,opacity .14s ease;
-}
-button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{cursor:pointer;transition:background-color .14s,border-color .14s,color .14s,opacity .14s}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
 
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
-::-webkit-scrollbar-thumb:hover{background:var(--mute)}
 
-/* Auth Gate */
+/* Auth Screen */
 #auth-gate{
-  position:fixed;inset:0;z-index:9999;background:var(--bg);
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  overflow-y:auto;
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(circle at 50% 0%, rgba(99,102,241,.16), transparent 55%), var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;
 }
 #auth-gate.hidden{display:none;pointer-events:none}
-.auth-card{
-  width:min(420px,100%);background:var(--panel);border:1px solid var(--line);
-  border-radius:20px;padding:26px 24px;box-shadow:var(--shadow);
+.auth-box{
+  width:min(410px,100%);background:var(--panel);border:1px solid var(--line);
+  border-radius:22px;padding:26px 24px;box-shadow:0 24px 60px rgba(0,0,0,.65);
   display:flex;flex-direction:column;gap:14px;margin:auto;
 }
-.auth-brand{display:flex;align-items:center;gap:10px}
-.auth-brand h1{
-  margin:0;font-family:"Newsreader",Georgia,serif;
-  font-weight:500;font-size:26px;letter-spacing:-.02em;
+.brand-row{display:flex;align-items:center;gap:11px}
+.logo{
+  width:34px;height:34px;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),#a855f7);
+  display:grid;place-items:center;font-weight:700;font-size:17px;color:#fff;flex-shrink:0;
 }
-.auth-sub{margin:0;color:var(--mute);font-size:13.5px;line-height:1.5}
-.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
-.tab{border:0;background:transparent;padding:8px 10px;border-radius:8px;font-weight:500;font-size:13.5px;color:var(--mute)}
-.tab.on{background:var(--panel);color:var(--text);border:1px solid var(--line)}
-.div{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:12px}
-.div::before,.div::after{content:"";flex:1;height:1px;background:var(--line)}
-.auth-err{color:var(--err);font-size:13px;min-height:18px;line-height:1.4}
-.auth-ok{color:var(--ok)}
-#g-btn-wrap:empty{display:none}
-.g-inline-box{
+.brand-row h1{margin:0;font-family:"Space Grotesk",sans-serif;font-size:23px;font-weight:700;letter-spacing:-.02em}
+.auth-sub{margin:0;color:var(--mute);font-size:13.5px}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);padding:4px;border-radius:12px;border:1px solid var(--line)}
+.seg button{border:0;background:transparent;padding:8px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--mute)}
+.seg button.on{background:var(--panel-2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+
+.g-btn{
+  width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--panel-2);display:flex;align-items:center;justify-content:center;gap:10px;
+  font-weight:500;font-size:14px;
+}
+.g-btn:hover{border-color:var(--accent-2);background:#1c2030}
+
+.g-drawer{
   display:none;flex-direction:column;gap:8px;padding:12px;
   border-radius:12px;background:var(--bg);border:1px solid var(--line);
 }
-.g-inline-box.open{display:flex}
+.g-drawer.open{display:flex}
+.g-drawer small{color:var(--mute);font-size:12px}
 
-/* App Shell */
+.sep{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:12px}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500;color:var(--mute)}
+.field input{
+  border:1px solid var(--line);background:var(--bg);border-radius:11px;
+  padding:10px 12px;font-size:14px;font-weight:400;width:100%;
+}
+.field input:focus{border-color:var(--accent-2);outline:none}
+
+.primary-btn{
+  width:100%;padding:10.5px 14px;border-radius:12px;border:0;
+  background:linear-gradient(135deg,var(--accent),#4f46e5);
+  color:var(--accent-ink);font-weight:600;font-size:14px;
+}
+.primary-btn:hover{filter:brightness(1.08)}
+.msg-status{font-size:13px;min-height:18px;color:var(--err)}
+.msg-status.ok{color:var(--ok)}
+
+/* Workspace */
 #app{display:flex;width:100%;height:100%}
-#app.locked{filter:blur(6px);pointer-events:none;user-select:none}
+#app.locked{pointer-events:none;user-select:none}
 
-/* Sidebar */
 #side{
-  width:268px;background:var(--side);border-right:1px solid var(--line);
-  display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s cubic-bezier(.16,1,.3,1);
+  width:264px;background:var(--side);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s ease;
 }
-.brand{padding:16px 16px 10px;font-weight:600;font-size:16px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
-.brand-serif{font-family:"Newsreader",Georgia,serif;font-weight:500;font-size:20px}
-.mark{
-  width:26px;height:26px;border-radius:8px;background:var(--accent);
-  display:grid;place-items:center;color:var(--accent-ink);font-size:14px;font-weight:600;flex-shrink:0;
-}
+.side-top{padding:16px 14px 8px;display:flex;align-items:center;gap:10px}
+.side-top span.title{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em}
 #newchat{
-  margin:6px 12px 10px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);
-  background:var(--panel);text-align:left;font-weight:500;font-size:14px;
-  display:flex;align-items:center;justify-content:space-between;
+  margin:8px 12px 10px;padding:9px 12px;border-radius:11px;
+  border:1px solid var(--line);background:var(--panel);
+  display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:500;
 }
-#newchat:hover{border-color:var(--accent)}
+#newchat:hover{border-color:var(--accent-2)}
 #newchat kbd{font:11px "JetBrains Mono",monospace;color:var(--mute);background:var(--bg);padding:2px 6px;border-radius:5px;border:1px solid var(--line)}
-#list{flex:1;overflow-y:auto;padding:2px 8px}
-.item{display:flex;align-items:center;gap:4px;border-radius:9px;padding:0 4px 0 10px;margin-bottom:2px}
-.item:hover,.item.on{background:var(--panel)}
-.item .t{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
-.item .x{border:0;background:none;color:var(--mute);padding:4px 7px;border-radius:6px;opacity:0;font-size:12px}
-.item:hover .x,.item .x:focus-visible{opacity:1}
-.item .x:hover{color:var(--err);background:var(--errbg)}
+#list{flex:1;overflow-y:auto;padding:0 8px}
+.c-item{display:flex;align-items:center;gap:4px;border-radius:10px;padding:0 4px 0 10px;margin-bottom:2px}
+.c-item:hover,.c-item.on{background:var(--panel-2)}
+.c-item .t{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+.c-item .x{border:0;background:none;color:var(--mute);padding:4px 7px;border-radius:7px;opacity:0;font-size:12px}
+.c-item:hover .x,.c-item .x:focus-visible{opacity:1}
+.c-item .x:hover{color:var(--err);background:var(--errbg)}
 
-.sidefoot{padding:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
-.sidefoot button{
+.side-foot{padding:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.side-foot button{
   width:100%;padding:8px 10px;border-radius:10px;border:0;background:none;
-  text-align:left;color:var(--mute);display:flex;align-items:center;gap:10px;font-size:13.5px;
+  display:flex;align-items:center;gap:10px;text-align:left;color:var(--mute);font-size:13.5px;
 }
-.sidefoot button:hover{background:var(--panel);color:var(--text)}
-.avatar{
-  width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
-  display:grid;place-items:center;font-size:12px;font-weight:600;object-fit:cover;flex-shrink:0;
+.side-foot button:hover{background:var(--panel);color:var(--text)}
+.av{
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),#a855f7);
+  color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;
 }
-.u-info{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:500}
+.u-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:500}
 
-/* Main */
 main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
 header{
   display:flex;align-items:center;gap:10px;padding:11px 18px;
-  border-bottom:1px solid var(--line);background:var(--bg);
+  border-bottom:1px solid var(--line);background:var(--panel);
 }
-#menu{display:none;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px}
-#title{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14.5px}
-#modelbadge{
-  font:12px "JetBrains Mono",monospace;color:var(--mute);
-  border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 11px;
+#menu{display:none;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:5px 10px}
+#chat-title{font-weight:600;font-size:14.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#model-pill{
+  font:12px "JetBrains Mono",monospace;color:var(--accent-2);
+  background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);
+  border-radius:999px;padding:3px 11px;
 }
-#modelbadge:hover{border-color:var(--accent);color:var(--text)}
-#scroll{flex:1;overflow-y:auto;contain:strict}
-.col{max-width:740px;margin:0 auto;padding:28px 22px 16px}
+#scroll{flex:1;overflow-y:auto}
+.col{max-width:760px;margin:0 auto;padding:26px 20px 14px}
 
-.empty{padding-top:11vh}
-.empty h1{
-  font-family:"Newsreader",Georgia,serif;font-size:clamp(30px,4.5vw,42px);
-  line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;font-weight:400;
+.hero{padding-top:11vh}
+.hero h1{margin:0 0 8px;font-family:"Space Grotesk",sans-serif;font-size:clamp(28px,4.5vw,38px);letter-spacing:-.025em}
+.hero p{margin:0 0 22px;color:var(--mute);max-width:48ch}
+.prompts{display:flex;flex-wrap:wrap;gap:8px}
+.p-chip{
+  border:1px solid var(--line);background:var(--panel);border-radius:12px;
+  padding:9px 14px;font-size:13.5px;color:var(--text);
 }
-.empty p{color:var(--mute);margin:0 0 24px;max-width:48ch}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{
-  border:1px solid var(--line);background:var(--panel);border-radius:999px;
-  padding:8px 14px;font-size:13.5px;color:var(--text);
-}
-.chip:hover{border-color:var(--accent);background:var(--user)}
+.p-chip:hover{border-color:var(--accent-2);background:var(--panel-2)}
 
-.msg{margin:0 0 24px}
+.msg{margin:0 0 22px}
 .msg.user{display:flex;justify-content:flex-end}
-.msg.user .body{
-  background:var(--user);padding:11px 16px;border-radius:18px 18px 4px 18px;
-  max-width:82%;white-space:pre-wrap;word-wrap:break-word;font-size:14.5px;
+.msg.user .bub{
+  background:var(--user);border:1px solid var(--line);
+  padding:10px 15px;border-radius:16px 16px 4px 16px;max-width:82%;
+  white-space:pre-wrap;word-wrap:break-word;font-size:14.5px;
 }
 .msg.ai{display:flex;gap:12px;align-items:flex-start}
-.msg.ai .mark{margin-top:3px}
 .msg.ai .wrap{min-width:0;flex:1}
 .md>:first-child{margin-top:0}.md>:last-child{margin-bottom:0}
-.md p,.md ul,.md ol,.md pre,.md table,.md blockquote{margin:0 0 13px}
-.md h1,.md h2,.md h3{line-height:1.25;margin:20px 0 9px;letter-spacing:-.01em;font-weight:600}
-.md h1{font-size:20px}.md h2{font-size:17.5px}.md h3{font-size:15.5px}
-.md a{color:var(--accent)}
-.md blockquote{border-left:3px solid var(--line);padding-left:14px;color:var(--mute)}
+.md p,.md ul,.md ol,.md pre,.md table,.md blockquote{margin:0 0 12px}
+.md h1,.md h2,.md h3{font-family:"Space Grotesk",sans-serif;line-height:1.25;margin:18px 0 8px}
+.md a{color:var(--accent-2)}
+.md blockquote{border-left:3px solid var(--accent);padding-left:13px;color:var(--mute)}
 .md table{border-collapse:collapse;display:block;overflow-x:auto}
 .md th,.md td{border:1px solid var(--line);padding:6px 12px;text-align:left}
-.md code{font:13px "JetBrains Mono",monospace;background:var(--user);padding:2px 6px;border-radius:5px}
+.md code{font:13px "JetBrains Mono",monospace;background:var(--panel-2);padding:2px 6px;border-radius:5px}
 .md pre{position:relative;background:var(--code);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-.md pre code{display:block;background:none;padding:15px;overflow-x:auto;color:#ece9e2;line-height:1.55}
-.copy{
-  position:absolute;top:8px;right:8px;border:1px solid #2e2e36;
-  background:#151519;color:#c9c5bc;border-radius:7px;padding:3px 9px;font-size:12px;
+.md pre code{display:block;background:none;padding:15px;overflow-x:auto;color:#e8ecf8;line-height:1.55}
+.copy-b{
+  position:absolute;top:8px;right:8px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--mute);border-radius:7px;padding:3px 9px;font-size:12px;
 }
-.copy:hover{color:#fff;border-color:var(--accent)}
+.copy-b:hover{color:var(--text);border-color:var(--accent-2)}
 .acts{display:flex;gap:4px;margin-top:6px}
 .acts button{border:0;background:none;color:var(--mute);padding:3px 8px;border-radius:6px;font-size:12.5px}
-.acts button:hover{background:var(--user);color:var(--text)}
+.acts button:hover{background:var(--panel-2);color:var(--text)}
 
-/* Claude-style Activity Pill */
-.activity{
+.work-pill{
   display:inline-flex;align-items:center;gap:8px;
-  padding:6px 11px;border-radius:9px;
+  padding:5px 11px;border-radius:999px;
   background:var(--panel);border:1px solid var(--line);
-  font-size:12.5px;color:var(--mute);margin-bottom:10px;
-  font-family:"JetBrains Mono",monospace;
+  font:12px "JetBrains Mono",monospace;color:var(--mute);margin-bottom:9px;
 }
-.activity.done{opacity:.75}
-.spin-ring{
-  width:12px;height:12px;border-radius:50%;
-  border:2px solid var(--line);border-top-color:var(--accent);
-  animation:spin .7s linear infinite;flex-shrink:0;
+.work-pill.done{opacity:.72}
+.spinner{
+  width:11px;height:11px;border-radius:50%;
+  border:2px solid var(--line);border-top-color:var(--accent-2);
+  animation:rot .7s linear infinite;
 }
-.check-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0}
-.act-label{
-  background:linear-gradient(90deg,var(--mute) 0%,var(--text) 50%,var(--mute) 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;background-clip:text;
-  animation:shimmer 1.6s linear infinite;
-}
-.activity.done .act-label{background:none;-webkit-text-fill-color:var(--mute);animation:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-@media (prefers-reduced-motion:reduce){.spin-ring,.act-label{animation:none}}
+.dot-ok{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+@keyframes rot{to{transform:rotate(360deg)}}
 
-.err{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:13.5px;white-space:pre-wrap}
+.err-box{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:11px;margin-top:8px;font-size:13.5px;white-space:pre-wrap}
 
-/* Composer */
 #comp{padding:0 20px 18px;background:var(--bg)}
 #box{
-  max-width:740px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
-  border-radius:18px;display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;
-  box-shadow:0 2px 10px rgba(0,0,0,.25);
+  max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;
 }
-#box:focus-within{border-color:var(--accent)}
-#inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:7px 0;outline:none}
+#box:focus-within{border-color:var(--accent-2)}
+#inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:6px 0;outline:none}
 #send{
-  border:0;background:var(--accent);color:var(--accent-ink);border-radius:12px;
-  width:36px;height:36px;font-size:17px;flex-shrink:0;
+  border:0;background:var(--accent);color:var(--accent-ink);border-radius:11px;
+  width:36px;height:36px;font-size:17px;flex-shrink:0;font-weight:600;
 }
-#send:hover:not(:disabled){background:var(--accent-hover)}
+#send:hover:not(:disabled){background:var(--accent-2)}
 #send:disabled{opacity:.35;cursor:default}
-.hint{text-align:center;color:var(--mute);font-size:12px;margin-top:8px}
+.foot-note{text-align:center;color:var(--mute);font-size:12px;margin-top:7px}
 
-/* Dialogs */
 dialog{
   border:1px solid var(--line);border-radius:18px;background:var(--panel);
-  color:var(--text);padding:0;width:min(440px,92vw);box-shadow:var(--shadow);
+  color:var(--text);padding:0;width:min(430px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.7);
 }
-dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(2px)}
-.dlg-body{padding:22px;display:flex;flex-direction:column;gap:14px}
-dialog h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
-dialog label{display:flex;flex-direction:column;gap:5px;font-weight:500;font-size:13.5px}
-dialog small{color:var(--mute);font-weight:400;font-size:12px;line-height:1.4}
-dialog input,dialog textarea{
-  border:1px solid var(--line);background:var(--bg);color:inherit;
-  border-radius:10px;padding:9px 11px;font:inherit;width:100%;font-size:14px;
-}
-.row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;align-items:center}
-.btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 15px;font-weight:500;font-size:13.5px}
-.btn:hover{border-color:var(--text);background:var(--user)}
-.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.pri:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
-.btn.full{width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:10px}
-dialog a{color:var(--accent)}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+.d-inner{padding:22px;display:flex;flex-direction:column;gap:14px}
+dialog h2{margin:0;font-family:"Space Grotesk",sans-serif;font-size:18px;display:flex;justify-content:space-between;align-items:center}
+dialog label{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:500}
+dialog small{color:var(--mute);font-weight:400;font-size:12px}
+dialog input,dialog textarea{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:10px;padding:9px 11px;font:inherit;width:100%}
+.d-row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.btn-sec{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:8px 14px;font-size:13.5px;font-weight:500}
+.btn-pri{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:8px 16px;font-size:13.5px;font-weight:600}
 
 @media (max-width:760px){
   #side{position:fixed;inset:0 auto 0 0;z-index:20;transform:translateX(-100%)}
-  #side.open{transform:none;box-shadow:var(--shadow)}
+  #side.open{transform:none}
   #menu{display:block}
-  #modelbadge,#newchat kbd{display:none}
+  #model-pill,#newchat kbd{display:none}
 }
 </style>
 </head>
 <body>
 
-<section id="auth-gate" aria-label="Authentication required">
-  <div class="auth-card">
-    <div class="auth-brand">
-      <span class="mark">✦</span>
+<section id="auth-gate" aria-label="Sign in or register">
+  <div class="auth-box">
+    <div class="brand-row">
+      <div class="logo">G</div>
       <h1>Gavio AI</h1>
     </div>
-    <p class="auth-sub">Sign in or register an account to enter Gavio AI.</p>
+    <p class="auth-sub">Sign in or register to enter your Gavio AI workspace.</p>
 
-    <div class="tabs" role="tablist">
-      <button type="button" class="tab on" id="tab-login" role="tab" aria-selected="true" data-mode="login">Sign In</button>
-      <button type="button" class="tab" id="tab-register" role="tab" aria-selected="false" data-mode="register">Register</button>
+    <div class="seg" role="tablist">
+      <button type="button" class="on" id="btn-tab-login" data-mode="login">Sign In</button>
+      <button type="button" id="btn-tab-reg" data-mode="register">Register</button>
     </div>
 
-    <div id="g-btn-wrap"></div>
-    <button type="button" class="btn full" id="g-fallback">
-      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
+    <button type="button" class="g-btn" id="btn-google">
+      <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
       Continue with Google
     </button>
 
-    <div class="g-inline-box" id="g-inline">
+    <div class="g-drawer" id="g-drawer">
       <small>Enter your Google email to sign in:</small>
       <div style="display:flex;gap:8px">
-        <input id="g-email" type="email" placeholder="you@gmail.com" style="flex:1">
-        <button type="button" class="btn pri" id="g-confirm">Continue</button>
+        <input id="g-input" type="email" placeholder="you@gmail.com" style="flex:1;border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 10px">
+        <button type="button" class="btn-pri" id="g-submit">Continue</button>
       </div>
     </div>
 
-    <div class="div">or with email &amp; password</div>
+    <div class="sep">or with email</div>
 
-    <form id="aform" style="display:flex;flex-direction:column;gap:12px">
-      <label id="a-name-wrap" style="display:none">Full Name
-        <input id="a-name" type="text" autocomplete="name" maxlength="80" placeholder="Your name">
+    <form id="auth-form" style="display:flex;flex-direction:column;gap:11px">
+      <label class="field" id="name-field" style="display:none">
+        Name
+        <input id="auth-name" type="text" placeholder="Your name">
       </label>
-      <label>Email
-        <input id="a-email" type="email" autocomplete="email" required maxlength="160" placeholder="you@example.com">
+      <label class="field">
+        Email
+        <input id="auth-email" type="email" placeholder="you@example.com">
       </label>
-      <label>Password
-        <input id="a-pass" type="password" autocomplete="current-password" required minlength="4" maxlength="128" placeholder="At least 4 characters">
+      <label class="field">
+        Password
+        <input id="auth-pass" type="password" placeholder="Password">
       </label>
-      <div class="auth-err" id="a-err" role="alert"></div>
-      <button type="submit" class="btn pri full" id="a-submit">Sign In</button>
+      <div class="msg-status" id="auth-msg"></div>
+      <button type="submit" class="primary-btn" id="auth-submit">Sign In</button>
     </form>
   </div>
 </section>
 
 <div id="app" class="locked">
   <aside id="side">
-    <div class="brand"><span class="mark">✦</span><span class="brand-serif" id="appname"></span></div>
+    <div class="side-top">
+      <div class="logo" style="width:28px;height:28px;font-size:14px;border-radius:9px">G</div>
+      <span class="title">Gavio AI</span>
+    </div>
     <button id="newchat"><span>New chat</span><kbd>Ctrl K</kbd></button>
     <div id="list"></div>
-    <div class="sidefoot">
-      <button id="openprofile">
-        <span class="avatar" id="u-av">?</span>
-        <span class="u-info" id="u-name">Account</span>
+    <div class="side-foot">
+      <button id="open-prof">
+        <span class="av" id="side-av">U</span>
+        <span class="u-label" id="side-uname">User</span>
       </button>
-      <button id="opensettings">⚙ Settings &amp; API Key</button>
-      <button id="quick-logout" style="color:var(--err)">↪ Sign Out</button>
+      <button id="open-set">⚙ Settings &amp; API Key</button>
+      <button id="btn-signout" style="color:var(--err)">↪ Sign out</button>
     </div>
   </aside>
 
   <main>
     <header>
-      <button id="menu" aria-label="Open chats">☰</button>
-      <div id="title">New chat</div>
-      <button type="button" id="modelbadge" title="Click to change model"></button>
+      <button id="menu" aria-label="Toggle sidebar">☰</button>
+      <div id="chat-title">New chat</div>
+      <button type="button" id="model-pill" title="Model &amp; settings"></button>
     </header>
     <div id="scroll"><div class="col" id="msgs"></div></div>
     <div id="comp">
       <div id="box">
-        <textarea id="inp" rows="1" placeholder="How can Gavio AI help today?" aria-label="Message"></textarea>
+        <textarea id="inp" rows="1" placeholder="Ask Gavio AI…"></textarea>
         <button id="send" aria-label="Send">↑</button>
       </div>
-      <div class="hint">Enter to send · Shift+Enter for a new line</div>
+      <div class="foot-note">Enter to send · Shift+Enter for new line</div>
     </div>
   </main>
 </div>
 
-<dialog id="dlg">
-  <form method="dialog" class="dlg-body" id="sform">
-    <h2>Gavio AI Settings</h2>
-    <label>Gemini API key
-      <input id="s-key" type="password" autocomplete="off" spellcheck="false" placeholder="API key">
-      <small>Pre-configured with your key. Saved per signed-in user in this browser.</small>
+<dialog id="set-dlg">
+  <form method="dialog" class="d-inner" id="set-form">
+    <h2>Settings</h2>
+    <label>API Key
+      <input id="set-key" type="password" autocomplete="off">
+      <small>Pre-loaded with your configured key.</small>
     </label>
-    <label>Preferred Model
-      <input id="s-model" list="models" placeholder="gemini-3.8-flash">
-      <datalist id="models">
+    <label>Model
+      <input id="set-model" list="model-list">
+      <datalist id="model-list">
         <option value="gemini-3.8-flash">
         <option value="gemini-3.5-flash-lite">
         <option value="gemini-3.1-flash-lite">
         <option value="gemini-4-hydrogen">
       </datalist>
-      <small>Automatically retries and falls back across models during traffic spikes.</small>
     </label>
-    <label>System instructions
-      <textarea id="s-sys" rows="3" maxlength="4000" placeholder="e.g. You are Gavio AI, fast, clear, and concise."></textarea>
+    <label>System Prompt
+      <textarea id="set-sys" rows="3" placeholder="Optional instructions for Gavio AI…"></textarea>
     </label>
-    <label>Temperature <small id="s-tv"></small>
-      <input id="s-temp" type="range" min="0" max="2" step="0.1">
+    <label>Temperature <small id="set-tv"></small>
+      <input id="set-temp" type="range" min="0" max="2" step="0.1">
     </label>
-    <div class="row">
-      <button type="button" class="btn" id="s-cancel">Cancel</button>
-      <button type="submit" class="btn pri">Save</button>
+    <div class="d-row">
+      <button type="button" class="btn-sec" id="set-cancel">Cancel</button>
+      <button type="submit" class="btn-pri">Save</button>
     </div>
   </form>
 </dialog>
 
-<dialog id="pdlg">
-  <div class="dlg-body">
-    <h2><span>Account Profile</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="p-close">✕</button></h2>
-    <div style="display:flex;align-items:center;gap:12px;padding:6px 0">
-      <div class="avatar" id="p-av" style="width:44px;height:44px;font-size:18px"></div>
-      <div style="min-width:0">
-        <div id="p-name" style="font-weight:600;font-size:16px;overflow:hidden;text-overflow:ellipsis"></div>
-        <div id="p-email" style="color:var(--mute);font-size:13px;overflow:hidden;text-overflow:ellipsis"></div>
+<dialog id="prof-dlg">
+  <div class="d-inner">
+    <h2><span>Account</span><button type="button" class="btn-sec" style="padding:3px 9px" id="prof-close">✕</button></h2>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="av" id="prof-av" style="width:42px;height:42px;font-size:17px"></div>
+      <div>
+        <div id="prof-name" style="font-weight:600"></div>
+        <div id="prof-email" style="color:var(--mute);font-size:13px"></div>
       </div>
     </div>
-    <small>Chats and settings are saved under this account in this browser.</small>
-    <div class="row">
-      <button type="button" class="btn" id="logout-btn" style="color:var(--err);border-color:var(--err)">Sign Out</button>
+    <div class="d-row">
+      <button type="button" class="btn-sec" id="prof-out" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
   </div>
 </dialog>
@@ -387,354 +380,363 @@ dialog a{color:var(--accent)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script>
-const APP_NAME = "Gavio AI";
 const DEFAULT_API_KEY = "AQ.Ab8RN6JAgW2dzmZXOrCuNl_QrCsZlJKZNaIeG_RLh8_wylLP5A";
-const GOOGLE_CLIENT_ID = "";
-
-const FALLBACK_CHAIN = [
-  "gemini-3.8-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
-  "gemini-4-hydrogen"
-];
+const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-4-hydrogen"];
 
 const \$ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
-const looksLikeEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+\$/.test(e);
-const isSafeUrl = u => {
-  try {
-    const parsed = new URL(u);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
-  }
-};
-const sleep = (ms, signal) => new Promise((res, rej) => {
-  const id = setTimeout(res, ms);
-  signal?.addEventListener("abort", () => { clearTimeout(id); rej(new DOMException("Aborted", "AbortError")); }, { once: true });
-});
 
-/* --- AUTH WITH SAFE CRYPTO + COMPATIBLE FALLBACK --- */
-const AUTH_KEY = "gavio_auth_v3";
-
-function loadAuthStore() {
+/* Safe storage that never throws even in restricted sandboxes */
+const memStore = {};
+function readStore(k) {
   try {
-    const d = JSON.parse(localStorage.getItem(AUTH_KEY));
-    if (d && typeof d === "object") {
-      return { users: d.users && typeof d.users === "object" ? d.users : {}, current: d.current || null };
-    }
+    const v = window.localStorage.getItem(k);
+    if (v != null) return v;
   } catch {}
-  return { users: {}, current: null };
+  return Object.prototype.hasOwnProperty.call(memStore, k) ? memStore[k] : null;
+}
+function writeStore(k, v) {
+  memStore[k] = v;
+  try { window.localStorage.setItem(k, v); } catch {}
 }
 
-let auth = loadAuthStore();
-
-function saveAuthStore() {
-  try { localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); } catch {}
-}
-
-function randomSalt() {
-  try {
-    if (window.crypto && typeof window.crypto.getRandomValues === "function") {
-      const arr = new Uint8Array(12);
-      window.crypto.getRandomValues(arr);
-      return Array.from(arr, b => b.toString(16).padStart(2, "0")).join("");
-    }
-  } catch {}
-  return Math.random().toString(16).slice(2, 14) + Date.now().toString(16);
-}
-
-function fallbackHash(text) {
-  let h1 = 0x811c9dc5;
-  let h2 = 0x01000193;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text.charCodeAt(i);
-    h1 ^= ch;
-    h1 = Math.imul(h1, 0x01000193);
-    h2 ^= ch + i;
-    h2 = Math.imul(h2, 0x85ebca6b);
+function hashSecret(salt, pw) {
+  const input = salt + "::" + pw;
+  let a = 0x811c9dc5, b = 0x01000193, c = 0x9e3779b9, d = 0x85ebca6b;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input.charCodeAt(i);
+    a = Math.imul(a ^ ch, 0x01000193) >>> 0;
+    b = Math.imul(b ^ (ch + i), 0x85ebca6b) >>> 0;
+    c = ((c << 7) | (c >>> 25)) ^ (a + ch) >>> 0;
+    d = ((d << 11) | (d >>> 21)) ^ (b ^ i) >>> 0;
   }
-  return ((h1 >>> 0).toString(16).padStart(8, "0") + (h2 >>> 0).toString(16).padStart(8, "0"));
+  return [a, b, c, d].map(x => x.toString(16).padStart(8, "0")).join("");
 }
 
-async function hashPassword(password, salt) {
-  const payload = `${salt}:${password}`;
-  try {
-    if (window.crypto && window.crypto.subtle && typeof window.crypto.subtle.digest === "function" && (window.isSecureContext || location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
-      const enc = new TextEncoder().encode(payload);
-      const digest = await window.crypto.subtle.digest("SHA-256", enc);
-      return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, "0")).join("");
-    }
-  } catch {}
-  return fallbackHash(payload);
-}
-
-/* --- WORKSPACE STATE --- */
-const defaults = { key: DEFAULT_API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
-let state = { chats: [], settings: { ...defaults }, active: null };
-
-function userStorageKey() {
-  return auth.current ? "gavio_ws_" + encodeURIComponent(auth.current.email) : null;
-}
-
-function loadState() {
-  const k = userStorageKey();
-  if (!k) {
-    state = { chats: [], settings: { ...defaults }, active: null };
-    return;
+/* Auth State */
+const AUTH_DB_KEY = "gavio_ai_auth_db";
+let db = { users: {}, session: null };
+try {
+  const parsed = JSON.parse(readStore(AUTH_DB_KEY) || "null");
+  if (parsed && typeof parsed === "object") {
+    db.users = parsed.users && typeof parsed.users === "object" ? parsed.users : {};
+    db.session = parsed.session || null;
   }
+} catch {}
+
+function persistDb() {
+  writeStore(AUTH_DB_KEY, JSON.stringify(db));
+}
+
+/* Workspace State per User */
+const defSet = { key: DEFAULT_API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
+let ws = { chats: [], active: null, settings: { ...defSet } };
+
+function wsKey() {
+  return db.session ? "gavio_ai_ws_" + encodeURIComponent(db.session.email) : null;
+}
+
+function loadWs() {
+  const k = wsKey();
+  if (!k) { ws = { chats: [], active: null, settings: { ...defSet } }; return; }
   try {
-    const raw = JSON.parse(localStorage.getItem(k)) || {};
-    state.chats = Array.isArray(raw.chats) ? raw.chats : [];
-    state.active = typeof raw.active === "string" ? raw.active : null;
-    state.settings = Object.assign({}, defaults, raw.settings || {});
-    if (!state.settings.key) state.settings.key = DEFAULT_API_KEY;
-    if (!state.settings.model || state.settings.model === "gemini-2.5-flash" || state.settings.model === "models/gemini-2.5-flash") {
-      state.settings.model = "gemini-3.8-flash";
+    const raw = JSON.parse(readStore(k) || "null");
+    if (raw && typeof raw === "object") {
+      ws.chats = Array.isArray(raw.chats) ? raw.chats : [];
+      ws.active = typeof raw.active === "string" ? raw.active : null;
+      ws.settings = Object.assign({}, defSet, raw.settings || {});
+      if (!ws.settings.key) ws.settings.key = DEFAULT_API_KEY;
+    } else {
+      ws = { chats: [], active: null, settings: { ...defSet } };
     }
   } catch {
-    state = { chats: [], settings: { ...defaults }, active: null };
+    ws = { chats: [], active: null, settings: { ...defSet } };
   }
 }
 
-let saveTimer = 0;
-const save = () => {
-  const k = userStorageKey();
+function saveWs() {
+  const k = wsKey();
   if (!k) return;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try { localStorage.setItem(k, JSON.stringify(state)); } catch {}
-  }, 150);
-};
+  writeStore(k, JSON.stringify(ws));
+}
 
-function applyGate() {
-  const signedIn = Boolean(auth.current && auth.current.email);
-  \$("#auth-gate").classList.toggle("hidden", signedIn);
-  \$("#app").classList.toggle("locked", !signedIn);
-  if (signedIn) {
-    updateUserUI();
-    loadState();
+function syncGate() {
+  const loggedIn = Boolean(db.session && db.session.email);
+  \$("#auth-gate").classList.toggle("hidden", loggedIn);
+  \$("#app").classList.toggle("locked", !loggedIn);
+  if (loggedIn) {
+    const u = db.session;
+    const initial = (u.name || u.email || "U")[0].toUpperCase();
+    \$("#side-av").textContent = initial;
+    \$("#side-uname").textContent = u.name || u.email;
+    loadWs();
     renderAll();
   } else {
-    if (ctrl) ctrl.abort();
-    busy = false;
-    state = { chats: [], settings: { ...defaults }, active: null };
+    if (abortCtrl) abortCtrl.abort();
+    streaming = false;
     \$("#msgs").replaceChildren();
-    initGoogleAuth();
   }
 }
 
-function setSession(user) {
-  if (user && user.email) {
-    auth.current = {
-      name: String(user.name || user.email.split("@")[0]).slice(0, 80),
-      email: String(user.email).trim().toLowerCase().slice(0, 160),
-      pic: user.pic && isSafeUrl(user.pic) ? user.pic : ""
-    };
+function loginUser(userObj) {
+  db.session = {
+    email: String(userObj.email).trim().toLowerCase(),
+    name: String(userObj.name || userObj.email.split("@")[0]).trim()
+  };
+  persistDb();
+  syncGate();
+}
+
+function logoutUser() {
+  if ($("#prof-dlg").open) $("#prof-dlg").close();
+  if ($("#set-dlg").open) $("#set-dlg").close();
+  db.session = null;
+  persistDb();
+  syncGate();
+}
+
+/* Auth UI Events */
+let mode = "login";
+function setMode(nextMode) {
+  mode = nextMode === "register" ? "register" : "login";
+  const isReg = mode === "register";
+  \$("#btn-tab-login").classList.toggle("on", !isReg);
+  \$("#btn-tab-reg").classList.toggle("on", isReg);
+  \$("#name-field").style.display = isReg ? "flex" : "none";
+  \$("#auth-submit").textContent = isReg ? "Create Account" : "Sign In";
+  \$("#auth-msg").textContent = "";
+  \$("#auth-msg").classList.remove("ok");
+}
+
+\$("#btn-tab-login").onclick = () => setMode("login");
+\$("#btn-tab-reg").onclick = () => setMode("register");
+
+\$("#btn-google").onclick = () => {
+  const d = \$("#g-drawer");
+  d.classList.toggle("open");
+  if (d.classList.contains("open")) {
+    if (!$("#g-input").value && $("#auth-email").value) {
+      $("#g-input").value = $("#auth-email").value;
+    }
+    \$("#g-input").focus();
+  }
+};
+
+function finishGoogle() {
+  const raw = (\$("#g-input").value || "").trim().toLowerCase();
+  const status = \$("#auth-msg");
+  status.classList.remove("ok");
+  if (!raw || !raw.includes("@")) {
+    status.textContent = "Enter a valid Google email (e.g. name@gmail.com).";
+    return;
+  }
+  const base = raw.split("@")[0].replace(/[._-]+/g, " ");
+  const pretty = base.replace(/\b\w/g, c => c.toUpperCase()) || "User";
+  status.textContent = "";
+  loginUser({ email: raw, name: pretty });
+}
+
+\$("#g-submit").onclick = finishGoogle;
+\$("#g-input").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); finishGoogle(); } };
+
+\$("#auth-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const status = \$("#auth-msg");
+  status.classList.remove("ok");
+  status.textContent = "";
+
+  const email = (\$("#auth-email").value || "").trim().toLowerCase();
+  const pass = \$("#auth-pass").value || "";
+  const name = (\$("#auth-name").value || "").trim();
+
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    status.textContent = "Please enter a valid email address.";
+    return;
+  }
+  if (pass.length < 4) {
+    status.textContent = "Password must be at least 4 characters.";
+    return;
+  }
+
+  if (mode === "register") {
+    if (db.users[email]) {
+      status.textContent = "This email is already registered. Switch to Sign In.";
+      return;
+    }
+    const salt = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    const hash = hashSecret(salt, pass);
+    const displayName = name || email.split("@")[0];
+    db.users[email] = { email, name: displayName, salt, hash };
+    persistDb();
+    \$("#auth-form").reset();
+    loginUser({ email, name: displayName });
   } else {
-    auth.current = null;
+    const acc = db.users[email];
+    if (!acc) {
+      status.textContent = "No account found. Click Register above to create one.";
+      return;
+    }
+    if (hashSecret(acc.salt || "", pass) !== acc.hash) {
+      status.textContent = "Incorrect password.";
+      return;
+    }
+    \$("#auth-form").reset();
+    loginUser({ email: acc.email, name: acc.name });
   }
-  saveAuthStore();
-  applyGate();
+});
+
+/* Chat & Streaming */
+let streaming = false, abortCtrl = null, liveMd = null, livePill = null, frameId = 0;
+const activeChat = () => ws.chats.find(c => c.id === ws.active);
+
+function actionLabel(prompt, partial) {
+  const p = (prompt || "").toLowerCase();
+  const out = (partial || "").toLowerCase();
+  if (out.includes("```")) return "Writing code";
+  if (/\b(file|script|code|function|html|css|js|ts|python|json)\b/.test(p)) return partial ? "Writing code" : "Preparing code";
+  if (/\b(run|command|terminal|shell|cmd|bash|npm|git|linux)\b/.test(p)) return partial ? "Formatting command" : "Running command";
+  return partial ? "Responding" : "Thinking";
 }
 
-function updateUserUI() {
-  const u = auth.current;
-  if (!u) return;
-  \$("#u-name").textContent = u.name || u.email;
-  const av = \$("#u-av");
-  av.replaceChildren();
-  if (u.pic) {
-    const img = document.createElement("img");
-    img.src = u.pic;
-    img.alt = "";
-    img.className = "avatar";
-    av.appendChild(img);
-  } else {
-    av.textContent = (u.name || u.email)[0].toUpperCase();
-  }
-}
-
-/* --- ACTIVITY INFERENCE --- */
-function inferActivity(promptText, streamedText) {
-  const t = (promptText || "").toLowerCase();
-  const s = (streamedText || "").toLowerCase();
-  if (s.includes("```")) return "Writing code block";
-  if (/\b(file|script|code|function|class|component|html|css|js|ts|python|bash|json|sql|yaml)\b/.test(t)) {
-    return streamedText ? "Drafting file & code" : "Inspecting task & writing code";
-  }
-  if (/\b(run|command|terminal|cli|cmd|shell|deploy|build|test|install|npm|git|docker|linux)\b/.test(t)) {
-    return streamedText ? "Preparing command output" : "Running command";
-  }
-  if (/\b(search|find|check|compare|analyze|explain|why|how|review|debug|fix)\b/.test(t)) {
-    return streamedText ? "Synthesizing answer" : "Analyzing request";
-  }
-  return streamedText ? "Composing response" : "Thinking";
-}
-
-/* --- MARKDOWN & RENDERING --- */
-let busy = false, ctrl = null, liveBody = null, liveAct = null, raf = 0;
-const cur = () => state.chats.find(c => c.id === state.active);
-
-document.title = APP_NAME;
-$("#appname").textContent = APP_NAME;
-
-function md(t) {
+function renderMd(txt) {
   if (window.marked && window.DOMPurify) {
-    const rawHtml = marked.parse(String(t ?? ""), { gfm: true, breaks: true });
-    return DOMPurify.sanitize(rawHtml, {
-      ALLOWED_TAGS: ["p","br","strong","em","b","i","code","pre","blockquote","ul","ol","li","h1","h2","h3","h4","a","table","thead","tbody","tr","th","td","hr","span"],
-      ALLOWED_ATTR: ["href","target","rel","class"],
-      ALLOW_DATA_ATTR: false
-    });
+    return DOMPurify.sanitize(marked.parse(String(txt || ""), { gfm: true, breaks: true }), { ADD_ATTR: ["target"] });
   }
-  return esc(t).replace(/\n/g, "<br>");
+  return esc(txt).replace(/\n/g, "<br>");
 }
 
-function enhance(el) {
-  el.querySelectorAll("a").forEach(a => {
-    const href = a.getAttribute("href") || "";
-    if (!isSafeUrl(href)) a.removeAttribute("href");
-    else { a.target = "_blank"; a.rel = "noopener noreferrer"; }
-  });
-  el.querySelectorAll("pre").forEach(pre => {
-    if (pre.dataset.done) return;
-    pre.dataset.done = "1";
+function decorateBlocks(root) {
+  root.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+  root.querySelectorAll("pre").forEach(pre => {
+    if (pre.dataset.enh) return;
+    pre.dataset.enh = "1";
     const code = pre.querySelector("code");
     if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "copy";
-    b.textContent = "Copy";
-    b.onclick = () => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-b";
+    btn.textContent = "Copy";
+    btn.onclick = () => {
       navigator.clipboard?.writeText(code ? code.innerText : pre.innerText);
-      b.textContent = "Copied";
-      setTimeout(() => { b.textContent = "Copy"; }, 1200);
+      btn.textContent = "Copied";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1200);
     };
-    pre.appendChild(b);
+    pre.appendChild(btn);
   });
 }
 
-function newChat() {
-  const c = { id: "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6), title: "New chat", messages: [], updated: Date.now() };
-  state.chats.unshift(c);
-  state.active = c.id;
-  save();
-  return c;
+function makePill(label, spinning) {
+  const el = document.createElement("div");
+  el.className = "work-pill" + (spinning ? "" : " done");
+  const ic = document.createElement("span");
+  ic.className = spinning ? "spinner" : "dot-ok";
+  const tx = document.createElement("span");
+  tx.className = "pill-txt";
+  tx.textContent = label;
+  el.append(ic, tx);
+  return el;
 }
 
-function renderSide() {
+function renderSidebar() {
   const list = $("#list");
   const frag = document.createDocumentFragment();
-  state.chats.forEach(c => {
-    const d = document.createElement("div");
-    d.className = "item" + (c.id === state.active ? " on" : "");
-    const t = document.createElement("button");
-    t.type = "button";
-    t.className = "t";
-    t.textContent = c.title || "New chat";
-    t.onclick = () => {
-      if (busy) return;
-      state.active = c.id;
-      save();
+  ws.chats.forEach(c => {
+    const row = document.createElement("div");
+    row.className = "c-item" + (c.id === ws.active ? " on" : "");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "t";
+    b.textContent = c.title || "New chat";
+    b.onclick = () => {
+      if (streaming) return;
+      ws.active = c.id;
+      saveWs();
       renderAll();
       $("#side").classList.remove("open");
     };
-    const x = document.createElement("button");
-    x.type = "button";
-    x.className = "x";
-    x.textContent = "✕";
-    x.setAttribute("aria-label", "Delete chat");
-    x.onclick = () => {
-      if (busy) return;
-      state.chats = state.chats.filter(k => k.id !== c.id);
-      if (state.active === c.id) state.active = null;
-      save();
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "x";
+    del.textContent = "✕";
+    del.onclick = () => {
+      if (streaming) return;
+      ws.chats = ws.chats.filter(x => x.id !== c.id);
+      if (ws.active === c.id) ws.active = null;
+      saveWs();
       renderAll();
     };
-    d.append(t, x);
-    frag.appendChild(d);
+    row.append(b, del);
+    frag.appendChild(row);
   });
   list.replaceChildren(frag);
 }
 
-function buildActivityEl(label, active) {
-  const pill = document.createElement("div");
-  pill.className = "activity" + (active ? "" : " done");
-  const icon = document.createElement("span");
-  icon.className = active ? "spin-ring" : "check-dot";
-  const txt = document.createElement("span");
-  txt.className = "act-label";
-  txt.textContent = label;
-  pill.append(icon, txt);
-  return pill;
-}
-
-function renderMsgs() {
-  const box = $("#msgs");
-  liveBody = null;
-  liveAct = null;
-  const c = cur();
-  $("#title").textContent = c ? (c.title || "New chat") : "New chat";
-  $("#modelbadge").textContent = state.settings.model;
+function renderMessages() {
+  const container = $("#msgs");
+  liveMd = null;
+  livePill = null;
+  const c = activeChat();
+  $("#chat-title").textContent = c ? (c.title || "New chat") : "New chat";
+  $("#model-pill").textContent = ws.settings.model;
 
   if (!c || !c.messages.length) {
-    box.innerHTML = `<div class="empty"><h1>Hello, ${esc(auth.current?.name?.split(" ")[0] || "there")}</h1><p>Ask Gavio AI anything—code, writing, commands, or quick answers.</p><div class="chips"></div></div>`;
-    const chips = box.querySelector(".chips");
-    ["Write a Python script to parse logs", "Run a quick Linux disk check command", "Draft a clean product spec", "Explain async/await in JavaScript"].forEach(s => {
+    const first = (db.session?.name || "there").split(" ")[0];
+    container.innerHTML = `<div class="hero"><h1>Ready when you are, ${esc(first)}</h1><p>Start a prompt with Gavio AI—code, commands, writing, or fast answers.</p><div class="prompts"></div></div>`;
+    const wrap = container.querySelector(".prompts");
+    ["Write a Python script to rename files", "Show a shell command to check open ports", "Draft a clean README overview", "Explain how HTTPS works"].forEach(q => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "chip";
-      b.textContent = s;
-      b.onclick = () => send(s);
-      chips.appendChild(b);
+      b.className = "p-chip";
+      b.textContent = q;
+      b.onclick = () => sendPrompt(q);
+      wrap.appendChild(b);
     });
     return;
   }
 
   const frag = document.createDocumentFragment();
-  c.messages.forEach((m, i) => {
+  c.messages.forEach((m, idx) => {
     const el = document.createElement("div");
     if (m.role === "user") {
       el.className = "msg user";
-      const b = document.createElement("div");
-      b.className = "body";
-      b.textContent = m.text;
-      el.appendChild(b);
+      const bub = document.createElement("div");
+      bub.className = "bub";
+      bub.textContent = m.text;
+      el.appendChild(bub);
     } else {
       el.className = "msg ai";
-      el.innerHTML = `<span class="mark">✦</span><div class="wrap"></div>`;
+      el.innerHTML = `<div class="logo" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="wrap"></div>`;
       const wrap = el.querySelector(".wrap");
-      const last = i === c.messages.length - 1;
-      const prevUser = i > 0 && c.messages[i - 1]?.role === "user" ? c.messages[i - 1].text : "";
+      const isLast = idx === c.messages.length - 1;
+      const prevPrompt = idx > 0 && c.messages[idx - 1]?.role === "user" ? c.messages[idx - 1].text : "";
 
-      if (last && busy) {
-        const actLabel = m.activity || inferActivity(prevUser, m.text);
-        const actEl = buildActivityEl(actLabel, true);
-        wrap.appendChild(actEl);
-        liveAct = actEl;
-      } else if (m.activity && !m.error) {
-        wrap.appendChild(buildActivityEl(m.activity, false));
+      if (isLast && streaming) {
+        const pill = makePill(m.step || actionLabel(prevPrompt, m.text), true);
+        wrap.appendChild(pill);
+        livePill = pill;
+      } else if (m.step && !m.error) {
+        wrap.appendChild(makePill(m.step, false));
       }
 
-      const body = document.createElement("div");
-      body.className = "md";
-      if (last && busy) liveBody = body;
+      const mdEl = document.createElement("div");
+      mdEl.className = "md";
+      if (isLast && streaming) liveMd = mdEl;
       if (m.text) {
-        body.innerHTML = md(m.text);
-        if (!(last && busy)) enhance(body);
+        mdEl.innerHTML = renderMd(m.text);
+        if (!(isLast && streaming)) decorateBlocks(mdEl);
       }
-      wrap.appendChild(body);
+      wrap.appendChild(mdEl);
 
       if (m.error) {
-        const e = document.createElement("div");
-        e.className = "err";
-        e.textContent = m.error;
-        wrap.appendChild(e);
+        const err = document.createElement("div");
+        err.className = "err-box";
+        err.textContent = m.error;
+        wrap.appendChild(err);
       }
-      if (!(last && busy)) {
-        const a = document.createElement("div");
-        a.className = "acts";
+
+      if (!(isLast && streaming)) {
+        const acts = document.createElement("div");
+        acts.className = "acts";
         const cp = document.createElement("button");
         cp.type = "button";
         cp.textContent = "Copy";
@@ -743,441 +745,256 @@ function renderMsgs() {
           cp.textContent = "Copied";
           setTimeout(() => { cp.textContent = "Copy"; }, 1200);
         };
-        a.appendChild(cp);
-        if (last) {
+        acts.appendChild(cp);
+        if (isLast) {
           const rg = document.createElement("button");
           rg.type = "button";
           rg.textContent = "Regenerate";
-          rg.onclick = () => regenerate();
-          a.appendChild(rg);
+          rg.onclick = () => regenLast();
+          acts.appendChild(rg);
         }
-        wrap.appendChild(a);
+        wrap.appendChild(acts);
       }
     }
     frag.appendChild(el);
   });
-  box.replaceChildren(frag);
-  const s = $("#scroll");
-  s.scrollTop = s.scrollHeight;
+  container.replaceChildren(frag);
+  const sc = $("#scroll");
+  sc.scrollTop = sc.scrollHeight;
+}
+
+function setSendState() {
+  const b = $("#send");
+  b.textContent = streaming ? "■" : "↑";
+  b.disabled = !streaming && !$("#inp").value.trim();
 }
 
 function renderAll() {
-  if (!auth.current) return;
-  renderSide();
-  renderMsgs();
-  setBusy(busy);
+  if (!db.session) return;
+  renderSidebar();
+  renderMessages();
+  setSendState();
 }
 
-function setBusy(b) {
-  busy = b;
-  const s = $("#send");
-  s.textContent = b ? "■" : "↑";
-  s.setAttribute("aria-label", b ? "Stop" : "Send");
-  s.disabled = !b && !$("#inp").value.trim();
-}
-
-function scheduleLive(m, userPrompt) {
-  if (raf) return;
-  raf = requestAnimationFrame(() => {
-    raf = 0;
-    const nextAct = inferActivity(userPrompt, m.text);
-    m.activity = nextAct;
-    if (liveAct) {
-      const lbl = liveAct.querySelector(".act-label");
-      if (lbl && lbl.textContent !== nextAct) lbl.textContent = nextAct;
+function queueStreamRender(m, prompt) {
+  if (frameId) return;
+  frameId = requestAnimationFrame(() => {
+    frameId = 0;
+    const nextStep = actionLabel(prompt, m.text);
+    m.step = nextStep;
+    if (livePill) {
+      const t = livePill.querySelector(".pill-txt");
+      if (t && t.textContent !== nextStep) t.textContent = nextStep;
     }
-    if (liveBody) {
-      liveBody.innerHTML = md(m.text);
-      const s = $("#scroll");
-      if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight;
+    if (liveMd) {
+      liveMd.innerHTML = renderMd(m.text);
+      const sc = $("#scroll");
+      if (sc.scrollHeight - sc.scrollTop - sc.clientHeight < 180) sc.scrollTop = sc.scrollHeight;
     }
   });
 }
 
-async function send(text) {
-  if (!auth.current || busy) return;
-  text = (text || "").trim();
-  if (!text) return;
-  const apiKey = (state.settings.key || DEFAULT_API_KEY).trim();
-  if (!apiKey) { openSettings(); return; }
-  state.settings.key = apiKey;
-  let c = cur() || newChat();
-  c.messages.push({ role: "user", text });
-  if (c.messages.length === 1) c.title = text.slice(0, 48);
-  c.messages.push({ role: "assistant", text: "", activity: inferActivity(text, "") });
-  c.updated = Date.now();
-  save();
-  $("#inp").value = "";
-  autosize();
-  await generate(c, text);
-}
-
-async function regenerate() {
-  if (!auth.current) return;
-  const c = cur();
-  if (!c || busy) return;
-  const last = c.messages[c.messages.length - 1];
-  const prevUser = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user"
-    ? c.messages[c.messages.length - 2].text : "";
-  if (last && last.role === "assistant") {
-    last.text = "";
-    last.activity = inferActivity(prevUser, "");
-    delete last.error;
-  } else return;
-  await generate(c, prevUser);
-}
-
-async function streamModel(modelId, body, msg, signal, userPrompt) {
-  const apiKey = (state.settings.key || DEFAULT_API_KEY).trim();
-  const headers = { "Content-Type": "application/json", "x-goog-api-key": apiKey };
-  if (apiKey.startsWith("AQ.") || apiKey.startsWith("ya29.")) {
-    headers["Authorization"] = `Bearer ${apiKey}`;
+async function callModel(modelName, payload, msg, signal, prompt) {
+  const key = (ws.settings.key || DEFAULT_API_KEY).trim();
+  const headers = { "Content-Type": "application/json", "x-goog-api-key": key };
+  if (key.startsWith("AQ.") || key.startsWith("ya29.")) {
+    headers["Authorization"] = "Bearer " + key;
   }
-  const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(modelId)}:streamGenerateContent?alt=sse`, {
-    method: "POST",
-    signal,
-    headers,
-    body: JSON.stringify(body)
+  const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(modelName)}:streamGenerateContent?alt=sse`, {
+    method: "POST", signal, headers, body: JSON.stringify(payload)
   });
 
   if (!res.ok) {
-    const j = await res.json().catch(() => null);
-    const rawMsg = (j && j.error && j.error.message) || ("Request failed (" + res.status + ")");
-    const isHighDemand = res.status === 503 || /high demand|overloaded|unavailable/i.test(rawMsg);
-    if (isHighDemand) return { ok: false, overloaded: true, errorMsg: rawMsg };
-
-    let friendly = rawMsg;
-    if (res.status === 429) friendly = "Rate limit reached. Wait a moment or switch models in Settings.\n" + rawMsg;
-    return { ok: false, overloaded: false, errorMsg: friendly };
+    const errJson = await res.json().catch(() => null);
+    const detail = errJson?.error?.message || ("HTTP " + res.status);
+    const busyLoad = res.status === 503 || /high demand|overloaded|unavailable/i.test(detail);
+    return { ok: false, busyLoad, detail };
   }
 
-  const reader = res.body.getReader(), dec = new TextDecoder();
-  let buf = "", gotText = false;
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "", anyText = false;
 
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
     buf += dec.decode(value, { stream: true });
-    let i;
-    while ((i = buf.indexOf("\n")) >= 0) {
-      const line = buf.slice(0, i).trim();
-      buf = buf.slice(i + 1);
+    let nl;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
       if (!line.startsWith("data:")) continue;
-      const d = line.slice(5).trim();
-      if (!d) continue;
+      const chunk = line.slice(5).trim();
+      if (!chunk) continue;
       try {
-        const j = JSON.parse(d);
-        const cand = j.candidates && j.candidates[0];
-        ((cand && cand.content && cand.content.parts) || []).forEach(p => {
-          if (p.text && !p.thought) { msg.text += p.text; gotText = true; }
+        const parsed = JSON.parse(chunk);
+        const parts = parsed?.candidates?.[0]?.content?.parts || [];
+        parts.forEach(p => {
+          if (p.text && !p.thought) { msg.text += p.text; anyText = true; }
         });
-        if (j.promptFeedback && j.promptFeedback.blockReason) {
-          msg.error = "Blocked by safety filter: " + j.promptFeedback.blockReason;
-        }
-        if (cand && cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason) && !msg.text) {
-          if (/high demand|overloaded|unavailable/i.test(cand.finishReason)) {
-            return { ok: false, overloaded: true, errorMsg: cand.finishReason };
-          }
-          msg.error = "Stopped: " + cand.finishReason;
-        }
       } catch {}
     }
-    scheduleLive(msg, userPrompt);
+    queueStreamRender(msg, prompt);
   }
-
-  return { ok: gotText || Boolean(msg.error), overloaded: false, errorMsg: "The model returned an empty response." };
+  return { ok: anyText, busyLoad: false, detail: "Empty response." };
 }
 
-async function generate(c, userPrompt = "") {
-  if (!auth.current) return;
-  const st = state.settings, msg = c.messages[c.messages.length - 1];
-  msg.text = "";
-  msg.activity = inferActivity(userPrompt, "");
-  delete msg.error;
-  ctrl = new AbortController();
-  busy = true;
+async function runGeneration(chatObj, promptText) {
+  if (!db.session) return;
+  const aiMsg = chatObj.messages[chatObj.messages.length - 1];
+  aiMsg.text = "";
+  aiMsg.step = actionLabel(promptText, "");
+  delete aiMsg.error;
+
+  abortCtrl = new AbortController();
+  streaming = true;
   renderAll();
 
-  const preferred = (st.model || defaults.model).replace(/^models\//, "");
-  const candidates = Array.from(new Set([preferred, ...FALLBACK_CHAIN]));
-
-  const contents = c.messages.slice(0, -1).filter(m => m.text).map(m => ({
+  const preferred = (ws.settings.model || defSet.model).replace(/^models\//, "");
+  const queue = Array.from(new Set([preferred, ...MODELS]));
+  const contents = chatObj.messages.slice(0, -1).filter(m => m.text).map(m => ({
     role: m.role === "user" ? "user" : "model",
     parts: [{ text: m.text }]
   }));
-  const body = { contents, generationConfig: { temperature: Number(st.temp) } };
-  if (st.system.trim()) body.systemInstruction = { parts: [{ text: st.system.trim() }] };
+  const payload = { contents, generationConfig: { temperature: Number(ws.settings.temp) || 0.7 } };
+  if (ws.settings.system.trim()) {
+    payload.systemInstruction = { parts: [{ text: ws.settings.system.trim() }] };
+  }
 
   try {
-    let completed = false;
-    for (let idx = 0; idx < candidates.length; idx++) {
-      const mId = candidates[idx];
-      for (let attempt = 0; attempt < 2; attempt++) {
-        msg.text = "";
-        if (idx > 0 || attempt > 0) {
-          msg.activity = "Retrying on backup capacity";
-          renderMsgs();
+    let finished = false;
+    for (const mName of queue) {
+      for (let tryIdx = 0; tryIdx < 2; tryIdx++) {
+        aiMsg.text = "";
+        if (mName !== preferred || tryIdx > 0) {
+          aiMsg.step = "Switching capacity";
+          renderMessages();
         }
-        const out = await streamModel(mId, body, msg, ctrl.signal, userPrompt);
+        const out = await callModel(mName, payload, aiMsg, abortCtrl.signal, promptText);
         if (out.ok) {
-          msg.activity = "Completed";
-          completed = true;
+          aiMsg.step = "Done";
+          finished = true;
           break;
         }
-        if (out.overloaded) {
-          if (attempt === 0) {
-            await sleep(300 + Math.random() * 250, ctrl.signal);
-            continue;
-          }
-          break;
-        } else {
-          if (!msg.error) msg.error = out.errorMsg;
-          completed = true;
-          break;
+        if (out.busyLoad) {
+          await new Promise(r => setTimeout(r, 250));
+          continue;
         }
+        aiMsg.error = out.detail;
+        finished = true;
+        break;
       }
-      if (completed) break;
+      if (finished) break;
     }
-
-    if (!completed && !msg.text && !msg.error) {
-      msg.error = "Models are currently busy. Please try again shortly.";
+    if (!finished && !aiMsg.text && !aiMsg.error) {
+      aiMsg.error = "Service is busy right now. Please try again.";
     }
-  } catch (e) {
-    if (e.name !== "AbortError") msg.error = e.message || String(e);
+  } catch (err) {
+    if (err.name !== "AbortError") aiMsg.error = err.message || String(err);
   } finally {
-    busy = false;
-    ctrl = null;
-    c.updated = Date.now();
-    save();
+    streaming = false;
+    abortCtrl = null;
+    saveWs();
     renderAll();
   }
 }
 
-/* --- COMPOSER & SHORTCUTS --- */
+async function sendPrompt(raw) {
+  if (!db.session || streaming) return;
+  const text = (raw || "").trim();
+  if (!text) return;
+  let c = activeChat();
+  if (!c) {
+    c = { id: "c_" + Date.now().toString(36), title: text.slice(0, 44), messages: [] };
+    ws.chats.unshift(c);
+    ws.active = c.id;
+  } else if (c.messages.length === 0) {
+    c.title = text.slice(0, 44);
+  }
+  c.messages.push({ role: "user", text });
+  c.messages.push({ role: "assistant", text: "", step: actionLabel(text, "") });
+  saveWs();
+  $("#inp").value = "";
+  $("#inp").style.height = "auto";
+  await runGeneration(c, text);
+}
+
+async function regenLast() {
+  const c = activeChat();
+  if (!c || streaming) return;
+  const last = c.messages[c.messages.length - 1];
+  const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user"
+    ? c.messages[c.messages.length - 2].text : "";
+  if (!last || last.role !== "assistant") return;
+  last.text = "";
+  delete last.error;
+  await runGeneration(c, prev);
+}
+
+/* Controls */
 const inp = $("#inp");
-function autosize() {
+inp.addEventListener("input", () => {
   inp.style.height = "auto";
   inp.style.height = Math.min(inp.scrollHeight, 200) + "px";
-  setBusy(busy);
-}
-inp.addEventListener("input", autosize);
+  setSendState();
+});
 inp.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(inp.value); }
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendPrompt(inp.value); }
 });
-document.addEventListener("keydown", e => {
-  if (!auth.current) return;
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-    e.preventDefault();
-    $("#newchat").click();
-  }
-});
-$("#send").onclick = () => { if (busy) { ctrl && ctrl.abort(); } else send(inp.value); };
+$("#send").onclick = () => { if (streaming) abortCtrl?.abort(); else sendPrompt(inp.value); };
 $("#newchat").onclick = () => {
-  if (!auth.current || busy) return;
-  state.active = null;
-  save();
+  if (streaming) return;
+  ws.active = null;
+  saveWs();
   renderAll();
   $("#side").classList.remove("open");
   inp.focus();
 };
+document.addEventListener("keydown", e => {
+  if (db.session && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    $("#newchat").click();
+  }
+});
 $("#menu").onclick = () => $("#side").classList.toggle("open");
-$("#scroll").addEventListener("click", () => $("#side").classList.remove("open"));
-$("#modelbadge").onclick = () => { if (auth.current) openSettings(); };
+$("#scroll").onclick = () => $("#side").classList.remove("open");
 
-/* --- SETTINGS DIALOG --- */
-const dlg = $("#dlg");
-function openSettings() {
-  if (!auth.current) return;
-  const s = state.settings;
-  $("#s-key").value = s.key || DEFAULT_API_KEY;
-  $("#s-model").value = s.model;
-  $("#s-sys").value = s.system;
-  $("#s-temp").value = s.temp;
-  $("#s-tv").textContent = s.temp;
-  if (!dlg.open) dlg.showModal();
-}
-$("#opensettings").onclick = openSettings;
-$("#s-temp").oninput = e => { $("#s-tv").textContent = e.target.value; };
-$("#s-cancel").onclick = () => dlg.close();
-$("#sform").onsubmit = () => {
-  if (!auth.current) return;
-  const tempVal = Math.min(2, Math.max(0, Number($("#s-temp").value) || 0.7));
-  state.settings = {
-    key: ($("#s-key").value || DEFAULT_API_KEY).trim(),
-    model: ($("#s-model").value.trim() || defaults.model).slice(0, 120),
-    system: $("#s-sys").value.slice(0, 4000),
-    temp: tempVal
+/* Settings & Profile Modals */
+$("#open-set").onclick = () => {
+  $("#set-key").value = ws.settings.key || DEFAULT_API_KEY;
+  $("#set-model").value = ws.settings.model || defSet.model;
+  $("#set-sys").value = ws.settings.system || "";
+  $("#set-temp").value = ws.settings.temp ?? 0.7;
+  $("#set-tv").textContent = $("#set-temp").value;
+  if (!$("#set-dlg").open) $("#set-dlg").showModal();
+};
+$("#model-pill").onclick = () => $("#open-set").click();
+$("#set-temp").oninput = e => { $("#set-tv").textContent = e.target.value; };
+$("#set-cancel").onclick = () => $("#set-dlg").close();
+$("#set-form").onsubmit = () => {
+  ws.settings = {
+    key: ($("#set-key").value || DEFAULT_API_KEY).trim(),
+    model: ($("#set-model").value || defSet.model).trim(),
+    system: $("#set-sys").value,
+    temp: Number($("#set-temp").value) || 0.7
   };
-  save();
+  saveWs();
   renderAll();
 };
 
-/* --- PROFILE & AUTH HANDLERS --- */
-const pdlg = $("#pdlg");
-let authMode = "login";
-
-$("#openprofile").onclick = () => {
-  if (!auth.current) return;
-  const u = auth.current;
-  $("#p-name").textContent = u.name || "User";
-  $("#p-email").textContent = u.email;
-  const pav = $("#p-av");
-  pav.replaceChildren();
-  if (u.pic) {
-    const img = document.createElement("img");
-    img.src = u.pic;
-    img.alt = "";
-    img.className = "avatar";
-    img.style.width = "44px";
-    img.style.height = "44px";
-    pav.appendChild(img);
-  } else {
-    pav.textContent = (u.name || u.email)[0].toUpperCase();
-  }
-  if (!pdlg.open) pdlg.showModal();
+$("#open-prof").onclick = () => {
+  const u = db.session;
+  if (!u) return;
+  $("#prof-av").textContent = (u.name || u.email)[0].toUpperCase();
+  $("#prof-name").textContent = u.name || u.email;
+  $("#prof-email").textContent = u.email;
+  if (!$("#prof-dlg").open) $("#prof-dlg").showModal();
 };
-$("#p-close").onclick = () => pdlg.close();
+$("#prof-close").onclick = () => $("#prof-dlg").close();
+$("#prof-out").onclick = logoutUser;
+$("#btn-signout").onclick = logoutUser;
 
-function signOut() {
-  if (pdlg.open) pdlg.close();
-  if (dlg.open) dlg.close();
-  setSession(null);
-}
-$("#logout-btn").onclick = signOut;
-$("#quick-logout").onclick = signOut;
-
-function setAuthMode(mode) {
-  authMode = mode === "register" ? "register" : "login";
-  const isReg = authMode === "register";
-  $("#tab-login").classList.toggle("on", !isReg);
-  $("#tab-login").setAttribute("aria-selected", String(!isReg));
-  $("#tab-register").classList.toggle("on", isReg);
-  $("#tab-register").setAttribute("aria-selected", String(isReg));
-  $("#a-name-wrap").style.display = isReg ? "flex" : "none";
-  $("#a-pass").setAttribute("autocomplete", isReg ? "new-password" : "current-password");
-  $("#a-submit").textContent = isReg ? "Create Account" : "Sign In";
-  $("#a-err").classList.remove("auth-ok");
-  $("#a-err").textContent = "";
-}
-
-$("#tab-login").onclick = () => setAuthMode("login");
-$("#tab-register").onclick = () => setAuthMode("register");
-
-function submitGoogleEmail() {
-  const err = $("#a-err");
-  err.classList.remove("auth-ok");
-  const clean = ($("#g-email").value || "").trim().toLowerCase();
-  if (!looksLikeEmail(clean)) {
-    err.textContent = "Enter a valid Google email address.";
-    return;
-  }
-  const rawName = clean.split("@")[0].replace(/[._-]+/g, " ");
-  const name = rawName.replace(/\b\w/g, c => c.toUpperCase()) || "Google User";
-  err.textContent = "";
-  setSession({ name, email: clean });
-}
-
-$("#g-fallback").onclick = () => {
-  if (GOOGLE_CLIENT_ID) {
-    initGoogleAuth();
-    return;
-  }
-  const box = $("#g-inline");
-  box.classList.toggle("open");
-  if (box.classList.contains("open")) {
-    if (!$("#g-email").value && $("#a-email").value) {
-      $("#g-email").value = $("#a-email").value;
-    }
-    $("#g-email").focus();
-  }
-};
-$("#g-confirm").onclick = submitGoogleEmail;
-$("#g-email").onkeydown = e => {
-  if (e.key === "Enter") { e.preventDefault(); submitGoogleEmail(); }
-};
-
-$("#aform").addEventListener("submit", async e => {
-  e.preventDefault();
-  const err = $("#a-err");
-  err.classList.remove("auth-ok");
-  err.textContent = "";
-
-  const email = ($("#a-email").value || "").trim().toLowerCase();
-  const pass = $("#a-pass").value || "";
-  const name = ($("#a-name").value || "").trim();
-
-  if (!looksLikeEmail(email)) {
-    err.textContent = "Please enter a valid email address.";
-    return;
-  }
-  if (pass.length < 4) {
-    err.textContent = "Password must be at least 4 characters.";
-    return;
-  }
-
-  try {
-    if (authMode === "register") {
-      if (auth.users[email]) {
-        err.textContent = "Account already exists. Click Sign In above.";
-        return;
-      }
-      const salt = randomSalt();
-      const hash = await hashPassword(pass, salt);
-      const displayName = name || email.split("@")[0];
-      auth.users[email] = { name: displayName, email, salt, hash };
-      saveAuthStore();
-      $("#aform").reset();
-      setSession({ name: displayName, email });
-    } else {
-      const u = auth.users[email];
-      if (!u) {
-        err.textContent = "No account found for this email. Click Register to create one.";
-        return;
-      }
-      const computed = await hashPassword(pass, u.salt || "");
-      if (computed !== u.hash) {
-        err.textContent = "Incorrect password.";
-        return;
-      }
-      $("#aform").reset();
-      setSession({ name: u.name, email: u.email, pic: u.pic });
-    }
-  } catch (ex) {
-    err.textContent = "Sign-in error: " + (ex && ex.message ? ex.message : "Please try again.");
-  }
-});
-
-function parseJwt(token) {
-  const parts = String(token || "").split(".");
-  if (parts.length !== 3) throw new Error("Invalid token");
-  const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-  return JSON.parse(decodeURIComponent(atob(base64).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")));
-}
-
-let gsiReady = false;
-function initGoogleAuth() {
-  if (GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
-    $("#g-fallback").style.display = "none";
-    $("#g-inline").classList.remove("open");
-    if (!gsiReady) {
-      gsiReady = true;
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: res => {
-          try {
-            const p = parseJwt(res.credential);
-            if (p.email) setSession({ name: p.name, email: p.email, pic: p.picture });
-          } catch {
-            $("#a-err").textContent = "Google sign-in verification failed.";
-          }
-        }
-      });
-    }
-    google.accounts.id.renderButton($("#g-btn-wrap"), { theme: "filled_black", size: "large", width: 368 });
-  }
-}
-
-applyGate();
+syncGate();
 </script>
 </body>
 </html>
