@@ -3,12 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My AI</title>
+<title>Gavio AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-<!-- Google Identity Services (for Google Sign-In) -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -29,7 +28,6 @@ body{background:var(--bg);color:var(--text);font:15px/1.6 "Instrument Sans",syst
 button{font:inherit;color:inherit;cursor:pointer;transition:background-color .15s,border-color .15s,opacity .15s}
 button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* Custom ultra-thin scrollbars */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
@@ -50,7 +48,6 @@ button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px soli
 .item:hover .x,.item .x:focus-visible{opacity:1}
 .item .x:hover{color:var(--err)}
 
-/* Sidebar Footer & User Profile */
 .sidefoot{padding:10px 12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
 .sidefoot button{width:100%;padding:8px 10px;border-radius:10px;border:0;background:none;text-align:left;color:var(--mute);display:flex;align-items:center;gap:10px;font-size:14px}
 .sidefoot button:hover{background:var(--panel);color:var(--text)}
@@ -96,6 +93,7 @@ header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:
 .acts{display:flex;gap:4px;margin-top:8px}
 .acts button{border:0;background:none;color:var(--mute);padding:3px 8px;border-radius:6px;font-size:13px}
 .acts button:hover{background:var(--user);color:var(--text)}
+.status-note{color:var(--mute);font-size:12.5px;margin-top:6px}
 .err{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:14px;white-space:pre-wrap}
 .dots{display:inline-flex;gap:4px;padding:8px 0}
 .dots i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:b 1.1s infinite}
@@ -112,15 +110,15 @@ header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:
 #send:disabled{opacity:.35;cursor:default}
 .hint{text-align:center;color:var(--mute);font-size:12px;margin-top:8px}
 
-/* Dialogs (Settings & Auth) */
+/* Dialogs */
 dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);padding:0;width:min(440px,92vw);box-shadow:0 16px 48px rgba(0,0,0,.25)}
-dialog::backdrop{background:rgba(5,8,18,.55);backdrop-filter:blur(2px)}
+dialog::backdrop{background:rgba(5,8,18,.62);backdrop-filter:blur(3px)}
 .dlg-body{padding:22px;display:flex;flex-direction:column;gap:14px}
 dialog h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 dialog label{display:flex;flex-direction:column;gap:5px;font-weight:500;font-size:14px}
 dialog small{color:var(--mute);font-weight:400;font-size:12.5px}
 dialog input,dialog textarea{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:9px;padding:9px 11px;font:inherit;width:100%}
-.row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;align-items:center}
 .btn{border:1px solid var(--line);background:none;border-radius:10px;padding:8px 16px;font-weight:500;font-size:14px}
 .btn:hover{border-color:var(--text)}
 .btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -128,7 +126,6 @@ dialog input,dialog textarea{border:1px solid var(--line);background:var(--bg);c
 .btn.full{width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:10px}
 dialog a{color:var(--accent)}
 
-/* Auth Tabs & Divider */
 .tabs{display:flex;border-bottom:1px solid var(--line);gap:16px;margin-bottom:4px}
 .tab{background:none;border:0;padding:8px 2px;font-weight:500;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
@@ -169,33 +166,33 @@ dialog a{color:var(--accent)}
   <div id="scroll"><div class="col" id="msgs"></div></div>
   <div id="comp">
     <div id="box">
-      <textarea id="inp" rows="1" placeholder="Message…" aria-label="Message"></textarea>
+      <textarea id="inp" rows="1" placeholder="Message Gavio AI…" aria-label="Message"></textarea>
       <button id="send" aria-label="Send">↑</button>
     </div>
-    <div class="hint">Enter to send · Shift+Enter for a new line</div>
+    <div class="hint">Enter to send · Shift+Enter for a new line · Auto-fallback enabled on high demand</div>
   </div>
 </main>
 
 <!-- Settings Dialog -->
 <dialog id="dlg">
   <form method="dialog" class="dlg-body" id="sform">
-    <h2>Settings</h2>
+    <h2>Gavio AI Settings</h2>
     <label>Gemini API key
       <input id="s-key" type="password" autocomplete="off" placeholder="AIza…">
-      <small>Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Stored locally in your browser.</small>
+      <small>Get a key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Stored locally in your browser.</small>
     </label>
-    <label>Model
+    <label>Preferred Model
       <input id="s-model" list="models" placeholder="gemini-3.8-flash">
       <datalist id="models">
         <option value="gemini-3.8-flash">
-        <option value="gemini-3.8-flash-lite">
-        <option value="gemini-3.8-pro">
-        <option value="gemini-2.5-pro">
+        <option value="gemini-3.5-flash-lite">
+        <option value="gemini-3.1-flash-lite">
+        <option value="gemini-4-hydrogen">
       </datalist>
-      <small>Updated to <code>gemini-3.8-flash</code>. Any valid AI Studio model works.</small>
+      <small>If the selected model is overloaded, Gavio AI automatically retries and falls back to available backup models.</small>
     </label>
     <label>System instructions
-      <textarea id="s-sys" rows="3" placeholder="e.g. You are a concise, helpful assistant."></textarea>
+      <textarea id="s-sys" rows="3" placeholder="e.g. You are Gavio AI, a fast and helpful assistant."></textarea>
     </label>
     <label>Temperature <small id="s-tv"></small>
       <input id="s-temp" type="range" min="0" max="2" step="0.1">
@@ -210,13 +207,12 @@ dialog a{color:var(--accent)}
 <!-- Auth (Login / Register / Google) Dialog -->
 <dialog id="adlg">
   <div class="dlg-body" id="auth-view">
-    <h2><span id="auth-title">Welcome back</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="a-close">✕</button></h2>
+    <h2><span>Sign in to Gavio AI</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="a-close" title="Close">✕</button></h2>
     <div class="tabs">
       <button type="button" class="tab on" data-mode="login">Sign In</button>
-      <button type="button" class="tab" data-mode="register">Create Account</button>
+      <button type="button" class="tab" data-mode="register">Register</button>
     </div>
 
-    <!-- Real Google Sign-In Container (rendered if GOOGLE_CLIENT_ID is set) -->
     <div id="g-btn-wrap"></div>
     <button type="button" class="btn full" id="g-fallback">
       <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
@@ -227,7 +223,7 @@ dialog a{color:var(--accent)}
 
     <form id="aform" style="display:flex;flex-direction:column;gap:12px">
       <label id="a-name-wrap" style="display:none">Full Name
-        <input id="a-name" type="text" placeholder="Jane Doe">
+        <input id="a-name" type="text" placeholder="Your name">
       </label>
       <label>Email
         <input id="a-email" type="email" required placeholder="you@example.com">
@@ -238,11 +234,16 @@ dialog a{color:var(--accent)}
       <div class="auth-err" id="a-err"></div>
       <button type="submit" class="btn pri full" id="a-submit">Sign In</button>
     </form>
+
+    <div class="row" style="justify-content:space-between;margin-top:2px">
+      <small>Local account & chat history</small>
+      <button type="button" class="btn" style="padding:5px 10px;font-size:12.5px" id="guest-btn">Continue as Guest</button>
+    </div>
   </div>
 
   <!-- Logged-In Profile View -->
   <div class="dlg-body" id="prof-view" style="display:none">
-    <h2><span>Account</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="p-close">✕</button></h2>
+    <h2><span>Gavio AI Account</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="p-close">✕</button></h2>
     <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
       <div class="avatar" id="p-av" style="width:44px;height:44px;font-size:18px"></div>
       <div>
@@ -250,7 +251,7 @@ dialog a{color:var(--accent)}
         <div id="p-email" style="color:var(--mute);font-size:13px"></div>
       </div>
     </div>
-    <small>Your chats and settings are synced to this profile in your browser.</small>
+    <small>Your chats and settings are saved under this account in your browser.</small>
     <div class="row">
       <button type="button" class="btn" id="logout-btn" style="color:var(--err);border-color:var(--err)">Sign Out</button>
     </div>
@@ -261,19 +262,30 @@ dialog a{color:var(--accent)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script>
-const APP_NAME = "My AI";
+const APP_NAME = "Gavio AI";
 // Optional: Paste your Google OAuth Client ID from console.cloud.google.com for live Google Sign-In
 const GOOGLE_CLIENT_ID = "";
 
+const FALLBACK_CHAIN = [
+  "gemini-3.8-flash",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+  "gemini-4-hydrogen"
+];
+
 const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep = (ms, signal) => new Promise((res, rej) => {
+  const id = setTimeout(res, ms);
+  signal?.addEventListener("abort", () => { clearTimeout(id); rej(new DOMException("Aborted", "AbortError")); }, { once: true });
+});
 
-/* --- AUTH & STORAGE LAYER (Per-User Namespaced Storage) --- */
-const AUTH_KEY = "myai_auth_v1";
-let auth = (() => { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) } catch { return null } })() || { users: {}, current: null };
+/* --- AUTH & PER-USER STORAGE --- */
+const AUTH_KEY = "gavio_auth_v1";
+let auth = (() => { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) } catch { return null } })() || { users: {}, current: null, guestSkipped: false };
 const saveAuth = () => localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
 
-const storageKey = () => "myai_data_" + (auth.current ? auth.current.email : "guest");
+const storageKey = () => "gavio_data_" + (auth.current ? auth.current.email : "guest");
 const defaults = { key: "", model: "gemini-3.8-flash", system: "", temp: 0.7 };
 let state = { chats: [], settings: { ...defaults }, active: null };
 
@@ -283,7 +295,6 @@ function loadState() {
     state.chats = raw.chats || [];
     state.active = raw.active || null;
     state.settings = Object.assign({}, defaults, raw.settings);
-    // Auto-migrate deprecated 2.5-flash to 3.8-flash
     if (state.settings.model === "gemini-2.5-flash" || state.settings.model === "models/gemini-2.5-flash") {
       state.settings.model = "gemini-3.8-flash";
     }
@@ -305,8 +316,10 @@ async function hashPass(str) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-function setSession(user) {
+function setSession(user, skippedGuest = false) {
   auth.current = user;
+  if (user) auth.guestSkipped = false;
+  else if (skippedGuest) auth.guestSkipped = true;
   saveAuth();
   loadState();
   updateUserUI();
@@ -325,7 +338,7 @@ function updateUserUI() {
   }
 }
 
-/* --- APP STATE & RENDERING --- */
+/* --- CHAT & RENDERING --- */
 let busy = false, ctrl = null, liveBody = null, raf = 0;
 const cur = () => state.chats.find(c => c.id === state.active);
 
@@ -395,9 +408,9 @@ function renderMsgs() {
   $("#modelbadge").textContent = state.settings.model;
 
   if (!c || !c.messages.length) {
-    box.innerHTML = `<div class="empty"><h1>What are we working on?</h1><p>Ask a question, paste some code, or draft something together.</p><div class="chips"></div></div>`;
+    box.innerHTML = `<div class="empty"><h1>Meet Gavio AI</h1><p>Fast responses with automatic overload recovery. Ask anything, debug code, or brainstorm ideas.</p><div class="chips"></div></div>`;
     const chips = box.querySelector(".chips");
-    ["Explain how DNS works", "Write a fast Python script", "Draft a launch email", "Compare REST vs GraphQL"].forEach(s => {
+    ["Explain how DNS works", "Write a clean Python script", "Draft a product pitch", "Summarize pros & cons of microservices"].forEach(s => {
       const b = document.createElement("button"); b.className = "chip"; b.textContent = s; b.onclick = () => send(s);
       chips.appendChild(b);
     });
@@ -419,6 +432,9 @@ function renderMsgs() {
       if (last && busy) liveBody = body;
       if (m.text) { body.innerHTML = md(m.text); enhance(body); }
       else if (last && busy) body.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
+      if (m.note) {
+        const n = document.createElement("div"); n.className = "status-note"; n.textContent = m.note; wrap.appendChild(n);
+      }
       if (m.error) {
         const e = document.createElement("div"); e.className = "err"; e.textContent = m.error; wrap.appendChild(e);
       }
@@ -477,16 +493,71 @@ async function send(text) {
 async function regenerate() {
   const c = cur(); if (!c || busy) return;
   const last = c.messages[c.messages.length - 1];
-  if (last && last.role === "assistant") { last.text = ""; delete last.error; } else return;
+  if (last && last.role === "assistant") { last.text = ""; delete last.error; delete last.note; } else return;
   await generate(c);
+}
+
+/* Stream from a single model; returns { ok, overloaded, errorMsg } */
+async function streamModel(modelId, body, msg, signal) {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:streamGenerateContent?alt=sse`, {
+    method: "POST", signal,
+    headers: { "Content-Type": "application/json", "x-goog-api-key": state.settings.key },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const j = await res.json().catch(() => null);
+    const rawMsg = (j && j.error && j.error.message) || ("Request failed (" + res.status + ")");
+    const isHighDemand = res.status === 503 || /high demand|overloaded|unavailable/i.test(rawMsg);
+    if (isHighDemand) return { ok: false, overloaded: true, errorMsg: rawMsg };
+
+    let friendly = rawMsg;
+    if (res.status === 429) friendly = "Rate limit reached. Wait a moment or switch models in Settings.\n" + rawMsg;
+    return { ok: false, overloaded: false, errorMsg: friendly };
+  }
+
+  const reader = res.body.getReader(), dec = new TextDecoder();
+  let buf = "", gotText = false;
+
+  for (;;) {
+    const { done, value } = await reader.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+      if (!line.startsWith("data:")) continue;
+      const d = line.slice(5).trim(); if (!d) continue;
+      try {
+        const j = JSON.parse(d);
+        const cand = j.candidates && j.candidates[0];
+        ((cand && cand.content && cand.content.parts) || []).forEach(p => {
+          if (p.text && !p.thought) { msg.text += p.text; gotText = true; }
+        });
+        if (j.promptFeedback && j.promptFeedback.blockReason) {
+          msg.error = "Blocked by safety filter: " + j.promptFeedback.blockReason;
+        }
+        if (cand && cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason) && !msg.text) {
+          if (/high demand|overloaded|unavailable/i.test(cand.finishReason)) {
+            return { ok: false, overloaded: true, errorMsg: cand.finishReason };
+          }
+          msg.error = "Stopped: " + cand.finishReason;
+        }
+      } catch {}
+    }
+    scheduleLive(msg);
+  }
+
+  return { ok: gotText || Boolean(msg.error), overloaded: false, errorMsg: "The model returned an empty response." };
 }
 
 async function generate(c) {
   const st = state.settings, msg = c.messages[c.messages.length - 1];
-  msg.text = ""; delete msg.error;
+  msg.text = ""; delete msg.error; delete msg.note;
   ctrl = new AbortController(); busy = true; renderAll();
 
-  const modelId = st.model.replace(/^models\//, "");
+  const preferred = st.model.replace(/^models\//, "");
+  const candidates = Array.from(new Set([preferred, ...FALLBACK_CHAIN]));
+
   const contents = c.messages.slice(0, -1).filter(m => m.text).map(m => ({
     role: m.role === "user" ? "user" : "model",
     parts: [{ text: m.text }]
@@ -495,39 +566,40 @@ async function generate(c) {
   if (st.system.trim()) body.systemInstruction = { parts: [{ text: st.system.trim() }] };
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:streamGenerateContent?alt=sse`, {
-      method: "POST", signal: ctrl.signal,
-      headers: { "Content-Type": "application/json", "x-goog-api-key": st.key },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const j = await res.json().catch(() => null);
-      let m = (j && j.error && j.error.message) || ("Request failed (" + res.status + ")");
-      if (res.status === 429) m = "Rate limit reached. Wait a moment or switch to gemini-3.8-flash-lite in Settings.\n" + m;
-      throw new Error(m);
-    }
-    const reader = res.body.getReader(), dec = new TextDecoder(); let buf = "";
-    for (;;) {
-      const { done, value } = await reader.read(); if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let i;
-      while ((i = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
-        if (!line.startsWith("data:")) continue;
-        const d = line.slice(5).trim(); if (!d) continue;
-        try {
-          const j = JSON.parse(d);
-          const cand = j.candidates && j.candidates[0];
-          ((cand && cand.content && cand.content.parts) || []).forEach(p => {
-            if (p.text && !p.thought) msg.text += p.text;
-          });
-          if (j.promptFeedback && j.promptFeedback.blockReason) msg.error = "Blocked by safety filter: " + j.promptFeedback.blockReason;
-          if (cand && cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason) && !msg.text) msg.error = "Stopped: " + cand.finishReason;
-        } catch {}
+    let completed = false;
+    for (let idx = 0; idx < candidates.length; idx++) {
+      const mId = candidates[idx];
+      // Quick retry with jitter once on high demand before moving to next fallback model
+      for (let attempt = 0; attempt < 2; attempt++) {
+        msg.text = "";
+        if (idx > 0 || attempt > 0) {
+          msg.note = `High demand detected — trying ${mId}...`;
+          renderMsgs();
+        }
+        const out = await streamModel(mId, body, msg, ctrl.signal);
+        if (out.ok) {
+          if (idx > 0) msg.note = `Answered via fallback model ${mId}`;
+          completed = true;
+          break;
+        }
+        if (out.overloaded) {
+          if (attempt === 0) {
+            await sleep(500 + Math.random() * 400, ctrl.signal);
+            continue;
+          }
+          break; // move to next model in chain
+        } else {
+          if (!msg.error) msg.error = out.errorMsg;
+          completed = true;
+          break;
+        }
       }
-      scheduleLive(msg);
+      if (completed) break;
     }
-    if (!msg.text && !msg.error) msg.error = "The model returned an empty response.";
+
+    if (!completed && !msg.text && !msg.error) {
+      msg.error = "All fallback models are currently experiencing high demand. Please try again in a moment.";
+    }
   } catch (e) {
     if (e.name !== "AbortError") msg.error = e.message || String(e);
   } finally {
@@ -566,7 +638,7 @@ function openSettings() {
   $("#s-sys").value = s.system;
   $("#s-temp").value = s.temp;
   $("#s-tv").textContent = s.temp;
-  dlg.showModal();
+  if (!dlg.open) dlg.showModal();
 }
 $("#opensettings").onclick = openSettings;
 $("#s-temp").oninput = e => $("#s-tv").textContent = e.target.value;
@@ -600,11 +672,12 @@ function openAuth() {
     $("#prof-view").style.display = "none";
     initGoogleAuth();
   }
-  adlg.showModal();
+  if (!adlg.open) adlg.showModal();
 }
 
 $("#openauth").onclick = openAuth;
-$("#a-close").onclick = () => adlg.close();
+$("#a-close").onclick = () => { setSession(null, true); adlg.close(); };
+$("#guest-btn").onclick = () => { setSession(null, true); adlg.close(); };
 $("#p-close").onclick = () => adlg.close();
 
 document.querySelectorAll(".tab").forEach(tab => {
@@ -615,7 +688,6 @@ document.querySelectorAll(".tab").forEach(tab => {
     const isReg = authMode === "register";
     $("#a-name-wrap").style.display = isReg ? "flex" : "none";
     $("#a-name").required = isReg;
-    $("#auth-title").textContent = isReg ? "Create an account" : "Welcome back";
     $("#a-submit").textContent = isReg ? "Create Account" : "Sign In";
     $("#a-err").textContent = "";
   };
@@ -645,11 +717,11 @@ $("#aform").onsubmit = async e => {
 };
 
 $("#logout-btn").onclick = () => {
-  setSession(null);
+  setSession(null, false);
   adlg.close();
+  openAuth();
 };
 
-// Google Identity Services Integration
 function parseJwt(token) {
   const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
   return JSON.parse(decodeURIComponent(atob(base64).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")));
@@ -672,7 +744,7 @@ function initGoogleAuth() {
 
 $("#g-fallback").onclick = () => {
   if (!GOOGLE_CLIENT_ID) {
-    const email = prompt("Google OAuth Client ID is not configured yet.\nEnter a Google email to test instant Google sign-in:");
+    const email = prompt("Google OAuth Client ID is not configured yet.\nEnter a Google email to sign in:");
     if (email && email.includes("@")) {
       const name = email.split("@")[0].replace(/[._]/g, " ");
       setSession({ name: name.charAt(0).toUpperCase() + name.slice(1), email: email.trim().toLowerCase() });
@@ -685,7 +757,13 @@ $("#g-fallback").onclick = () => {
 loadState();
 updateUserUI();
 renderAll();
-if (!state.settings.key) setTimeout(openSettings, 250);
+
+// Show Sign In / Register / Google Auth first when entering the site
+if (!auth.current && !auth.guestSkipped) {
+  setTimeout(openAuth, 120);
+} else if (!state.settings.key) {
+  setTimeout(openSettings, 200);
+}
 </script>
 </body>
 </html>
