@@ -70,6 +70,15 @@ button:active{transform:scale(.98)}
 .top-b h1{margin:0;font-family:"Space Grotesk",sans-serif;font-size:22px;font-weight:700}
 .sub{margin:0;color:var(--mut);font-size:13px}
 
+.demo-btn{
+  width:100%;padding:10.5px 14px;border-radius:11px;
+  border:1px solid rgba(16,185,129,.45);
+  background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(99,102,241,.18));
+  color:#ecfdf5;font-weight:600;font-size:13.5px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.demo-btn:hover{border-color:var(--mint)}
+
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
 .tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
 .tbtn.on{background:var(--panel2);color:var(--txt)}
@@ -217,6 +226,8 @@ header{
       <h1>Gavio AI</h1>
     </div>
     <p class="sub">Sign in or register to open Gavio AI.</p>
+
+    <button type="button" class="demo-btn" id="demo-btn" data-act="demo-login">⚡ Instant Demo Sign In</button>
 
     <div class="tabs">
       <button type="button" class="tbtn on" id="tab-in" data-act="tab-login">Sign In</button>
@@ -483,7 +494,11 @@ header{
     const now = Date.now();
     if (now - lastAuthFire < 180) return;
     lastAuthFire = now;
-    if (act === "tab-login") setAuthTab("login");
+    if (act === "demo-login"){
+      \$("a-err").textContent = "";
+      enterApp({ email: "demo@gavio.ai", name: "Demo User" });
+    }
+    else if (act === "tab-login") setAuthTab("login");
     else if (act === "tab-register") setAuthTab("register");
     else if (act === "google-open"){
       const gb = \$("gbox");
