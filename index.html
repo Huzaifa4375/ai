@@ -13,40 +13,21 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
-  --bg:#f7f5f0;
-  --panel:#ffffff;
-  --side:#efece4;
-  --line:#e3dfd5;
-  --text:#1c1b18;
-  --mute:#6e6a61;
-  --accent:#c96442;
-  --accent-hover:#b35434;
-  --accent-ink:#ffffff;
-  --user:#ebe6da;
-  --code:#141311;
-  --err:#b42318;
-  --errbg:#fef3f2;
-  --shadow:0 12px 32px rgba(28,27,24,.08);
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#141311;
-    --panel:#1c1b18;
-    --side:#100f0d;
-    --line:#2c2a25;
-    --text:#ece9e2;
-    --mute:#9a958b;
-    --accent:#d97757;
-    --accent-hover:#e28668;
-    --accent-ink:#141311;
-    --user:#26241f;
-    --code:#0c0b0a;
-    --err:#fda29b;
-    --errbg:#3a1716;
-    --shadow:0 16px 40px rgba(0,0,0,.45);
-    color-scheme:dark;
-  }
+  --bg:#08080a;
+  --panel:#111114;
+  --side:#050507;
+  --line:#232329;
+  --text:#f3f2ef;
+  --mute:#93918b;
+  --accent:#d97757;
+  --accent-hover:#e58667;
+  --accent-ink:#09090b;
+  --user:#1b1b20;
+  --code:#050507;
+  --err:#fda29b;
+  --errbg:#2b1111;
+  --shadow:0 20px 50px rgba(0,0,0,.7);
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -58,7 +39,10 @@ body{
   overflow:hidden;
   -webkit-font-smoothing:antialiased;
 }
-button{font:inherit;color:inherit;cursor:pointer;transition:background-color .14s ease,border-color .14s ease,color .14s ease,opacity .14s ease}
+button{
+  font:inherit;color:inherit;cursor:pointer;position:relative;
+  transition:background-color .14s ease,border-color .14s ease,color .14s ease,opacity .14s ease;
+}
 button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 ::-webkit-scrollbar{width:6px;height:6px}
@@ -68,28 +52,33 @@ button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px soli
 
 /* Auth Gate */
 #auth-gate{
-  position:fixed;inset:0;z-index:100;background:var(--bg);
+  position:fixed;inset:0;z-index:200;background:var(--bg);
   display:flex;align-items:center;justify-content:center;padding:20px;
 }
-#auth-gate.hidden{display:none}
+#auth-gate.hidden{display:none;pointer-events:none}
 .auth-card{
   width:min(420px,100%);background:var(--panel);border:1px solid var(--line);
-  border-radius:20px;padding:28px 26px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:16px;
+  border-radius:20px;padding:26px 24px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;position:relative;z-index:201;
 }
 .auth-brand{display:flex;align-items:center;gap:10px}
 .auth-brand h1{
   margin:0;font-family:"Newsreader",Georgia,serif;
   font-weight:500;font-size:26px;letter-spacing:-.02em;
 }
-.auth-sub{margin:0;color:var(--mute);font-size:14px;line-height:1.5}
+.auth-sub{margin:0;color:var(--mute);font-size:13.5px;line-height:1.5}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
-.tab{border:0;background:none;padding:7px 10px;border-radius:8px;font-weight:500;font-size:13.5px;color:var(--mute)}
-.tab.on{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.tab{border:0;background:transparent;padding:8px 10px;border-radius:8px;font-weight:500;font-size:13.5px;color:var(--mute)}
+.tab.on{background:var(--panel);color:var(--text);border:1px solid var(--line)}
 .div{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:12px}
 .div::before,.div::after{content:"";flex:1;height:1px;background:var(--line)}
 .auth-err{color:var(--err);font-size:13px;min-height:18px;line-height:1.4}
 #g-btn-wrap{display:flex;justify-content:center;min-height:40px}
+.g-inline-box{
+  display:none;flex-direction:column;gap:8px;padding:10px;
+  border-radius:12px;background:var(--bg);border:1px solid var(--line);
+}
+.g-inline-box.open{display:flex}
 
 /* App Shell */
 #app{display:flex;width:100%;height:100%}
@@ -183,15 +172,15 @@ header{
 .md pre{position:relative;background:var(--code);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 .md pre code{display:block;background:none;padding:15px;overflow-x:auto;color:#ece9e2;line-height:1.55}
 .copy{
-  position:absolute;top:8px;right:8px;border:1px solid #35332d;
-  background:#1f1d19;color:#c9c5bc;border-radius:7px;padding:3px 9px;font-size:12px;
+  position:absolute;top:8px;right:8px;border:1px solid #2e2e36;
+  background:#151519;color:#c9c5bc;border-radius:7px;padding:3px 9px;font-size:12px;
 }
 .copy:hover{color:#fff;border-color:var(--accent)}
 .acts{display:flex;gap:4px;margin-top:6px}
 .acts button{border:0;background:none;color:var(--mute);padding:3px 8px;border-radius:6px;font-size:12.5px}
 .acts button:hover{background:var(--user);color:var(--text)}
 
-/* Claude-style Activity / Tool Pill Animation */
+/* Claude-style Activity Pill */
 .activity{
   display:inline-flex;align-items:center;gap:8px;
   padding:6px 11px;border-radius:9px;
@@ -205,10 +194,7 @@ header{
   border:2px solid var(--line);border-top-color:var(--accent);
   animation:spin .7s linear infinite;flex-shrink:0;
 }
-.check-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:var(--accent);flex-shrink:0;
-}
+.check-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0}
 .act-label{
   background:linear-gradient(90deg,var(--mute) 0%,var(--text) 50%,var(--mute) 100%);
   background-size:200% auto;
@@ -218,9 +204,7 @@ header{
 .activity.done .act-label{background:none;-webkit-text-fill-color:var(--mute);animation:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-@media (prefers-reduced-motion:reduce){
-  .spin-ring,.act-label{animation:none}
-}
+@media (prefers-reduced-motion:reduce){.spin-ring,.act-label{animation:none}}
 
 .err{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:13.5px;white-space:pre-wrap}
 
@@ -229,7 +213,7 @@ header{
 #box{
   max-width:740px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
   border-radius:18px;display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;
-  box-shadow:0 2px 10px rgba(0,0,0,.03);
+  box-shadow:0 2px 10px rgba(0,0,0,.25);
 }
 #box:focus-within{border-color:var(--accent)}
 #inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:7px 0;outline:none}
@@ -246,7 +230,7 @@ dialog{
   border:1px solid var(--line);border-radius:18px;background:var(--panel);
   color:var(--text);padding:0;width:min(440px,92vw);box-shadow:var(--shadow);
 }
-dialog::backdrop{background:rgba(10,10,9,.55);backdrop-filter:blur(2px)}
+dialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(2px)}
 .dlg-body{padding:22px;display:flex;flex-direction:column;gap:14px}
 dialog h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 dialog label{display:flex;flex-direction:column;gap:5px;font-weight:500;font-size:13.5px}
@@ -257,7 +241,7 @@ dialog input,dialog textarea{
 }
 .row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;align-items:center}
 .btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 15px;font-weight:500;font-size:13.5px}
-.btn:hover{border-color:var(--text)}
+.btn:hover{border-color:var(--text);background:var(--user)}
 .btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.pri:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
 .btn.full{width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:10px}
@@ -282,8 +266,8 @@ dialog a{color:var(--accent)}
     <p class="auth-sub">Sign in or create an account to access your Gavio AI workspace.</p>
 
     <div class="tabs" role="tablist">
-      <button type="button" class="tab on" role="tab" aria-selected="true" data-mode="login">Sign In</button>
-      <button type="button" class="tab" role="tab" aria-selected="false" data-mode="register">Register</button>
+      <button type="button" class="tab on" id="tab-login" role="tab" aria-selected="true" data-mode="login">Sign In</button>
+      <button type="button" class="tab" id="tab-register" role="tab" aria-selected="false" data-mode="register">Register</button>
     </div>
 
     <div id="g-btn-wrap"></div>
@@ -291,6 +275,14 @@ dialog a{color:var(--accent)}
       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
       Continue with Google
     </button>
+
+    <div class="g-inline-box" id="g-inline">
+      <small>Enter your Google email to continue (or set <code>GOOGLE_CLIENT_ID</code> for live Google OAuth):</small>
+      <div style="display:flex;gap:8px">
+        <input id="g-email" type="email" placeholder="name@gmail.com" style="flex:1">
+        <button type="button" class="btn pri" id="g-confirm">Go</button>
+      </div>
+    </div>
 
     <div class="div">or continue with email</div>
 
@@ -513,7 +505,6 @@ function applyGate() {
     state = { chats: [], settings: { ...defaults }, active: null };
     \$("#msgs").replaceChildren();
     initGoogleAuth();
-    setTimeout(() => \$("#a-email").focus(), 50);
   }
 }
 
@@ -550,7 +541,7 @@ function updateUserUI() {
   }
 }
 
-/* --- CLAUDE-LIKE ACTIVITY INFERENCE --- */
+/* --- ACTIVITY INFERENCE --- */
 function inferActivity(promptText, streamedText) {
   const t = (promptText || "").toLowerCase();
   const s = (streamedText || "").toLowerCase();
@@ -1034,24 +1025,23 @@ function signOut() {
 $("#logout-btn").onclick = signOut;
 $("#quick-logout").onclick = signOut;
 
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.onclick = () => {
-    document.querySelectorAll(".tab").forEach(t => {
-      t.classList.remove("on");
-      t.setAttribute("aria-selected", "false");
-    });
-    tab.classList.add("on");
-    tab.setAttribute("aria-selected", "true");
-    authMode = tab.dataset.mode;
-    const isReg = authMode === "register";
-    $("#a-name-wrap").style.display = isReg ? "flex" : "none";
-    $("#a-pass").setAttribute("autocomplete", isReg ? "new-password" : "current-password");
-    $("#a-submit").textContent = isReg ? "Create Account" : "Sign In";
-    $("#a-err").textContent = "";
-  };
-});
+function setAuthMode(mode) {
+  authMode = mode === "register" ? "register" : "login";
+  const isReg = authMode === "register";
+  $("#tab-login").classList.toggle("on", !isReg);
+  $("#tab-login").setAttribute("aria-selected", String(!isReg));
+  $("#tab-register").classList.toggle("on", isReg);
+  $("#tab-register").setAttribute("aria-selected", String(isReg));
+  $("#a-name-wrap").style.display = isReg ? "flex" : "none";
+  $("#a-pass").setAttribute("autocomplete", isReg ? "new-password" : "current-password");
+  $("#a-submit").textContent = isReg ? "Create Account" : "Sign In";
+  $("#a-err").textContent = "";
+}
 
-$("#aform").onsubmit = async e => {
+$("#tab-login").addEventListener("click", () => setAuthMode("login"));
+$("#tab-register").addEventListener("click", () => setAuthMode("register"));
+
+$("#aform").addEventListener("submit", async e => {
   e.preventDefault();
   const err = $("#a-err");
   err.textContent = "";
@@ -1078,7 +1068,7 @@ $("#aform").onsubmit = async e => {
 
   if (authMode === "register") {
     if (auth.users[email]) {
-      err.textContent = "An account with this email already exists. Please sign in.";
+      err.textContent = "An account with this email already exists. Switch to Sign In.";
       return;
     }
     const salt = randomHex(16);
@@ -1091,7 +1081,7 @@ $("#aform").onsubmit = async e => {
     const u = auth.users[email];
     if (!u || !u.salt || !u.hash) {
       recordFail();
-      err.textContent = "Invalid email or password.";
+      err.textContent = "No account found with that email or wrong password.";
       return;
     }
     const computed = await deriveKeyHex(pass, u.salt);
@@ -1103,7 +1093,7 @@ $("#aform").onsubmit = async e => {
     $("#aform").reset();
     setSession({ name: u.name, email: u.email, pic: u.pic });
   }
-};
+});
 
 function recordFail() {
   auth.fails = (auth.fails || 0) + 1;
@@ -1125,6 +1115,7 @@ let gsiReady = false;
 function initGoogleAuth() {
   if (GOOGLE_CLIENT_ID && window.google?.accounts?.id) {
     $("#g-fallback").style.display = "none";
+    $("#g-inline").classList.remove("open");
     if (!gsiReady) {
       gsiReady = true;
       google.accounts.id.initialize({
@@ -1139,26 +1130,34 @@ function initGoogleAuth() {
         }
       });
     }
-    google.accounts.id.renderButton($("#g-btn-wrap"), { theme: "outline", size: "large", width: 364 });
+    google.accounts.id.renderButton($("#g-btn-wrap"), { theme: "filled_black", size: "large", width: 368 });
   }
 }
 
-$("#g-fallback").onclick = () => {
-  if (GOOGLE_CLIENT_ID) {
-    initGoogleAuth();
-    return;
-  }
-  const email = prompt("Google OAuth Client ID is not configured.\nEnter your Google email to sign in:");
-  if (!email) return;
-  const clean = email.trim().toLowerCase();
+function submitGoogleEmail() {
+  const clean = $("#g-email").value.trim().toLowerCase();
   if (!isValidEmail(clean)) {
     $("#a-err").textContent = "Please enter a valid Google email address.";
     return;
   }
   const rawName = clean.split("@")[0].replace(/[._-]+/g, " ");
   const name = rawName.replace(/\b\w/g, c => c.toUpperCase());
+  $("#a-err").textContent = "";
   setSession({ name, email: clean });
-};
+}
+
+$("#g-fallback").addEventListener("click", () => {
+  if (GOOGLE_CLIENT_ID) {
+    initGoogleAuth();
+    return;
+  }
+  $("#g-inline").classList.toggle("open");
+  $("#g-email").focus();
+});
+$("#g-confirm").addEventListener("click", submitGoogleEmail);
+$("#g-email").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); submitGoogleEmail(); }
+});
 
 applyGate();
 </script>
