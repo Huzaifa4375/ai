@@ -36,20 +36,19 @@ body{
   overflow:hidden;
 }
 button,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer;touch-action:manipulation;user-select:none}
+button{cursor:pointer;touch-action:manipulation}
 button:hover{filter:brightness(1.07)}
-button:active{transform:scale(.99)}
+button:active{transform:scale(.98)}
 
-/* Auth Gate */
 #auth{
-  position:fixed;inset:0;z-index:999999;pointer-events:auto;
+  position:fixed;inset:0;z-index:999999;
   background:
     radial-gradient(600px 280px at 50% 0%, rgba(99,102,241,.2), transparent),
     radial-gradient(500px 260px at 85% 15%, rgba(16,185,129,.12), transparent),
     var(--bg);
   display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;
 }
-#auth.hide{display:none !important;pointer-events:none !important}
+#auth.hide{display:none}
 
 .auth-card{
   width:min(400px,100%);
@@ -59,7 +58,7 @@ button:active{transform:scale(.99)}
   padding:22px;
   box-shadow:0 24px 64px rgba(0,0,0,.75);
   display:flex;flex-direction:column;gap:13px;
-  margin:auto;position:relative;z-index:1000000;pointer-events:auto;
+  margin:auto;
 }
 .top-b{display:flex;align-items:center;gap:10px}
 .badge{
@@ -72,13 +71,13 @@ button:active{transform:scale(.99)}
 .sub{margin:0;color:var(--mut);font-size:13px}
 
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
-.tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut);pointer-events:auto}
+.tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
 .tbtn.on{background:var(--panel2);color:var(--txt)}
 
 .gbtn{
   width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--line);
   background:var(--panel2);display:flex;align-items:center;justify-content:center;gap:9px;
-  font-weight:500;font-size:13.5px;pointer-events:auto;
+  font-weight:500;font-size:13.5px;
 }
 .gbox{display:none;flex-direction:column;gap:8px;padding:10px;border-radius:11px;background:var(--bg);border:1px solid var(--line)}
 .gbox.open{display:flex}
@@ -90,18 +89,17 @@ button:active{transform:scale(.99)}
 .grp{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:500;color:var(--mut)}
 .grp input{
   border:1px solid var(--line);background:var(--bg);border-radius:10px;
-  padding:9px 11px;font-size:14px;font-weight:400;width:100%;pointer-events:auto;
+  padding:9px 11px;font-size:14px;font-weight:400;width:100%;
 }
 .grp input:focus{border-color:var(--acc2);outline:none}
 
 .go-auth{
   width:100%;padding:10.5px 14px;border-radius:11px;border:0;
   background:linear-gradient(135deg,var(--acc),#4f46e5);
-  color:#fff;font-weight:600;font-size:14px;pointer-events:auto;
+  color:#fff;font-weight:600;font-size:14px;
 }
 .err-txt{min-height:18px;font-size:12.5px;color:var(--err)}
 
-/* Workspace */
 #ws{display:flex;width:100%;height:100%}
 #ws.hide{display:none}
 
@@ -191,7 +189,6 @@ header{
 #send:disabled{opacity:.35;cursor:default}
 .hint{text-align:center;color:var(--mut);font-size:12px;margin-top:7px}
 
-/* Plain Overlay Modal (never crashes in sandboxed iframes) */
 .ov{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
 .ov.open{display:flex}
 .mcard{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px}
@@ -346,408 +343,397 @@ header{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script>
-(function(){
-  const API_KEY = "AQ.Ab8RN6JAgW2dzmZXOrCuNl_QrCsZlJKZNaIeG_RLh8_wylLP5A";
-  const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-4-hydrogen"];
-
-  const \$ = id => document.getElementById(id);
-  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
-
-  const mem = {};
-  function rd(k){
-    try { const v = window.localStorage.getItem(k); if (v !== null) return v; } catch {}
-    return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
-  }
-  function wr(k, v){
-    mem[k] = String(v);
-    try { window.localStorage.setItem(k, String(v)); } catch {}
-  }
-
-  function hsh(salt, pw){
-    const s = salt + ":" + pw;
-    let a = 0x811c9dc5, b = 0x01000193;
-    for (let i = 0; i < s.length; i++){
-      const c = s.charCodeAt(i);
-      a = Math.imul(a ^ c, 0x01000193) >>> 0;
-      b = Math.imul(b ^ (c + i), 0x85ebca6b) >>> 0;
-    }
-    return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
-  }
-
-  let accs = { users: {}, user: null };
+window.addEventListener("DOMContentLoaded", function(){
   try {
-    const p = JSON.parse(rd("gavio_acc_v1") || "null");
-    if (p && typeof p === "object") { accs.users = p.users || {}; accs.user = p.user || null; }
-  } catch {}
-  function saveAccs(){ wr("gavio_acc_v1", JSON.stringify(accs)); }
+    const API_KEY = "AQ.Ab8RN6JAgW2dzmZXOrCuNl_QrCsZlJKZNaIeG_RLh8_wylLP5A";
+    const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-4-hydrogen"];
 
-  const defCfg = { key: API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
-  let ws = { chats: [], active: null, cfg: { ...defCfg } };
+    const \$ = id => document.getElementById(id);
+    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
 
-  function loadWs(){
-    if (!accs.user) { ws = { chats: [], active: null, cfg: { ...defCfg } }; return; }
+    const mem = {};
+    function rd(k){
+      try { const v = window.localStorage.getItem(k); if (v !== null) return v; } catch {}
+      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+    }
+    function wr(k, v){
+      mem[k] = String(v);
+      try { window.localStorage.setItem(k, String(v)); } catch {}
+    }
+
+    function hsh(salt, pw){
+      const s = salt + ":" + pw;
+      let a = 0x811c9dc5, b = 0x01000193;
+      for (let i = 0; i < s.length; i++){
+        const c = s.charCodeAt(i);
+        a = Math.imul(a ^ c, 0x01000193) >>> 0;
+        b = Math.imul(b ^ (c + i), 0x85ebca6b) >>> 0;
+      }
+      return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
+    }
+
+    let accs = { users: {}, user: null };
     try {
-      const r = JSON.parse(rd("gavio_ws_" + accs.user.email) || "null");
-      if (r && typeof r === "object") {
-        ws.chats = Array.isArray(r.chats) ? r.chats : [];
-        ws.active = typeof r.active === "string" ? r.active : null;
-        ws.cfg = Object.assign({}, defCfg, r.cfg || {});
-        if (!ws.cfg.key) ws.cfg.key = API_KEY;
-      } else ws = { chats: [], active: null, cfg: { ...defCfg } };
-    } catch { ws = { chats: [], active: null, cfg: { ...defCfg } }; }
-  }
-  function saveWs(){
-    if (!accs.user) return;
-    wr("gavio_ws_" + accs.user.email, JSON.stringify(ws));
-  }
+      const p = JSON.parse(rd("gavio_acc_v1") || "null");
+      if (p && typeof p === "object") { accs.users = p.users || {}; accs.user = p.user || null; }
+    } catch {}
+    function saveAccs(){ wr("gavio_acc_v1", JSON.stringify(accs)); }
 
-  let busy = false, ac = null, liveMd = null, livePill = null, raf = 0;
+    const defCfg = { key: API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
+    let ws = { chats: [], active: null, cfg: { ...defCfg } };
 
-  function applyAuth(){
-    const on = Boolean(accs.user && accs.user.email);
-    \$("auth").classList.toggle("hide", on);
-    \$("ws").classList.toggle("hide", !on);
-    if (on){
-      const nm = accs.user.name || accs.user.email;
-      \$("s-nm").textContent = nm;
-      \$("s-av").textContent = nm[0].toUpperCase();
-      loadWs();
-      renderAll();
-    } else {
-      if (ac) ac.abort();
-      busy = false;
-      \$("msgs").replaceChildren();
+    function loadWs(){
+      if (!accs.user) { ws = { chats: [], active: null, cfg: { ...defCfg } }; return; }
+      try {
+        const r = JSON.parse(rd("gavio_ws_" + accs.user.email) || "null");
+        if (r && typeof r === "object") {
+          ws.chats = Array.isArray(r.chats) ? r.chats : [];
+          ws.active = typeof r.active === "string" ? r.active : null;
+          ws.cfg = Object.assign({}, defCfg, r.cfg || {});
+          if (!ws.cfg.key) ws.cfg.key = API_KEY;
+        } else ws = { chats: [], active: null, cfg: { ...defCfg } };
+      } catch { ws = { chats: [], active: null, cfg: { ...defCfg } }; }
     }
-  }
-
-  function enterApp(u){
-    accs.user = { email: String(u.email).trim().toLowerCase(), name: String(u.name || u.email.split("@")[0]).trim() };
-    saveAccs();
-    applyAuth();
-  }
-
-  function exitApp(){
-    \$("ov-prof").classList.remove("open");
-    \$("ov-set").classList.remove("open");
-    accs.user = null;
-    saveAccs();
-    applyAuth();
-  }
-
-  let mode = "login";
-  function setAuthTab(m){
-    mode = m;
-    const isUp = mode === "register";
-    \$("tab-in").classList.toggle("on", !isUp);
-    \$("tab-up").classList.toggle("on", isUp);
-    \$("name-grp").style.display = isUp ? "flex" : "none";
-    \$("a-go").textContent = isUp ? "Create Account" : "Sign In";
-    \$("a-err").textContent = "";
-  }
-
-  function bindTap(el, fn){
-    if (!el) return;
-    let fired = false;
-    el.addEventListener("pointerup", e => {
-      e.preventDefault();
-      fired = true;
-      fn(e);
-      setTimeout(() => { fired = false; }, 250);
-    });
-    el.addEventListener("click", e => {
-      e.preventDefault();
-      if (fired) return;
-      fn(e);
-    });
-  }
-
-  bindTap(\$("tab-in"), () => setAuthTab("login"));
-  bindTap(\$("tab-up"), () => setAuthTab("register"));
-
-  bindTap(\$("g-btn"), () => {
-    const gb = \$("gbox");
-    gb.classList.toggle("open");
-    if (gb.classList.contains("open") && !$("g-mail").value && $("in-mail").value) {
-      $("g-mail").value = $("in-mail").value;
+    function saveWs(){
+      if (!accs.user) return;
+      wr("gavio_ws_" + accs.user.email, JSON.stringify(ws));
     }
-  });
 
-  function doGoogle(){
-    const em = (\$("g-mail").value || "").trim().toLowerCase();
-    if (!em || !em.includes("@")) { \$("a-err").textContent = "Enter a valid Google email."; return; }
-    const nm = em.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || "User";
-    \$("a-err").textContent = "";
-    enterApp({ email: em, name: nm });
-  }
-  bindTap(\$("g-go"), doGoogle);
-  \$("g-mail").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); doGoogle(); } });
+    let busy = false, ac = null, liveMd = null, livePill = null, raf = 0;
 
-  function doEmailAuth(){
-    const err = \$("a-err");
-    err.textContent = "";
-    const em = (\$("in-mail").value || "").trim().toLowerCase();
-    const pw = \$("in-pw").value || "";
-    const nm = (\$("in-name").value || "").trim();
-
-    if (!em || !em.includes("@")) { err.textContent = "Enter a valid email address."; return; }
-    if (!pw) { err.textContent = "Enter a password."; return; }
-
-    if (mode === "register"){
-      if (accs.users[em]) { err.textContent = "Email already registered. Click Sign In."; return; }
-      const salt = Math.random().toString(36).slice(2, 10);
-      const hash = hsh(salt, pw);
-      const disp = nm || em.split("@")[0];
-      accs.users[em] = { email: em, name: disp, salt, hash };
-      saveAccs();
-      \$("in-pw").value = "";
-      enterApp({ email: em, name: disp });
-    } else {
-      const acc = accs.users[em];
-      if (!acc) { err.textContent = "No account found. Click Register first."; return; }
-      if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
-      \$("in-pw").value = "";
-      enterApp({ email: acc.email, name: acc.name });
-    }
-  }
-
-  bindTap(\$("a-go"), doEmailAuth);
-  \$("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); doEmailAuth(); } });
-
-  const curC = () => ws.chats.find(c => c.id === ws.active);
-  function stepText(p, t){
-    const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
-    if (tl.includes("```")) return "Writing code";
-    if (/\b(code|script|file|html|css|js|ts|python|json)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
-    if (/\b(command|terminal|shell|cmd|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting output" : "Running command";
-    return t ? "Responding" : "Thinking";
-  }
-  function md(t){
-    if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(String(t||""), { gfm:true, breaks:true }), { ADD_ATTR:["target"] });
-    return esc(t).replace(/\n/g, "<br>");
-  }
-  function enh(el){
-    el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
-    el.querySelectorAll("pre").forEach(pre => {
-      if (pre.dataset.d) return; pre.dataset.d = "1";
-      const code = pre.querySelector("code");
-      if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
-      const b = document.createElement("button"); b.type="button"; b.className="cp"; b.textContent="Copy";
-      b.onclick = () => { navigator.clipboard?.writeText(code ? code.innerText : pre.innerText); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy",1200); };
-      pre.appendChild(b);
-    });
-  }
-  function pillEl(label, spin){
-    const d = document.createElement("div"); d.className = "pill" + (spin ? "" : " done");
-    const i = document.createElement("span"); i.className = spin ? "sp" : "dt";
-    const t = document.createElement("span"); t.className = "pt"; t.textContent = label;
-    d.append(i, t); return d;
-  }
-
-  function renderList(){
-    const w = $("c-list"), f = document.createDocumentFragment();
-    ws.chats.forEach(c => {
-      const r = document.createElement("div"); r.className = "c-row" + (c.id === ws.active ? " on" : "");
-      const b = document.createElement("button"); b.type="button"; b.className="pick"; b.textContent = c.title || "New chat";
-      b.onclick = () => { if (busy) return; ws.active = c.id; saveWs(); renderAll(); $("side").classList.remove("open"); };
-      const d = document.createElement("button"); d.type="button"; d.className="del"; d.textContent="✕";
-      d.onclick = () => { if (busy) return; ws.chats = ws.chats.filter(x=>x.id!==c.id); if (ws.active===c.id) ws.active=null; saveWs(); renderAll(); };
-      r.append(b, d); f.appendChild(r);
-    });
-    w.replaceChildren(f);
-  }
-
-  function renderMsgs(){
-    const box = $("msgs"); liveMd = null; livePill = null;
-    const c = curC();
-    $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
-    $("m-pill").textContent = ws.cfg.model;
-    if (!c || !c.messages.length){
-      const fn = (accs.user?.name || "there").split(" ")[0];
-      box.innerHTML = `<div class="empty"><h1>Hello ${esc(fn)}</h1><p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p><div class="chips"></div></div>`;
-      const ch = box.querySelector(".chips");
-      ["Write a Python script to parse JSON", "Show a Linux command to check disk space", "Draft a clean README", "Explain async/await simply"].forEach(q => {
-        const b = document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=q;
-        b.onclick = () => sendMsg(q); ch.appendChild(b);
-      });
-      return;
-    }
-    const f = document.createDocumentFragment();
-    c.messages.forEach((m, i) => {
-      const el = document.createElement("div");
-      if (m.role === "user"){
-        el.className = "msg u";
-        const b = document.createElement("div"); b.className = "b"; b.textContent = m.text; el.appendChild(b);
+    function applyAuth(){
+      const on = Boolean(accs.user && accs.user.email);
+      \$("auth").classList.toggle("hide", on);
+      \$("ws").classList.toggle("hide", !on);
+      if (on){
+        const nm = accs.user.name || accs.user.email;
+        \$("s-nm").textContent = nm;
+        \$("s-av").textContent = nm[0].toUpperCase();
+        loadWs();
+        renderAll();
       } else {
-        el.className = "msg a";
-        el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
-        const w = el.querySelector(".w"), last = i === c.messages.length - 1;
-        const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
-        if (last && busy){ const p = pillEl(m.step || stepText(prev, m.text), true); w.appendChild(p); livePill = p; }
-        else if (m.step && !m.error) w.appendChild(pillEl(m.step, false));
-        const body = document.createElement("div"); body.className = "md";
-        if (last && busy) liveMd = body;
-        if (m.text){ body.innerHTML = md(m.text); if (!(last && busy)) enh(body); }
-        w.appendChild(body);
-        if (m.error){ const e = document.createElement("div"); e.className = "errb"; e.textContent = m.error; w.appendChild(e); }
-        if (!(last && busy)){
-          const a = document.createElement("div"); a.className = "acts";
-          const cp = document.createElement("button"); cp.type="button"; cp.textContent="Copy";
-          cp.onclick = () => { navigator.clipboard?.writeText(m.text||""); cp.textContent="Copied"; setTimeout(()=>cp.textContent="Copy",1200); };
-          a.appendChild(cp);
-          if (last){ const rg = document.createElement("button"); rg.type="button"; rg.textContent="Regenerate"; rg.onclick = () => regen(); a.appendChild(rg); }
-          w.appendChild(a);
-        }
+        if (ac) ac.abort();
+        busy = false;
+        \$("msgs").replaceChildren();
       }
-      f.appendChild(el);
-    });
-    box.replaceChildren(f);
-    $("scroll").scrollTop = $("scroll").scrollHeight;
-  }
-
-  function syncSendBtn(){
-    const b = $("send");
-    b.textContent = busy ? "■" : "↑";
-    b.disabled = !busy && !$("inp").value.trim();
-  }
-
-  function renderAll(){
-    if (!accs.user) return;
-    renderList(); renderMsgs(); syncSendBtn();
-  }
-
-  function queueDraw(m, p){
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = 0;
-      const nx = stepText(p, m.text); m.step = nx;
-      if (livePill){ const t = livePill.querySelector(".pt"); if (t && t.textContent !== nx) t.textContent = nx; }
-      if (liveMd){ liveMd.innerHTML = md(m.text); const s = $("scroll"); if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight; }
-    });
-  }
-
-  async function streamOne(mid, body, msg, signal, prompt){
-    const key = (ws.cfg.key || API_KEY).trim();
-    const headers = { "Content-Type": "application/json", "x-goog-api-key": key };
-    if (key.startsWith("AQ.") || key.startsWith("ya29.")) headers["Authorization"] = "Bearer " + key;
-    const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(mid)}:streamGenerateContent?alt=sse`, {
-      method: "POST", signal, headers, body: JSON.stringify(body)
-    });
-    if (!res.ok){
-      const j = await res.json().catch(()=>null);
-      const det = j?.error?.message || ("HTTP " + res.status);
-      return { ok: false, busy: res.status === 503 || /high demand|overloaded|unavailable/i.test(det), det };
     }
-    const rd = res.body.getReader(), dec = new TextDecoder();
-    let buf = "", got = false;
-    for (;;){
-      const { done, value } = await rd.read(); if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let nl;
-      while ((nl = buf.indexOf("\n")) >= 0){
-        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
-        if (!line.startsWith("data:")) continue;
-        const ch = line.slice(5).trim(); if (!ch) continue;
-        try {
-          const p = JSON.parse(ch);
-          (p?.candidates?.[0]?.content?.parts || []).forEach(x => { if (x.text && !x.thought){ msg.text += x.text; got = true; } });
-        } catch {}
-      }
-      queueDraw(msg, prompt);
+
+    function enterApp(u){
+      accs.user = { email: String(u.email).trim().toLowerCase(), name: String(u.name || u.email.split("@")[0]).trim() };
+      saveAccs();
+      applyAuth();
     }
-    return { ok: got, busy: false, det: "Empty response." };
-  }
 
-  async function runGen(c, prompt){
-    if (!accs.user) return;
-    const m = c.messages[c.messages.length - 1];
-    m.text = ""; m.step = stepText(prompt, ""); delete m.error;
-    ac = new AbortController(); busy = true; renderAll();
-    const pref = (ws.cfg.model || defCfg.model).replace(/^models\//, "");
-    const chain = Array.from(new Set([pref, ...MODELS]));
-    const contents = c.messages.slice(0, -1).filter(x=>x.text).map(x=>({ role: x.role==="user"?"user":"model", parts:[{text:x.text}] }));
-    const body = { contents, generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 } };
-    if (ws.cfg.system.trim()) body.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
-    try {
-      let ok = false;
-      for (const mid of chain){
-        for (let t = 0; t < 2; t++){
-          m.text = "";
-          if (mid !== pref || t > 0){ m.step = "Switching capacity"; renderMsgs(); }
-          const out = await streamOne(mid, body, m, ac.signal, prompt);
-          if (out.ok){ m.step = "Done"; ok = true; break; }
-          if (out.busy){ await new Promise(r=>setTimeout(r, 250)); continue; }
-          m.error = out.det; ok = true; break;
-        }
-        if (ok) break;
+    function exitApp(){
+      \$("ov-prof").classList.remove("open");
+      \$("ov-set").classList.remove("open");
+      accs.user = null;
+      saveAccs();
+      applyAuth();
+    }
+
+    let mode = "login";
+    function setAuthTab(m){
+      mode = m;
+      const isUp = mode === "register";
+      \$("tab-in").classList.toggle("on", !isUp);
+      \$("tab-up").classList.toggle("on", isUp);
+      \$("name-grp").style.display = isUp ? "flex" : "none";
+      \$("a-go").textContent = isUp ? "Create Account" : "Sign In";
+      \$("a-err").textContent = "";
+    }
+
+    \$("tab-in").addEventListener("click", () => setAuthTab("login"));
+    \$("tab-up").addEventListener("click", () => setAuthTab("register"));
+
+    \$("g-btn").addEventListener("click", () => {
+      const gb = \$("gbox");
+      gb.classList.toggle("open");
+      if (gb.classList.contains("open") && !$("g-mail").value && $("in-mail").value) {
+        $("g-mail").value = $("in-mail").value;
       }
-      if (!ok && !m.text && !m.error) m.error = "Models are busy right now. Try again shortly.";
-    } catch (e){ if (e.name !== "AbortError") m.error = e.message || String(e); }
-    finally { busy = false; ac = null; saveWs(); renderAll(); }
+    });
+
+    function doGoogle(){
+      const em = (\$("g-mail").value || "").trim().toLowerCase();
+      if (!em) { \$("a-err").textContent = "Enter your Google email."; return; }
+      const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      \$("a-err").textContent = "";
+      enterApp({ email: em, name: nm });
+    }
+    \$("g-go").addEventListener("click", doGoogle);
+    \$("g-mail").addEventListener("keydown", e => { if (e.key === "Enter") doGoogle(); });
+
+    function doEmailAuth(){
+      const err = \$("a-err");
+      err.textContent = "";
+      const em = (\$("in-mail").value || "").trim().toLowerCase();
+      const pw = \$("in-pw").value || "";
+      const nm = (\$("in-name").value || "").trim();
+
+      if (!em) { err.textContent = "Enter your email."; return; }
+      if (!pw) { err.textContent = "Enter your password."; return; }
+
+      if (mode === "register"){
+        if (accs.users[em]) { err.textContent = "Email already registered. Click Sign In."; return; }
+        const salt = Math.random().toString(36).slice(2, 10);
+        const hash = hsh(salt, pw);
+        const disp = nm || em.split("@")[0] || "User";
+        accs.users[em] = { email: em, name: disp, salt, hash };
+        saveAccs();
+        \$("in-pw").value = "";
+        enterApp({ email: em, name: disp });
+      } else {
+        const acc = accs.users[em];
+        if (!acc) { err.textContent = "No account found. Click Register first."; return; }
+        if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
+        \$("in-pw").value = "";
+        enterApp({ email: acc.email, name: acc.name });
+      }
+    }
+
+    \$("a-go").addEventListener("click", doEmailAuth);
+    \$("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
+
+    const curC = () => ws.chats.find(c => c.id === ws.active);
+    function stepText(p, t){
+      const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
+      if (tl.includes("```")) return "Writing code";
+      if (/\b(code|script|file|html|css|js|ts|python|json)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
+      if (/\b(command|terminal|shell|cmd|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting output" : "Running command";
+      return t ? "Responding" : "Thinking";
+    }
+    function md(t){
+      if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(String(t||""), { gfm:true, breaks:true }), { ADD_ATTR:["target"] });
+      return esc(t).replace(/\n/g, "<br>");
+    }
+    function enh(el){
+      el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+      el.querySelectorAll("pre").forEach(pre => {
+        if (pre.dataset.d) return; pre.dataset.d = "1";
+        const code = pre.querySelector("code");
+        if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
+        const b = document.createElement("button"); b.type="button"; b.className="cp"; b.textContent="Copy";
+        b.onclick = () => { navigator.clipboard?.writeText(code ? code.innerText : pre.innerText); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy",1200); };
+        pre.appendChild(b);
+      });
+    }
+    function pillEl(label, spin){
+      const d = document.createElement("div"); d.className = "pill" + (spin ? "" : " done");
+      const i = document.createElement("span"); i.className = spin ? "sp" : "dt";
+      const t = document.createElement("span"); t.className = "pt"; t.textContent = label;
+      d.append(i, t); return d;
+    }
+
+    function renderList(){
+      const w = $("c-list"), f = document.createDocumentFragment();
+      ws.chats.forEach(c => {
+        const r = document.createElement("div"); r.className = "c-row" + (c.id === ws.active ? " on" : "");
+        const b = document.createElement("button"); b.type="button"; b.className="pick"; b.textContent = c.title || "New chat";
+        b.onclick = () => { if (busy) return; ws.active = c.id; saveWs(); renderAll(); $("side").classList.remove("open"); };
+        const d = document.createElement("button"); d.type="button"; d.className="del"; d.textContent="✕";
+        d.onclick = () => { if (busy) return; ws.chats = ws.chats.filter(x=>x.id!==c.id); if (ws.active===c.id) ws.active=null; saveWs(); renderAll(); };
+        r.append(b, d); f.appendChild(r);
+      });
+      w.replaceChildren(f);
+    }
+
+    function renderMsgs(){
+      const box = $("msgs"); liveMd = null; livePill = null;
+      const c = curC();
+      $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
+      $("m-pill").textContent = ws.cfg.model;
+      if (!c || !c.messages.length){
+        const fn = (accs.user?.name || "there").split(" ")[0];
+        box.innerHTML = `<div class="empty"><h1>Hello ${esc(fn)}</h1><p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p><div class="chips"></div></div>`;
+        const ch = box.querySelector(".chips");
+        ["Write a Python script to parse JSON", "Show a Linux command to check disk space", "Draft a clean README", "Explain async/await simply"].forEach(q => {
+          const b = document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=q;
+          b.onclick = () => sendMsg(q); ch.appendChild(b);
+        });
+        return;
+      }
+      const f = document.createDocumentFragment();
+      c.messages.forEach((m, i) => {
+        const el = document.createElement("div");
+        if (m.role === "user"){
+          el.className = "msg u";
+          const b = document.createElement("div"); b.className = "b"; b.textContent = m.text; el.appendChild(b);
+        } else {
+          el.className = "msg a";
+          el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
+          const w = el.querySelector(".w"), last = i === c.messages.length - 1;
+          const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
+          if (last && busy){ const p = pillEl(m.step || stepText(prev, m.text), true); w.appendChild(p); livePill = p; }
+          else if (m.step && !m.error) w.appendChild(pillEl(m.step, false));
+          const body = document.createElement("div"); body.className = "md";
+          if (last && busy) liveMd = body;
+          if (m.text){ body.innerHTML = md(m.text); if (!(last && busy)) enh(body); }
+          w.appendChild(body);
+          if (m.error){ const e = document.createElement("div"); e.className = "errb"; e.textContent = m.error; w.appendChild(e); }
+          if (!(last && busy)){
+            const a = document.createElement("div"); a.className = "acts";
+            const cp = document.createElement("button"); cp.type="button"; cp.textContent="Copy";
+            cp.onclick = () => { navigator.clipboard?.writeText(m.text||""); cp.textContent="Copied"; setTimeout(()=>cp.textContent="Copy",1200); };
+            a.appendChild(cp);
+            if (last){ const rg = document.createElement("button"); rg.type="button"; rg.textContent="Regenerate"; rg.onclick = () => regen(); a.appendChild(rg); }
+            w.appendChild(a);
+          }
+        }
+        f.appendChild(el);
+      });
+      box.replaceChildren(f);
+      $("scroll").scrollTop = $("scroll").scrollHeight;
+    }
+
+    function syncSendBtn(){
+      const b = $("send");
+      b.textContent = busy ? "■" : "↑";
+      b.disabled = !busy && !$("inp").value.trim();
+    }
+
+    function renderAll(){
+      if (!accs.user) return;
+      renderList(); renderMsgs(); syncSendBtn();
+    }
+
+    function queueDraw(m, p){
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const nx = stepText(p, m.text); m.step = nx;
+        if (livePill){ const t = livePill.querySelector(".pt"); if (t && t.textContent !== nx) t.textContent = nx; }
+        if (liveMd){ liveMd.innerHTML = md(m.text); const s = $("scroll"); if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight; }
+      });
+    }
+
+    async function streamOne(mid, body, msg, signal, prompt){
+      const key = (ws.cfg.key || API_KEY).trim();
+      const headers = { "Content-Type": "application/json", "x-goog-api-key": key };
+      if (key.startsWith("AQ.") || key.startsWith("ya29.")) headers["Authorization"] = "Bearer " + key;
+      const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(mid)}:streamGenerateContent?alt=sse`, {
+        method: "POST", signal, headers, body: JSON.stringify(body)
+      });
+      if (!res.ok){
+        const j = await res.json().catch(()=>null);
+        const det = j?.error?.message || ("HTTP " + res.status);
+        return { ok: false, busy: res.status === 503 || /high demand|overloaded|unavailable/i.test(det), det };
+      }
+      const rd = res.body.getReader(), dec = new TextDecoder();
+      let buf = "", got = false;
+      for (;;){
+        const { done, value } = await rd.read(); if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let nl;
+        while ((nl = buf.indexOf("\n")) >= 0){
+          const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+          if (!line.startsWith("data:")) continue;
+          const ch = line.slice(5).trim(); if (!ch) continue;
+          try {
+            const p = JSON.parse(ch);
+            (p?.candidates?.[0]?.content?.parts || []).forEach(x => { if (x.text && !x.thought){ msg.text += x.text; got = true; } });
+          } catch {}
+        }
+        queueDraw(msg, prompt);
+      }
+      return { ok: got, busy: false, det: "Empty response." };
+    }
+
+    async function runGen(c, prompt){
+      if (!accs.user) return;
+      const m = c.messages[c.messages.length - 1];
+      m.text = ""; m.step = stepText(prompt, ""); delete m.error;
+      ac = new AbortController(); busy = true; renderAll();
+      const pref = (ws.cfg.model || defCfg.model).replace(/^models\//, "");
+      const chain = Array.from(new Set([pref, ...MODELS]));
+      const contents = c.messages.slice(0, -1).filter(x=>x.text).map(x=>({ role: x.role==="user"?"user":"model", parts:[{text:x.text}] }));
+      const body = { contents, generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 } };
+      if (ws.cfg.system.trim()) body.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
+      try {
+        let ok = false;
+        for (const mid of chain){
+          for (let t = 0; t < 2; t++){
+            m.text = "";
+            if (mid !== pref || t > 0){ m.step = "Switching capacity"; renderMsgs(); }
+            const out = await streamOne(mid, body, m, ac.signal, prompt);
+            if (out.ok){ m.step = "Done"; ok = true; break; }
+            if (out.busy){ await new Promise(r=>setTimeout(r, 250)); continue; }
+            m.error = out.det; ok = true; break;
+          }
+          if (ok) break;
+        }
+        if (!ok && !m.text && !m.error) m.error = "Models are busy right now. Try again shortly.";
+      } catch (e){ if (e.name !== "AbortError") m.error = e.message || String(e); }
+      finally { busy = false; ac = null; saveWs(); renderAll(); }
+    }
+
+    async function sendMsg(raw){
+      if (!accs.user || busy) return;
+      const t = (raw || "").trim(); if (!t) return;
+      let c = curC();
+      if (!c){ c = { id: "c_"+Date.now().toString(36), title: t.slice(0,44), messages: [] }; ws.chats.unshift(c); ws.active = c.id; }
+      else if (!c.messages.length) c.title = t.slice(0,44);
+      c.messages.push({ role: "user", text: t });
+      c.messages.push({ role: "assistant", text: "", step: stepText(t, "") });
+      saveWs(); $("inp").value = ""; $("inp").style.height = "auto";
+      await runGen(c, t);
+    }
+
+    async function regen(){
+      const c = curC(); if (!c || busy) return;
+      const last = c.messages[c.messages.length - 1];
+      const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user" ? c.messages[c.messages.length - 2].text : "";
+      if (!last || last.role !== "assistant") return;
+      last.text = ""; delete last.error;
+      await runGen(c, prev);
+    }
+
+    const inp = $("inp");
+    inp.addEventListener("input", () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 200) + "px"; syncSendBtn(); });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendMsg(inp.value); } });
+    $("send").addEventListener("click", () => { if (busy) ac?.abort(); else sendMsg(inp.value); });
+    $("new-c").addEventListener("click", () => { if (busy) return; ws.active = null; saveWs(); renderAll(); $("side").classList.remove("open"); inp.focus(); });
+    $("m-btn").addEventListener("click", () => $("side").classList.toggle("open"));
+    $("scroll").addEventListener("click", () => $("side").classList.remove("open"));
+
+    $("b-set").addEventListener("click", () => {
+      $("k-inp").value = ws.cfg.key || API_KEY;
+      $("m-inp").value = ws.cfg.model || defCfg.model;
+      $("s-inp").value = ws.cfg.system || "";
+      $("t-inp").value = ws.cfg.temp ?? 0.7;
+      $("t-val").textContent = $("t-inp").value;
+      $("ov-set").classList.add("open");
+    });
+    $("m-pill").addEventListener("click", () => $("b-set").click());
+    $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
+    $("set-cancel").addEventListener("click", () => $("ov-set").classList.remove("open"));
+    $("set-save").addEventListener("click", () => {
+      ws.cfg = {
+        key: ($("k-inp").value || API_KEY).trim(),
+        model: ($("m-inp").value || defCfg.model).trim(),
+        system: $("s-inp").value,
+        temp: Number($("t-inp").value) || 0.7
+      };
+      saveWs(); $("ov-set").classList.remove("open"); renderAll();
+    });
+
+    $("b-prof").addEventListener("click", () => {
+      const u = accs.user; if (!u) return;
+      $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
+      $("p-nm").textContent = u.name || u.email;
+      $("p-em").textContent = u.email;
+      $("ov-prof").classList.add("open");
+    });
+    $("prof-x").addEventListener("click", () => $("ov-prof").classList.remove("open"));
+    $("prof-out").addEventListener("click", exitApp);
+    $("b-out").addEventListener("click", exitApp);
+
+    applyAuth();
+  } catch (err) {
+    const e = document.getElementById("a-err");
+    if (e) e.textContent = "Init error: " + (err && err.message ? err.message : String(err));
   }
-
-  async function sendMsg(raw){
-    if (!accs.user || busy) return;
-    const t = (raw || "").trim(); if (!t) return;
-    let c = curC();
-    if (!c){ c = { id: "c_"+Date.now().toString(36), title: t.slice(0,44), messages: [] }; ws.chats.unshift(c); ws.active = c.id; }
-    else if (!c.messages.length) c.title = t.slice(0,44);
-    c.messages.push({ role: "user", text: t });
-    c.messages.push({ role: "assistant", text: "", step: stepText(t, "") });
-    saveWs(); $("inp").value = ""; $("inp").style.height = "auto";
-    await runGen(c, t);
-  }
-
-  async function regen(){
-    const c = curC(); if (!c || busy) return;
-    const last = c.messages[c.messages.length - 1];
-    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user" ? c.messages[c.messages.length - 2].text : "";
-    if (!last || last.role !== "assistant") return;
-    last.text = ""; delete last.error;
-    await runGen(c, prev);
-  }
-
-  const inp = $("inp");
-  inp.addEventListener("input", () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 200) + "px"; syncSendBtn(); });
-  inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendMsg(inp.value); } });
-  bindTap($("send"), () => { if (busy) ac?.abort(); else sendMsg(inp.value); });
-  bindTap($("new-c"), () => { if (busy) return; ws.active = null; saveWs(); renderAll(); $("side").classList.remove("open"); inp.focus(); });
-  bindTap($("m-btn"), () => $("side").classList.toggle("open"));
-  $("scroll").addEventListener("click", () => $("side").classList.remove("open"));
-
-  bindTap($("b-set"), () => {
-    $("k-inp").value = ws.cfg.key || API_KEY;
-    $("m-inp").value = ws.cfg.model || defCfg.model;
-    $("s-inp").value = ws.cfg.system || "";
-    $("t-inp").value = ws.cfg.temp ?? 0.7;
-    $("t-val").textContent = $("t-inp").value;
-    $("ov-set").classList.add("open");
-  });
-  bindTap($("m-pill"), () => $("b-set").click());
-  $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
-  bindTap($("set-cancel"), () => $("ov-set").classList.remove("open"));
-  bindTap($("set-save"), () => {
-    ws.cfg = {
-      key: ($("k-inp").value || API_KEY).trim(),
-      model: ($("m-inp").value || defCfg.model).trim(),
-      system: $("s-inp").value,
-      temp: Number($("t-inp").value) || 0.7
-    };
-    saveWs(); $("ov-set").classList.remove("open"); renderAll();
-  });
-
-  bindTap($("b-prof"), () => {
-    const u = accs.user; if (!u) return;
-    $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
-    $("p-nm").textContent = u.name || u.email;
-    $("p-em").textContent = u.email;
-    $("ov-prof").classList.add("open");
-  });
-  bindTap($("prof-x"), () => $("ov-prof").classList.remove("open"));
-  bindTap($("prof-out"), exitApp);
-  bindTap($("b-out"), exitApp);
-
-  applyAuth();
-})();
+});
 </script>
 </body>
 </html>
