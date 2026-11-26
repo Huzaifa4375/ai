@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<!-- Google Identity Services (for Google Sign-In) -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
   --bg:#f5f6fa; --panel:#ffffff; --side:#eceef5; --line:#dde0ec; --text:#1a1f36; --mute:#6b7190;
@@ -24,52 +26,64 @@
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--text);font:15px/1.6 "Instrument Sans",system-ui,sans-serif;display:flex;overflow:hidden}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer;transition:background-color .15s,border-color .15s,opacity .15s}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* sidebar */
-#side{width:272px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;transition:transform .2s}
+/* Custom ultra-thin scrollbars */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--mute)}
+
+/* Sidebar */
+#side{width:272px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;transition:transform .22s cubic-bezier(.16,1,.3,1);will-change:transform}
 .brand{padding:18px 16px 10px;font-weight:600;font-size:17px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
-.mark{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-size:14px;font-weight:600}
-#newchat{margin:6px 12px 10px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);text-align:left;font-weight:500}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-size:14px;font-weight:600;flex-shrink:0}
+#newchat{margin:6px 12px 10px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);text-align:left;font-weight:500;display:flex;align-items:center;justify-content:space-between}
 #newchat:hover{border-color:var(--accent)}
+#newchat kbd{font:11px "JetBrains Mono",monospace;color:var(--mute);background:var(--bg);padding:2px 5px;border-radius:4px;border:1px solid var(--line)}
 #list{flex:1;overflow-y:auto;padding:0 8px}
-.item{display:flex;align-items:center;gap:4px;border-radius:8px;padding:0 4px 0 10px}
+.item{display:flex;align-items:center;gap:4px;border-radius:8px;padding:0 4px 0 10px;margin-bottom:2px}
 .item:hover,.item.on{background:var(--panel)}
-.item .t{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .t{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
 .item .x{border:0;background:none;color:var(--mute);padding:4px 8px;border-radius:6px;opacity:0}
 .item:hover .x,.item .x:focus-visible{opacity:1}
 .item .x:hover{color:var(--err)}
-.sidefoot{padding:12px;border-top:1px solid var(--line)}
-.sidefoot button{width:100%;padding:9px 12px;border-radius:10px;border:0;background:none;text-align:left;color:var(--mute)}
-.sidefoot button:hover{background:var(--panel);color:var(--text)}
 
-/* main */
+/* Sidebar Footer & User Profile */
+.sidefoot{padding:10px 12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.sidefoot button{width:100%;padding:8px 10px;border-radius:10px;border:0;background:none;text-align:left;color:var(--mute);display:flex;align-items:center;gap:10px;font-size:14px}
+.sidefoot button:hover{background:var(--panel);color:var(--text)}
+.avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-weight:600;object-fit:cover;flex-shrink:0}
+.u-info{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:500}
+
+/* Main */
 main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
 header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line)}
 #menu{display:none;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px}
 #title{font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#modelbadge{font:12px "JetBrains Mono",monospace;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
-#scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
+#modelbadge{font:12px "JetBrains Mono",monospace;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer}
+#modelbadge:hover{border-color:var(--accent);color:var(--text)}
+#scroll{flex:1;overflow-y:auto;contain:content}
 .col{max-width:760px;margin:0 auto;padding:24px 20px 12px}
 
 .empty{padding-top:12vh}
-.empty h1{font-size:clamp(28px,5vw,42px);line-height:1.15;letter-spacing:-.025em;margin:0 0 10px;font-weight:600}
+.empty h1{font-size:clamp(28px,5vw,40px);line-height:1.15;letter-spacing:-.025em;margin:0 0 10px;font-weight:600}
 .empty p{color:var(--mute);margin:0 0 26px;max-width:46ch}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;font-size:14px}
 .chip:hover{border-color:var(--accent)}
 
-.msg{margin:0 0 26px}
+.msg{margin:0 0 24px}
 .msg.user{display:flex;justify-content:flex-end}
 .msg.user .body{background:var(--user);padding:10px 15px;border-radius:16px 16px 4px 16px;max-width:85%;white-space:pre-wrap;word-wrap:break-word}
 .msg.ai{display:flex;gap:12px}
-.msg.ai .mark{margin-top:2px;flex-shrink:0}
+.msg.ai .mark{margin-top:2px}
 .msg.ai .wrap{min-width:0;flex:1}
 .md>:first-child{margin-top:0}.md>:last-child{margin-bottom:0}
 .md p,.md ul,.md ol,.md pre,.md table,.md blockquote{margin:0 0 14px}
 .md h1,.md h2,.md h3{line-height:1.25;margin:22px 0 10px;letter-spacing:-.01em}
-.md h1{font-size:22px}.md h2{font-size:19px}.md h3{font-size:16px}
+.md h1{font-size:21px}.md h2{font-size:18px}.md h3{font-size:16px}
 .md a{color:var(--accent)}
 .md blockquote{border-left:3px solid var(--line);padding-left:14px;color:var(--mute)}
 .md table{border-collapse:collapse;display:block;overflow-x:auto}
@@ -82,40 +96,52 @@ header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:
 .acts{display:flex;gap:4px;margin-top:8px}
 .acts button{border:0;background:none;color:var(--mute);padding:3px 8px;border-radius:6px;font-size:13px}
 .acts button:hover{background:var(--user);color:var(--text)}
-.err{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:14px}
+.err{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:14px;white-space:pre-wrap}
 .dots{display:inline-flex;gap:4px;padding:8px 0}
 .dots i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:b 1.1s infinite}
 .dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
 @keyframes b{0%,60%,100%{opacity:.25}30%{opacity:1}}
-@media (prefers-reduced-motion:reduce){.dots i{animation:none}#scroll{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none}}
 
-/* composer */
+/* Composer */
 #comp{padding:0 20px 18px}
-#box{max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px}
+#box{max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;box-shadow:0 2px 12px rgba(0,0,0,.03)}
 #box:focus-within{border-color:var(--accent)}
 #inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:7px 0;outline:none}
-#send{border:0;background:var(--accent);color:var(--accent-ink);border-radius:12px;width:40px;height:40px;font-size:18px;flex-shrink:0}
-#send:disabled{opacity:.4;cursor:default}
+#send{border:0;background:var(--accent);color:var(--accent-ink);border-radius:12px;width:38px;height:38px;font-size:18px;flex-shrink:0}
+#send:disabled{opacity:.35;cursor:default}
 .hint{text-align:center;color:var(--mute);font-size:12px;margin-top:8px}
 
-/* settings */
-dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);padding:0;width:min(480px,92vw)}
-dialog::backdrop{background:rgba(5,8,18,.55)}
-dialog form{padding:22px;display:flex;flex-direction:column;gap:14px}
-dialog h2{margin:0;font-size:18px}
+/* Dialogs (Settings & Auth) */
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);padding:0;width:min(440px,92vw);box-shadow:0 16px 48px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(5,8,18,.55);backdrop-filter:blur(2px)}
+.dlg-body{padding:22px;display:flex;flex-direction:column;gap:14px}
+dialog h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 dialog label{display:flex;flex-direction:column;gap:5px;font-weight:500;font-size:14px}
-dialog small{color:var(--mute);font-weight:400}
-dialog input,dialog textarea{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:9px;padding:9px 11px;font:inherit}
+dialog small{color:var(--mute);font-weight:400;font-size:12.5px}
+dialog input,dialog textarea{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:9px;padding:9px 11px;font:inherit;width:100%}
 .row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
-.btn{border:1px solid var(--line);background:none;border-radius:10px;padding:8px 16px}
-.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+.btn{border:1px solid var(--line);background:none;border-radius:10px;padding:8px 16px;font-weight:500;font-size:14px}
+.btn:hover{border-color:var(--text)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.pri:hover{opacity:.9}
+.btn.full{width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:10px}
 dialog a{color:var(--accent)}
+
+/* Auth Tabs & Divider */
+.tabs{display:flex;border-bottom:1px solid var(--line);gap:16px;margin-bottom:4px}
+.tab{background:none;border:0;padding:8px 2px;font-weight:500;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.div{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:12px;margin:2px 0}
+.div::before,.div::after{content:"";flex:1;height:1px;background:var(--line)}
+.auth-err{color:var(--err);font-size:13px;min-height:18px}
+#g-btn-wrap{display:flex;justify-content:center;min-height:40px}
 
 @media (max-width:760px){
   #side{position:fixed;inset:0 auto 0 0;z-index:20;transform:translateX(-100%)}
   #side.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.4)}
   #menu{display:block}
-  #modelbadge{display:none}
+  #modelbadge,#newchat kbd{display:none}
 }
 </style>
 </head>
@@ -123,16 +149,22 @@ dialog a{color:var(--accent)}
 
 <aside id="side">
   <div class="brand"><span class="mark">✦</span><span id="appname"></span></div>
-  <button id="newchat">New chat</button>
+  <button id="newchat"><span>New chat</span><kbd>Ctrl K</kbd></button>
   <div id="list"></div>
-  <div class="sidefoot"><button id="opensettings">Settings</button></div>
+  <div class="sidefoot">
+    <button id="openauth">
+      <span class="avatar" id="u-av">?</span>
+      <span class="u-info" id="u-name">Sign in / Register</span>
+    </button>
+    <button id="opensettings">⚙ Settings & API Key</button>
+  </div>
 </aside>
 
 <main>
   <header>
     <button id="menu" aria-label="Open chats">☰</button>
     <div id="title">New chat</div>
-    <span id="modelbadge"></span>
+    <span id="modelbadge" title="Click to change model"></span>
   </header>
   <div id="scroll"><div class="col" id="msgs"></div></div>
   <div id="comp">
@@ -144,68 +176,182 @@ dialog a{color:var(--accent)}
   </div>
 </main>
 
+<!-- Settings Dialog -->
 <dialog id="dlg">
-  <form method="dialog" id="sform">
+  <form method="dialog" class="dlg-body" id="sform">
     <h2>Settings</h2>
     <label>Gemini API key
       <input id="s-key" type="password" autocomplete="off" placeholder="AIza…">
-      <small>Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. It stays in this browser.</small>
+      <small>Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Stored locally in your browser.</small>
     </label>
     <label>Model
-      <input id="s-model" list="models" placeholder="gemini-2.5-flash">
+      <input id="s-model" list="models" placeholder="gemini-3.8-flash">
       <datalist id="models">
-        <option value="gemini-2.5-flash"><option value="gemini-2.5-flash-lite"><option value="gemini-2.5-pro">
+        <option value="gemini-3.8-flash">
+        <option value="gemini-3.8-flash-lite">
+        <option value="gemini-3.8-pro">
+        <option value="gemini-2.5-pro">
       </datalist>
-      <small>Any model name from AI Studio works.</small>
+      <small>Updated to <code>gemini-3.8-flash</code>. Any valid AI Studio model works.</small>
     </label>
     <label>System instructions
-      <textarea id="s-sys" rows="3" placeholder="e.g. You are a helpful assistant."></textarea>
+      <textarea id="s-sys" rows="3" placeholder="e.g. You are a concise, helpful assistant."></textarea>
     </label>
     <label>Temperature <small id="s-tv"></small>
       <input id="s-temp" type="range" min="0" max="2" step="0.1">
     </label>
     <div class="row">
       <button type="button" class="btn" id="s-cancel">Cancel</button>
-      <button type="submit" class="btn pri" id="s-save">Save</button>
+      <button type="submit" class="btn pri">Save</button>
     </div>
   </form>
 </dialog>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<!-- Auth (Login / Register / Google) Dialog -->
+<dialog id="adlg">
+  <div class="dlg-body" id="auth-view">
+    <h2><span id="auth-title">Welcome back</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="a-close">✕</button></h2>
+    <div class="tabs">
+      <button type="button" class="tab on" data-mode="login">Sign In</button>
+      <button type="button" class="tab" data-mode="register">Create Account</button>
+    </div>
+
+    <!-- Real Google Sign-In Container (rendered if GOOGLE_CLIENT_ID is set) -->
+    <div id="g-btn-wrap"></div>
+    <button type="button" class="btn full" id="g-fallback">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="div">or with email</div>
+
+    <form id="aform" style="display:flex;flex-direction:column;gap:12px">
+      <label id="a-name-wrap" style="display:none">Full Name
+        <input id="a-name" type="text" placeholder="Jane Doe">
+      </label>
+      <label>Email
+        <input id="a-email" type="email" required placeholder="you@example.com">
+      </label>
+      <label>Password
+        <input id="a-pass" type="password" required minlength="6" placeholder="••••••••">
+      </label>
+      <div class="auth-err" id="a-err"></div>
+      <button type="submit" class="btn pri full" id="a-submit">Sign In</button>
+    </form>
+  </div>
+
+  <!-- Logged-In Profile View -->
+  <div class="dlg-body" id="prof-view" style="display:none">
+    <h2><span>Account</span><button type="button" class="btn" style="padding:3px 9px;border:0" id="p-close">✕</button></h2>
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+      <div class="avatar" id="p-av" style="width:44px;height:44px;font-size:18px"></div>
+      <div>
+        <div id="p-name" style="font-weight:600;font-size:16px"></div>
+        <div id="p-email" style="color:var(--mute);font-size:13px"></div>
+      </div>
+    </div>
+    <small>Your chats and settings are synced to this profile in your browser.</small>
+    <div class="row">
+      <button type="button" class="btn" id="logout-btn" style="color:var(--err);border-color:var(--err)">Sign Out</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
 <script>
-const APP_NAME = "My AI";            // change the name here
-const KEY = "ai_chat_v1";
+const APP_NAME = "My AI";
+// Optional: Paste your Google OAuth Client ID from console.cloud.google.com for live Google Sign-In
+const GOOGLE_CLIENT_ID = "";
+
 const $ = s => document.querySelector(s);
-
-const defaults = { key:"", model:"gemini-2.5-flash", system:"", temp:0.7 };
-let state = (() => { try { return JSON.parse(localStorage.getItem(KEY)) } catch { return null } })() || {};
-state.chats = state.chats || [];
-state.settings = Object.assign({}, defaults, state.settings);
-let busy = false, ctrl = null, liveBody = null, raf = 0;
-
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)) } catch {} };
-const cur = () => state.chats.find(c => c.id === state.active);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* --- AUTH & STORAGE LAYER (Per-User Namespaced Storage) --- */
+const AUTH_KEY = "myai_auth_v1";
+let auth = (() => { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) } catch { return null } })() || { users: {}, current: null };
+const saveAuth = () => localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+
+const storageKey = () => "myai_data_" + (auth.current ? auth.current.email : "guest");
+const defaults = { key: "", model: "gemini-3.8-flash", system: "", temp: 0.7 };
+let state = { chats: [], settings: { ...defaults }, active: null };
+
+function loadState() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(storageKey())) || {};
+    state.chats = raw.chats || [];
+    state.active = raw.active || null;
+    state.settings = Object.assign({}, defaults, raw.settings);
+    // Auto-migrate deprecated 2.5-flash to 3.8-flash
+    if (state.settings.model === "gemini-2.5-flash" || state.settings.model === "models/gemini-2.5-flash") {
+      state.settings.model = "gemini-3.8-flash";
+    }
+  } catch {
+    state = { chats: [], settings: { ...defaults }, active: null };
+  }
+}
+
+let saveTimer = 0;
+const save = () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch {}
+  }, 150);
+};
+
+async function hashPass(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function setSession(user) {
+  auth.current = user;
+  saveAuth();
+  loadState();
+  updateUserUI();
+  renderAll();
+}
+
+function updateUserUI() {
+  const u = auth.current;
+  const av = $("#u-av");
+  if (u) {
+    $("#u-name").textContent = u.name || u.email;
+    av.innerHTML = u.pic ? `<img src="${esc(u.pic)}" class="avatar" alt="">` : esc((u.name || u.email)[0].toUpperCase());
+  } else {
+    $("#u-name").textContent = "Sign in / Register";
+    av.textContent = "?";
+  }
+}
+
+/* --- APP STATE & RENDERING --- */
+let busy = false, ctrl = null, liveBody = null, raf = 0;
+const cur = () => state.chats.find(c => c.id === state.active);
 
 document.title = APP_NAME;
 $("#appname").textContent = APP_NAME;
 
 function md(t) {
   if (window.marked && window.DOMPurify) {
-    return DOMPurify.sanitize(marked.parse(t, { gfm:true, breaks:true }), { ADD_ATTR:["target"] });
+    return DOMPurify.sanitize(marked.parse(t, { gfm: true, breaks: true }), { ADD_ATTR: ["target"] });
   }
   return esc(t).replace(/\n/g, "<br>");
 }
+
 function enhance(el) {
   el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
   el.querySelectorAll("pre").forEach(pre => {
+    if (pre.dataset.done) return;
+    pre.dataset.done = "1";
     const code = pre.querySelector("code");
     if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
     const b = document.createElement("button");
     b.className = "copy"; b.textContent = "Copy";
-    b.onclick = () => { navigator.clipboard.writeText(pre.innerText.replace(/Copy$/, "").trim()); b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1200); };
+    b.onclick = () => {
+      navigator.clipboard.writeText(code ? code.innerText : pre.innerText);
+      b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1200);
+    };
     pre.appendChild(b);
   });
 }
@@ -216,34 +362,55 @@ function newChat() {
 }
 
 function renderSide() {
-  const list = $("#list"); list.innerHTML = "";
+  const list = $("#list");
+  const frag = document.createDocumentFragment();
   state.chats.forEach(c => {
-    const d = document.createElement("div"); d.className = "item" + (c.id === state.active ? " on" : "");
-    const t = document.createElement("button"); t.className = "t"; t.textContent = c.title;
-    t.onclick = () => { if (busy) return; state.active = c.id; save(); renderAll(); $("#side").classList.remove("open"); };
-    const x = document.createElement("button"); x.className = "x"; x.textContent = "✕"; x.setAttribute("aria-label", "Delete chat");
-    x.onclick = () => { if (busy) return; state.chats = state.chats.filter(k => k.id !== c.id); if (state.active === c.id) state.active = null; save(); renderAll(); };
-    d.append(t, x); list.appendChild(d);
+    const d = document.createElement("div");
+    d.className = "item" + (c.id === state.active ? " on" : "");
+    const t = document.createElement("button");
+    t.className = "t"; t.textContent = c.title;
+    t.onclick = () => {
+      if (busy) return;
+      state.active = c.id; save(); renderAll(); $("#side").classList.remove("open");
+    };
+    const x = document.createElement("button");
+    x.className = "x"; x.textContent = "✕"; x.setAttribute("aria-label", "Delete chat");
+    x.onclick = () => {
+      if (busy) return;
+      state.chats = state.chats.filter(k => k.id !== c.id);
+      if (state.active === c.id) state.active = null;
+      save(); renderAll();
+    };
+    d.append(t, x);
+    frag.appendChild(d);
   });
+  list.replaceChildren(frag);
 }
 
 function renderMsgs() {
-  const box = $("#msgs"); box.innerHTML = ""; liveBody = null;
+  const box = $("#msgs");
+  liveBody = null;
   const c = cur();
   $("#title").textContent = c ? c.title : "New chat";
   $("#modelbadge").textContent = state.settings.model;
+
   if (!c || !c.messages.length) {
     box.innerHTML = `<div class="empty"><h1>What are we working on?</h1><p>Ask a question, paste some code, or draft something together.</p><div class="chips"></div></div>`;
-    ["Explain how DNS works", "Write a bash script to back up a folder", "Help me write a product description", "Summarize pros and cons of KVM vs LXC"].forEach(s => {
+    const chips = box.querySelector(".chips");
+    ["Explain how DNS works", "Write a fast Python script", "Draft a launch email", "Compare REST vs GraphQL"].forEach(s => {
       const b = document.createElement("button"); b.className = "chip"; b.textContent = s; b.onclick = () => send(s);
-      box.querySelector(".chips").appendChild(b);
+      chips.appendChild(b);
     });
     return;
   }
+
+  const frag = document.createDocumentFragment();
   c.messages.forEach((m, i) => {
     const el = document.createElement("div");
     if (m.role === "user") {
-      el.className = "msg user"; const b = document.createElement("div"); b.className = "body"; b.textContent = m.text; el.appendChild(b);
+      el.className = "msg user";
+      const b = document.createElement("div"); b.className = "body"; b.textContent = m.text;
+      el.appendChild(b);
     } else {
       el.className = "msg ai";
       el.innerHTML = `<span class="mark">✦</span><div class="wrap"><div class="md"></div></div>`;
@@ -252,25 +419,34 @@ function renderMsgs() {
       if (last && busy) liveBody = body;
       if (m.text) { body.innerHTML = md(m.text); enhance(body); }
       else if (last && busy) body.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
-      if (m.error) { const e = document.createElement("div"); e.className = "err"; e.textContent = m.error; wrap.appendChild(e); }
+      if (m.error) {
+        const e = document.createElement("div"); e.className = "err"; e.textContent = m.error; wrap.appendChild(e);
+      }
       if (!(last && busy)) {
         const a = document.createElement("div"); a.className = "acts";
         const cp = document.createElement("button"); cp.textContent = "Copy";
         cp.onclick = () => { navigator.clipboard.writeText(m.text); cp.textContent = "Copied"; setTimeout(() => cp.textContent = "Copy", 1200); };
         a.appendChild(cp);
-        if (last) { const rg = document.createElement("button"); rg.textContent = "Regenerate"; rg.onclick = () => regenerate(); a.appendChild(rg); }
+        if (last) {
+          const rg = document.createElement("button"); rg.textContent = "Regenerate"; rg.onclick = () => regenerate();
+          a.appendChild(rg);
+        }
         wrap.appendChild(a);
       }
     }
-    box.appendChild(el);
+    frag.appendChild(el);
   });
+  box.replaceChildren(frag);
   const s = $("#scroll"); s.scrollTop = s.scrollHeight;
 }
+
 function renderAll() { renderSide(); renderMsgs(); setBusy(busy); }
 
 function setBusy(b) {
   busy = b;
-  const s = $("#send"); s.textContent = b ? "■" : "↑"; s.setAttribute("aria-label", b ? "Stop" : "Send");
+  const s = $("#send");
+  s.textContent = b ? "■" : "↑";
+  s.setAttribute("aria-label", b ? "Stop" : "Send");
   s.disabled = !b && !$("#inp").value.trim();
 }
 
@@ -279,8 +455,9 @@ function scheduleLive(m) {
   raf = requestAnimationFrame(() => {
     raf = 0;
     if (!liveBody) return;
-    liveBody.innerHTML = md(m.text); enhance(liveBody);
-    const s = $("#scroll"); if (s.scrollHeight - s.scrollTop - s.clientHeight < 160) s.scrollTop = s.scrollHeight;
+    liveBody.innerHTML = md(m.text);
+    const s = $("#scroll");
+    if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight;
   });
 }
 
@@ -308,11 +485,17 @@ async function generate(c) {
   const st = state.settings, msg = c.messages[c.messages.length - 1];
   msg.text = ""; delete msg.error;
   ctrl = new AbortController(); busy = true; renderAll();
-  const contents = c.messages.slice(0, -1).filter(m => m.text).map(m => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.text }] }));
+
+  const modelId = st.model.replace(/^models\//, "");
+  const contents = c.messages.slice(0, -1).filter(m => m.text).map(m => ({
+    role: m.role === "user" ? "user" : "model",
+    parts: [{ text: m.text }]
+  }));
   const body = { contents, generationConfig: { temperature: Number(st.temp) } };
   if (st.system.trim()) body.systemInstruction = { parts: [{ text: st.system.trim() }] };
+
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(st.model)}:streamGenerateContent?alt=sse`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:streamGenerateContent?alt=sse`, {
       method: "POST", signal: ctrl.signal,
       headers: { "Content-Type": "application/json", "x-goog-api-key": st.key },
       body: JSON.stringify(body)
@@ -320,7 +503,7 @@ async function generate(c) {
     if (!res.ok) {
       const j = await res.json().catch(() => null);
       let m = (j && j.error && j.error.message) || ("Request failed (" + res.status + ")");
-      if (res.status === 429) m = "Rate limit reached on the free tier. Wait a minute, or switch to a lighter model in Settings.\n" + m;
+      if (res.status === 429) m = "Rate limit reached. Wait a moment or switch to gemini-3.8-flash-lite in Settings.\n" + m;
       throw new Error(m);
     }
     const reader = res.body.getReader(), dec = new TextDecoder(); let buf = "";
@@ -335,7 +518,9 @@ async function generate(c) {
         try {
           const j = JSON.parse(d);
           const cand = j.candidates && j.candidates[0];
-          ((cand && cand.content && cand.content.parts) || []).forEach(p => { if (p.text && !p.thought) msg.text += p.text; });
+          ((cand && cand.content && cand.content.parts) || []).forEach(p => {
+            if (p.text && !p.thought) msg.text += p.text;
+          });
           if (j.promptFeedback && j.promptFeedback.blockReason) msg.error = "Blocked by safety filter: " + j.promptFeedback.blockReason;
           if (cand && cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason) && !msg.text) msg.error = "Stopped: " + cand.finishReason;
         } catch {}
@@ -350,33 +535,157 @@ async function generate(c) {
   }
 }
 
-/* composer */
+/* --- COMPOSER & SHORTCUTS --- */
 const inp = $("#inp");
-function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 200) + "px"; setBusy(busy); }
+function autosize() {
+  inp.style.height = "auto";
+  inp.style.height = Math.min(inp.scrollHeight, 200) + "px";
+  setBusy(busy);
+}
 inp.addEventListener("input", autosize);
-inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(inp.value); } });
+inp.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(inp.value); }
+});
+document.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault(); $("#newchat").click();
+  }
+});
 $("#send").onclick = () => { if (busy) { ctrl && ctrl.abort(); } else send(inp.value); };
 $("#newchat").onclick = () => { if (busy) return; state.active = null; save(); renderAll(); $("#side").classList.remove("open"); inp.focus(); };
 $("#menu").onclick = () => $("#side").classList.toggle("open");
 $("#scroll").addEventListener("click", () => $("#side").classList.remove("open"));
+$("#modelbadge").onclick = openSettings;
 
-/* settings */
+/* --- SETTINGS DIALOG --- */
 const dlg = $("#dlg");
 function openSettings() {
   const s = state.settings;
-  $("#s-key").value = s.key; $("#s-model").value = s.model; $("#s-sys").value = s.system; $("#s-temp").value = s.temp; $("#s-tv").textContent = s.temp;
+  $("#s-key").value = s.key;
+  $("#s-model").value = s.model;
+  $("#s-sys").value = s.system;
+  $("#s-temp").value = s.temp;
+  $("#s-tv").textContent = s.temp;
   dlg.showModal();
 }
 $("#opensettings").onclick = openSettings;
 $("#s-temp").oninput = e => $("#s-tv").textContent = e.target.value;
 $("#s-cancel").onclick = () => dlg.close();
 $("#sform").onsubmit = () => {
-  state.settings = { key: $("#s-key").value.trim(), model: $("#s-model").value.trim() || defaults.model, system: $("#s-sys").value, temp: $("#s-temp").value };
+  state.settings = {
+    key: $("#s-key").value.trim(),
+    model: $("#s-model").value.trim() || defaults.model,
+    system: $("#s-sys").value,
+    temp: $("#s-temp").value
+  };
   save(); renderAll();
 };
 
+/* --- AUTH DIALOG (Login / Register / Google Auth) --- */
+const adlg = $("#adlg");
+let authMode = "login";
+
+function openAuth() {
+  $("#a-err").textContent = "";
+  if (auth.current) {
+    $("#auth-view").style.display = "none";
+    $("#prof-view").style.display = "flex";
+    const u = auth.current;
+    $("#p-name").textContent = u.name || "User";
+    $("#p-email").textContent = u.email;
+    const pav = $("#p-av");
+    pav.innerHTML = u.pic ? `<img src="${esc(u.pic)}" class="avatar" style="width:44px;height:44px" alt="">` : esc((u.name || u.email)[0].toUpperCase());
+  } else {
+    $("#auth-view").style.display = "flex";
+    $("#prof-view").style.display = "none";
+    initGoogleAuth();
+  }
+  adlg.showModal();
+}
+
+$("#openauth").onclick = openAuth;
+$("#a-close").onclick = () => adlg.close();
+$("#p-close").onclick = () => adlg.close();
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    tab.classList.add("on");
+    authMode = tab.dataset.mode;
+    const isReg = authMode === "register";
+    $("#a-name-wrap").style.display = isReg ? "flex" : "none";
+    $("#a-name").required = isReg;
+    $("#auth-title").textContent = isReg ? "Create an account" : "Welcome back";
+    $("#a-submit").textContent = isReg ? "Create Account" : "Sign In";
+    $("#a-err").textContent = "";
+  };
+});
+
+$("#aform").onsubmit = async e => {
+  e.preventDefault();
+  const email = $("#a-email").value.trim().toLowerCase();
+  const pass = $("#a-pass").value;
+  const name = $("#a-name").value.trim();
+  const err = $("#a-err");
+  err.textContent = "";
+
+  const hash = await hashPass(pass);
+  if (authMode === "register") {
+    if (auth.users[email]) { err.textContent = "An account with this email already exists."; return; }
+    auth.users[email] = { name: name || email.split("@")[0], email, hash };
+    setSession({ name: auth.users[email].name, email });
+    adlg.close();
+  } else {
+    const u = auth.users[email];
+    if (!u || u.hash !== hash) { err.textContent = "Invalid email or password."; return; }
+    setSession({ name: u.name, email: u.email, pic: u.pic });
+    adlg.close();
+  }
+  $("#aform").reset();
+};
+
+$("#logout-btn").onclick = () => {
+  setSession(null);
+  adlg.close();
+};
+
+// Google Identity Services Integration
+function parseJwt(token) {
+  const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+  return JSON.parse(decodeURIComponent(atob(base64).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")));
+}
+
+function initGoogleAuth() {
+  if (GOOGLE_CLIENT_ID && window.google && google.accounts) {
+    $("#g-fallback").style.display = "none";
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: res => {
+        const p = parseJwt(res.credential);
+        setSession({ name: p.name, email: p.email, pic: p.picture });
+        adlg.close();
+      }
+    });
+    google.accounts.id.renderButton($("#g-btn-wrap"), { theme: "outline", size: "large", width: 380 });
+  }
+}
+
+$("#g-fallback").onclick = () => {
+  if (!GOOGLE_CLIENT_ID) {
+    const email = prompt("Google OAuth Client ID is not configured yet.\nEnter a Google email to test instant Google sign-in:");
+    if (email && email.includes("@")) {
+      const name = email.split("@")[0].replace(/[._]/g, " ");
+      setSession({ name: name.charAt(0).toUpperCase() + name.slice(1), email: email.trim().toLowerCase() });
+      adlg.close();
+    }
+  }
+};
+
+/* --- BOOT --- */
+loadState();
+updateUserUI();
 renderAll();
-if (!state.settings.key) setTimeout(openSettings, 300);
+if (!state.settings.key) setTimeout(openSettings, 250);
 </script>
 </body>
 </html>
