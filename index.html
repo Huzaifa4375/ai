@@ -412,7 +412,7 @@ header{
 
 <script>
 (function(){
-  const $ = id => document.getElementById(id);
+  const \$ = id => document.getElementById(id);
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
 
   const mem = {};
@@ -439,27 +439,27 @@ header{
   function applyTheme(t){
     const mode = t === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", mode);
-    wr("gavio_theme_v5", mode);
-    const tb = $("theme-btn");
+    wr("gavio_theme_v6", mode);
+    const tb = \$("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v5") || "dark");
+  applyTheme(rd("gavio_theme_v6") || "dark");
 
   let accs = { users: {}, session: null };
   try {
-    const p = JSON.parse(rd("gavio_accs_v5") || "null");
+    const p = JSON.parse(rd("gavio_accs_v6") || "null");
     if (p && typeof p === "object") {
       accs.users = p.users || {};
       accs.session = p.session || null;
     }
   } catch {}
-  function saveAccs(){ wr("gavio_accs_v5", JSON.stringify(accs)); }
+  function saveAccs(){ wr("gavio_accs_v6", JSON.stringify(accs)); }
 
   const defCfg = { system: "", temp: 0.7 };
   let ws = { chats: [], active: null, cfg: { ...defCfg } };
 
   function userBucketKey(email){
-    return "gavio_u5_" + encodeURIComponent(String(email).trim().toLowerCase());
+    return "gavio_u6_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
   function loadWs(){
@@ -494,17 +494,17 @@ header{
     const blocks = [];
     let safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
       const idx = blocks.length;
-      blocks.push(`<pre><code class="lang-${esc(lang)}">${esc(code.replace(/\n$/,""))}</code><button type="button" class="cp" data-act="copy-code">Copy</button></pre>`);
-      return `\u0000BLOCK${idx}\u0000`;
+      blocks.push(`<pre><code class="lang-\${esc(lang)}">${esc(code.replace(/\n$/,""))}</code><button type="button" class="cp" data-act="copy-code">Copy</button></pre>`);
+      return `\u0000BLOCK\${idx}\u0000`;
     });
     safe = esc(safe)
-      .replace(/`([^`\n]+)`/g, "<code>$1</code>")
-      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*([^*\n]+)\*/g, "<em>$1</em>")
-      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-      .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      .replace(/`([^`\n]+)`/g, "<code>\$1</code>")
+      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>\$1</strong>")
+      .replace(/\*([^*\n]+)\*/g, "<em>\$1</em>")
+      .replace(/^### (.+)\$/gm, "<h3>\$1</h3>")
+      .replace(/^## (.+)\$/gm, "<h2>\$1</h2>")
+      .replace(/^# (.+)\$/gm, "<h1>\$1</h1>")
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="\$2" target="_blank" rel="noopener noreferrer">\$1</a>');
 
     const lines = safe.split("\n");
     let out = "", inUl = false, inOl = false;
@@ -554,12 +554,12 @@ header{
 
   function applyAuth(){
     const on = Boolean(accs.session && accs.session.email);
-    \$("auth").classList.toggle("show", !on);
-    \$("ws").classList.toggle("hide", !on);
+    $("auth").classList.toggle("show", !on);
+    $("ws").classList.toggle("hide", !on);
     if (on){
       const nm = accs.session.name || accs.session.email;
-      \$("s-nm").textContent = nm;
-      \$("s-av").textContent = nm[0].toUpperCase();
+      $("s-nm").textContent = nm;
+      $("s-av").textContent = nm[0].toUpperCase();
       searchQuery = "";
       editingChatId = null;
       if ($("c-search")) $("c-search").value = "";
@@ -571,8 +571,8 @@ header{
       busy = false;
       editingChatId = null;
       ws = { chats: [], active: null, cfg: { ...defCfg } };
-      \$("msgs").replaceChildren();
-      \$("c-list").replaceChildren();
+      $("msgs").replaceChildren();
+      $("c-list").replaceChildren();
     }
   }
 
@@ -589,8 +589,8 @@ header{
   function exitApp(){
     abortFlag = true;
     busy = false;
-    \$("ov-prof").classList.remove("open");
-    \$("ov-set").classList.remove("open");
+    $("ov-prof").classList.remove("open");
+    $("ov-set").classList.remove("open");
     accs.session = null;
     saveAccs();
     applyAuth();
@@ -599,27 +599,27 @@ header{
   function setAuthTab(m){
     mode = m;
     const isUp = mode === "register";
-    \$("tab-in").classList.toggle("on", !isUp);
-    \$("tab-up").classList.toggle("on", isUp);
-    \$("name-grp").style.display = isUp ? "flex" : "none";
-    \$("a-go").textContent = isUp ? "Create Account" : "Sign In";
-    \$("a-err").textContent = "";
+    $("tab-in").classList.toggle("on", !isUp);
+    $("tab-up").classList.toggle("on", isUp);
+    $("name-grp").style.display = isUp ? "flex" : "none";
+    $("a-go").textContent = isUp ? "Create Account" : "Sign In";
+    $("a-err").textContent = "";
   }
 
   function doGoogle(){
-    const em = (\$("g-mail").value || "").trim().toLowerCase();
-    if (!em || !em.includes("@")) { \$("a-err").textContent = "Enter a valid Google email."; return; }
+    const em = ($("g-mail").value || "").trim().toLowerCase();
+    if (!em || !em.includes("@")) { $("a-err").textContent = "Enter a valid Google email."; return; }
     const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    \$("a-err").textContent = "";
+    $("a-err").textContent = "";
     enterApp({ email: em, name: nm });
   }
 
   function doEmailAuth(){
-    const err = \$("a-err");
+    const err = $("a-err");
     err.textContent = "";
-    const em = (\$("in-mail").value || "").trim().toLowerCase();
-    const pw = \$("in-pw").value || "";
-    const nm = (\$("in-name").value || "").trim();
+    const em = ($("in-mail").value || "").trim().toLowerCase();
+    const pw = $("in-pw").value || "";
+    const nm = ($("in-name").value || "").trim();
 
     if (!em || !em.includes("@")) { err.textContent = "Enter a valid email address."; return; }
     if (!pw) { err.textContent = "Enter a password."; return; }
@@ -630,13 +630,13 @@ header{
       const disp = nm || em.split("@")[0] || "User";
       accs.users[em] = { email: em, name: disp, salt, hash: hsh(salt, pw) };
       saveAccs();
-      \$("in-pw").value = "";
+      $("in-pw").value = "";
       enterApp({ email: em, name: disp });
     } else {
       const acc = accs.users[em];
       if (!acc) { err.textContent = "No account found. Click Register first."; return; }
       if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
-      \$("in-pw").value = "";
+      $("in-pw").value = "";
       enterApp({ email: acc.email, name: acc.name });
     }
   }
@@ -655,7 +655,7 @@ header{
   }
 
   function renderList(){
-    const w = \$("c-list");
+    const w = $("c-list");
     const q = searchQuery.trim().toLowerCase();
     const filtered = q
       ? ws.chats.filter(c =>
@@ -729,11 +729,11 @@ header{
   }
 
   function renderMsgs(){
-    const box = \$("msgs");
+    const box = $("msgs");
     liveMd = null;
     livePill = null;
     const c = curC();
-    \$("c-title").textContent = c ? (c.title || "New chat") : "New chat";
+    $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
 
     if (!c || !c.messages.length){
       const fn = (accs.session?.name || "there").split(" ")[0];
@@ -746,7 +746,7 @@ header{
       box.innerHTML = `<div class="empty">
         <h1>Hello ${esc(fn)}</h1>
         <p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p>
-        <div class="chips">${prompts.map(q => `<button type="button" class="chip" data-act="chip-send">\${esc(q)}</button>`).join("")}</div>
+        <div class="chips">${prompts.map(q => `<button type="button" class="chip" data-act="chip-send">${esc(q)}</button>`).join("")}</div>
       </div>`;
       return;
     }
@@ -815,8 +815,8 @@ header{
   }
 
   function syncSendBtn(){
-    const b = \$("send");
-    const hasTxt = Boolean(\$("inp").value.trim());
+    const b = $("send");
+    const hasTxt = Boolean($("inp").value.trim());
     b.textContent = busy ? "■" : "↑";
     b.classList.toggle("dim", !busy && !hasTxt);
   }
@@ -840,45 +840,43 @@ header{
       }
       if (liveMd){
         liveMd.innerHTML = renderMarkdown(m.text) + '<span class="cursor"></span>';
-        const s = \$("scroll");
+        const s = $("scroll");
         if (s.scrollHeight - s.scrollTop - s.clientHeight < 220) s.scrollTop = s.scrollHeight;
       }
     });
   }
 
-  function buildReply(prompt){
+  function localFallbackReply(prompt, userName){
     const q = prompt.trim();
     const ql = q.toLowerCase();
-    const firstName = (accs.session?.name || "there").split(" ")[0];
+    const first = (userName || "there").split(/\s+/)[0];
+    if (/^(hi+|hey+|hello+|yo+|sup|hola)[!.?]*$/i.test(ql)){
+      return `Hey ${first}! How's it going? What are we building or solving today?`;
+    }
+    return `Here's a quick response to **${q}**, ${first}:\n\n- Break the problem into small, verifiable steps.\n- Test your core flow first, then refine details.\n\nAsk a follow-up or click **Regenerate** anytime.`;
+  }
 
-    if (/^(hi+|hey+|hello+|yo+|sup|hola|good morning|good afternoon|good evening)[!.?]*\$/i.test(ql)){
-      return `Hey ${firstName}! Good to see you. What are we working on today?\n\n- **Code & Debugging:** Write scripts, fix bugs, or clean up logic\n- **Explanations:** Break down concepts clearly without fluff\n- **Writing & Planning:** Draft READMEs, notes, outlines, or messages\n\nDrop a question or pick a prompt to get started.`;
-    }
-    if (/how are you|how's it going|what's up|whats up/i.test(ql)){
-      return `Doing great, ${firstName}—ready whenever you are. Tell me what you're building, learning, or trying to solve right now and we'll dive straight in.`;
-    }
-    if (/python.*json|parse json/.test(ql)){
-      return "Here is a clean Python snippet to parse and inspect JSON safely:\n\n```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```\n\n- Uses `pathlib.Path` for clean file reading.\n- Formats output with `indent=2` so nested fields are easy to scan.";
-    }
-    if (/linux.*disk|disk space/.test(ql)){
-      return "Use `df -h` to check human-readable disk usage across mounted filesystems:\n\n```bash\ndf -h --total\n```\n\n- `-h` shows sizes in GB/MB instead of raw blocks.\n- To spot the largest folders in your current directory, run `du -sh * | sort -hr | head -n 10`.";
-    }
-    if (/readme/.test(ql)){
-      return "Here is a clean, ready-to-use `README.md` template:\n\n```markdown\n# Project Name\n\nBrief one-line summary of what this project does.\n\n## Getting Started\n1. Install dependencies\n2. Configure environment variables\n3. Run the app\n```\n\nShare your stack or features if you want a custom README tailored to your repo.";
-    }
-    if (/async|await/.test(ql)){
-      return "**`async` and `await`** let you write asynchronous code that reads like normal step-by-step code:\n\n1. Marking a function `async` makes it automatically return a `Promise`.\n2. Using `await` pauses execution inside that function until the `Promise` finishes.\n\n```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`Request failed: ${res.status}`);\n  return await res.json();\n}\n```";
-    }
-    if (/\b(bug|error|fix|broken|issue|debug)\b/i.test(ql)){
-      return `Let's track down **${q}** systematically:\n\n1. **Reproduce the exact behavior:** Note what you expected vs. what actually happened.\n2. **Isolate the smallest piece:** Check inputs, state, or the line where values first look off.\n3. **Apply a targeted fix:** Change one thing at a time and re-test.\n\nPaste the code snippet or error message if you want me to pinpoint it directly.`;
-    }
-    const sysLine = ws.cfg.system.trim() ? `\n\n*Keeping your preference in mind: ${ws.cfg.system.trim()}*` : "";
-    return `Here's a clear starting point for **${q}**:\n\n- **Core Idea:** Break the problem into small, concrete pieces before optimizing details.\n- **Practical Approach:** Start with a simple working version, verify it end-to-end, and refine edges afterward.\n\nWant me to go deeper into a specific part, write code for it, or give a concrete example?${sysLine}`;
+  async function fetchServerReply(history, userName){
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: history,
+        system: ws.cfg.system || "",
+        temperature: Number(ws.cfg.temp) || 0.7,
+        userName: userName || "User",
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error || `Server error (${res.status})`);
+    if (!data?.reply) throw new Error("Empty reply from /api/chat");
+    return String(data.reply);
   }
 
   async function runGen(c, prompt){
     if (!accs.session) return;
     const ownerEmail = accs.session.email;
+    const ownerName = accs.session.name || ownerEmail;
     const m = c.messages[c.messages.length - 1];
     m.text = "";
     m.step = stepText(prompt, "");
@@ -887,14 +885,25 @@ header{
     busy = true;
     renderAll();
 
-    const full = buildReply(prompt);
-    const chunks = full.match(/.{1,6}/gs) || [full];
+    const history = c.messages
+      .slice(0, -1)
+      .filter((x) => x && typeof x.text === "string" && x.text.trim())
+      .map((x) => ({ role: x.role, text: x.text }));
+
+    let fullText = "";
+    try {
+      fullText = await fetchServerReply(history, ownerName);
+    } catch {
+      fullText = localFallbackReply(prompt, ownerName);
+    }
+
+    const chunks = fullText.match(/.{1,6}/gs) || [fullText];
     try {
       for (const part of chunks){
         if (abortFlag || !accs.session || accs.session.email !== ownerEmail) break;
         m.text += part;
         queueDraw(m, prompt);
-        await new Promise(r => setTimeout(r, 12));
+        await new Promise((r) => setTimeout(r, 10));
       }
       m.step = "Done";
     } finally {
