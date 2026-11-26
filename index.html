@@ -219,11 +219,11 @@ header{
     <p class="sub">Sign in or register to open Gavio AI.</p>
 
     <div class="tabs">
-      <button type="button" class="tbtn on" id="tab-in">Sign In</button>
-      <button type="button" class="tbtn" id="tab-up">Register</button>
+      <button type="button" class="tbtn on" id="tab-in" data-act="tab-login">Sign In</button>
+      <button type="button" class="tbtn" id="tab-up" data-act="tab-register">Register</button>
     </div>
 
-    <button type="button" class="gbtn" id="g-btn">
+    <button type="button" class="gbtn" id="g-btn" data-act="google-open">
       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/></svg>
       Continue with Google
     </button>
@@ -232,7 +232,7 @@ header{
       <small>Enter your Google email:</small>
       <div style="display:flex;gap:8px">
         <input id="g-mail" type="email" placeholder="you@gmail.com" style="flex:1;border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 10px">
-        <button type="button" class="b1" id="g-go">Continue</button>
+        <button type="button" class="b1" id="g-go" data-act="google-go">Continue</button>
       </div>
     </div>
 
@@ -255,7 +255,7 @@ header{
 
     <div class="err-txt" id="a-err"></div>
 
-    <button type="button" class="go-auth" id="a-go">Sign In</button>
+    <button type="button" class="go-auth" id="a-go" data-act="auth-submit">Sign In</button>
   </div>
 </div>
 
@@ -339,401 +339,410 @@ header{
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" async></script>
 <script>
-window.addEventListener("DOMContentLoaded", function(){
+(function(){
+  const API_KEY = "AQ.Ab8RN6JAgW2dzmZXOrCuNl_QrCsZlJKZNaIeG_RLh8_wylLP5A";
+  const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-4-hydrogen"];
+
+  const \$ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
+
+  const mem = {};
+  function rd(k){
+    try { const v = window.localStorage.getItem(k); if (v !== null) return v; } catch {}
+    return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+  }
+  function wr(k, v){
+    mem[k] = String(v);
+    try { window.localStorage.setItem(k, String(v)); } catch {}
+  }
+
+  function hsh(salt, pw){
+    const s = salt + ":" + pw;
+    let a = 0x811c9dc5, b = 0x01000193;
+    for (let i = 0; i < s.length; i++){
+      const c = s.charCodeAt(i);
+      a = Math.imul(a ^ c, 0x01000193) >>> 0;
+      b = Math.imul(b ^ (c + i), 0x85ebca6b) >>> 0;
+    }
+    return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
+  }
+
+  let accs = { users: {}, user: null };
   try {
-    const API_KEY = "AQ.Ab8RN6JAgW2dzmZXOrCuNl_QrCsZlJKZNaIeG_RLh8_wylLP5A";
-    const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-4-hydrogen"];
+    const p = JSON.parse(rd("gavio_acc_v1") || "null");
+    if (p && typeof p === "object") { accs.users = p.users || {}; accs.user = p.user || null; }
+  } catch {}
+  function saveAccs(){ wr("gavio_acc_v1", JSON.stringify(accs)); }
 
-    const \$ = id => document.getElementById(id);
-    const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
+  const defCfg = { key: API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
+  let ws = { chats: [], active: null, cfg: { ...defCfg } };
 
-    const mem = {};
-    function rd(k){
-      try { const v = window.localStorage.getItem(k); if (v !== null) return v; } catch {}
-      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
-    }
-    function wr(k, v){
-      mem[k] = String(v);
-      try { window.localStorage.setItem(k, String(v)); } catch {}
-    }
-
-    function hsh(salt, pw){
-      const s = salt + ":" + pw;
-      let a = 0x811c9dc5, b = 0x01000193;
-      for (let i = 0; i < s.length; i++){
-        const c = s.charCodeAt(i);
-        a = Math.imul(a ^ c, 0x01000193) >>> 0;
-        b = Math.imul(b ^ (c + i), 0x85ebca6b) >>> 0;
-      }
-      return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
-    }
-
-    let accs = { users: {}, user: null };
+  function loadWs(){
+    if (!accs.user) { ws = { chats: [], active: null, cfg: { ...defCfg } }; return; }
     try {
-      const p = JSON.parse(rd("gavio_acc_v1") || "null");
-      if (p && typeof p === "object") { accs.users = p.users || {}; accs.user = p.user || null; }
-    } catch {}
-    function saveAccs(){ wr("gavio_acc_v1", JSON.stringify(accs)); }
+      const r = JSON.parse(rd("gavio_ws_" + accs.user.email) || "null");
+      if (r && typeof r === "object") {
+        ws.chats = Array.isArray(r.chats) ? r.chats : [];
+        ws.active = typeof r.active === "string" ? r.active : null;
+        ws.cfg = Object.assign({}, defCfg, r.cfg || {});
+        if (!ws.cfg.key) ws.cfg.key = API_KEY;
+      } else ws = { chats: [], active: null, cfg: { ...defCfg } };
+    } catch { ws = { chats: [], active: null, cfg: { ...defCfg } }; }
+  }
+  function saveWs(){
+    if (!accs.user) return;
+    wr("gavio_ws_" + accs.user.email, JSON.stringify(ws));
+  }
 
-    const defCfg = { key: API_KEY, model: "gemini-3.8-flash", system: "", temp: 0.7 };
-    let ws = { chats: [], active: null, cfg: { ...defCfg } };
+  let busy = false, ac = null, liveMd = null, livePill = null, raf = 0;
 
-    function loadWs(){
-      if (!accs.user) { ws = { chats: [], active: null, cfg: { ...defCfg } }; return; }
-      try {
-        const r = JSON.parse(rd("gavio_ws_" + accs.user.email) || "null");
-        if (r && typeof r === "object") {
-          ws.chats = Array.isArray(r.chats) ? r.chats : [];
-          ws.active = typeof r.active === "string" ? r.active : null;
-          ws.cfg = Object.assign({}, defCfg, r.cfg || {});
-          if (!ws.cfg.key) ws.cfg.key = API_KEY;
-        } else ws = { chats: [], active: null, cfg: { ...defCfg } };
-      } catch { ws = { chats: [], active: null, cfg: { ...defCfg } }; }
+  function applyAuth(){
+    const on = Boolean(accs.user && accs.user.email);
+    \$("auth").classList.toggle("hide", on);
+    \$("ws").classList.toggle("hide", !on);
+    if (on){
+      const nm = accs.user.name || accs.user.email;
+      \$("s-nm").textContent = nm;
+      \$("s-av").textContent = nm[0].toUpperCase();
+      loadWs();
+      renderAll();
+    } else {
+      if (ac) ac.abort();
+      busy = false;
+      \$("msgs").replaceChildren();
     }
-    function saveWs(){
-      if (!accs.user) return;
-      wr("gavio_ws_" + accs.user.email, JSON.stringify(ws));
-    }
+  }
 
-    let busy = false, ac = null, liveMd = null, livePill = null, raf = 0;
+  function enterApp(u){
+    accs.user = { email: String(u.email).trim().toLowerCase(), name: String(u.name || u.email.split("@")[0]).trim() };
+    saveAccs();
+    applyAuth();
+  }
 
-    function applyAuth(){
-      const on = Boolean(accs.user && accs.user.email);
-      \$("auth").classList.toggle("hide", on);
-      \$("ws").classList.toggle("hide", !on);
-      if (on){
-        const nm = accs.user.name || accs.user.email;
-        \$("s-nm").textContent = nm;
-        \$("s-av").textContent = nm[0].toUpperCase();
-        loadWs();
-        renderAll();
-      } else {
-        if (ac) ac.abort();
-        busy = false;
-        \$("msgs").replaceChildren();
-      }
-    }
+  function exitApp(){
+    \$("ov-prof").classList.remove("open");
+    \$("ov-set").classList.remove("open");
+    accs.user = null;
+    saveAccs();
+    applyAuth();
+  }
 
-    function enterApp(u){
-      accs.user = { email: String(u.email).trim().toLowerCase(), name: String(u.name || u.email.split("@")[0]).trim() };
+  let mode = "login";
+  function setAuthTab(m){
+    mode = m;
+    const isUp = mode === "register";
+    \$("tab-in").classList.toggle("on", !isUp);
+    \$("tab-up").classList.toggle("on", isUp);
+    \$("name-grp").style.display = isUp ? "flex" : "none";
+    \$("a-go").textContent = isUp ? "Create Account" : "Sign In";
+    \$("a-err").textContent = "";
+  }
+
+  function doGoogle(){
+    const em = (\$("g-mail").value || "").trim().toLowerCase();
+    if (!em) { \$("a-err").textContent = "Enter your Google email."; return; }
+    const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    \$("a-err").textContent = "";
+    enterApp({ email: em, name: nm });
+  }
+
+  function doEmailAuth(){
+    const err = \$("a-err");
+    err.textContent = "";
+    const em = (\$("in-mail").value || "").trim().toLowerCase();
+    const pw = \$("in-pw").value || "";
+    const nm = (\$("in-name").value || "").trim();
+
+    if (!em) { err.textContent = "Enter your email."; return; }
+    if (!pw) { err.textContent = "Enter your password."; return; }
+
+    if (mode === "register"){
+      if (accs.users[em]) { err.textContent = "Email already registered. Click Sign In."; return; }
+      const salt = Math.random().toString(36).slice(2, 10);
+      const hash = hsh(salt, pw);
+      const disp = nm || em.split("@")[0] || "User";
+      accs.users[em] = { email: em, name: disp, salt, hash };
       saveAccs();
-      applyAuth();
+      \$("in-pw").value = "";
+      enterApp({ email: em, name: disp });
+    } else {
+      const acc = accs.users[em];
+      if (!acc) { err.textContent = "No account found. Click Register first."; return; }
+      if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
+      \$("in-pw").value = "";
+      enterApp({ email: acc.email, name: acc.name });
     }
+  }
 
-    function exitApp(){
-      \$("ov-prof").classList.remove("open");
-      \$("ov-set").classList.remove("open");
-      accs.user = null;
-      saveAccs();
-      applyAuth();
-    }
-
-    let mode = "login";
-    function setAuthTab(m){
-      mode = m;
-      const isUp = mode === "register";
-      \$("tab-in").classList.toggle("on", !isUp);
-      \$("tab-up").classList.toggle("on", isUp);
-      \$("name-grp").style.display = isUp ? "flex" : "none";
-      \$("a-go").textContent = isUp ? "Create Account" : "Sign In";
-      \$("a-err").textContent = "";
-    }
-
-    \$("tab-in").addEventListener("click", () => setAuthTab("login"));
-    \$("tab-up").addEventListener("click", () => setAuthTab("register"));
-
-    \$("g-btn").addEventListener("click", () => {
+  let lastAuthFire = 0;
+  function handleAuthAction(act){
+    const now = Date.now();
+    if (now - lastAuthFire < 180) return;
+    lastAuthFire = now;
+    if (act === "tab-login") setAuthTab("login");
+    else if (act === "tab-register") setAuthTab("register");
+    else if (act === "google-open"){
       const gb = \$("gbox");
       gb.classList.toggle("open");
       if (gb.classList.contains("open") && !$("g-mail").value && $("in-mail").value) {
         $("g-mail").value = $("in-mail").value;
       }
-    });
-
-    function doGoogle(){
-      const em = (\$("g-mail").value || "").trim().toLowerCase();
-      if (!em) { \$("a-err").textContent = "Enter your Google email."; return; }
-      const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-      \$("a-err").textContent = "";
-      enterApp({ email: em, name: nm });
     }
-    \$("g-go").addEventListener("click", doGoogle);
-    \$("g-mail").addEventListener("keydown", e => { if (e.key === "Enter") doGoogle(); });
-
-    function doEmailAuth(){
-      const err = \$("a-err");
-      err.textContent = "";
-      const em = (\$("in-mail").value || "").trim().toLowerCase();
-      const pw = \$("in-pw").value || "";
-      const nm = (\$("in-name").value || "").trim();
-
-      if (!em) { err.textContent = "Enter your email."; return; }
-      if (!pw) { err.textContent = "Enter your password."; return; }
-
-      if (mode === "register"){
-        if (accs.users[em]) { err.textContent = "Email already registered. Click Sign In."; return; }
-        const salt = Math.random().toString(36).slice(2, 10);
-        const hash = hsh(salt, pw);
-        const disp = nm || em.split("@")[0] || "User";
-        accs.users[em] = { email: em, name: disp, salt, hash };
-        saveAccs();
-        \$("in-pw").value = "";
-        enterApp({ email: em, name: disp });
-      } else {
-        const acc = accs.users[em];
-        if (!acc) { err.textContent = "No account found. Click Register first."; return; }
-        if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
-        \$("in-pw").value = "";
-        enterApp({ email: acc.email, name: acc.name });
-      }
-    }
-
-    \$("a-go").addEventListener("click", doEmailAuth);
-    \$("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
-
-    const curC = () => ws.chats.find(c => c.id === ws.active);
-    function stepText(p, t){
-      const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
-      if (tl.includes("```")) return "Writing code";
-      if (/\b(code|script|file|html|css|js|ts|python|json)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
-      if (/\b(command|terminal|shell|cmd|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting output" : "Running command";
-      return t ? "Responding" : "Thinking";
-    }
-    function md(t){
-      if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(String(t||""), { gfm:true, breaks:true }), { ADD_ATTR:["target"] });
-      return esc(t).replace(/\n/g, "<br>");
-    }
-    function enh(el){
-      el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
-      el.querySelectorAll("pre").forEach(pre => {
-        if (pre.dataset.d) return; pre.dataset.d = "1";
-        const code = pre.querySelector("code");
-        if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
-        const b = document.createElement("button"); b.type="button"; b.className="cp"; b.textContent="Copy";
-        b.onclick = () => { navigator.clipboard?.writeText(code ? code.innerText : pre.innerText); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy",1200); };
-        pre.appendChild(b);
-      });
-    }
-    function pillEl(label, spin){
-      const d = document.createElement("div"); d.className = "pill" + (spin ? "" : " done");
-      const i = document.createElement("span"); i.className = spin ? "sp" : "dt";
-      const t = document.createElement("span"); t.className = "pt"; t.textContent = label;
-      d.append(i, t); return d;
-    }
-
-    function renderList(){
-      const w = $("c-list"), f = document.createDocumentFragment();
-      ws.chats.forEach(c => {
-        const r = document.createElement("div"); r.className = "c-row" + (c.id === ws.active ? " on" : "");
-        const b = document.createElement("button"); b.type="button"; b.className="pick"; b.textContent = c.title || "New chat";
-        b.onclick = () => { if (busy) return; ws.active = c.id; saveWs(); renderAll(); $("side").classList.remove("open"); };
-        const d = document.createElement("button"); d.type="button"; d.className="del"; d.textContent="✕";
-        d.onclick = () => { if (busy) return; ws.chats = ws.chats.filter(x=>x.id!==c.id); if (ws.active===c.id) ws.active=null; saveWs(); renderAll(); };
-        r.append(b, d); f.appendChild(r);
-      });
-      w.replaceChildren(f);
-    }
-
-    function renderMsgs(){
-      const box = $("msgs"); liveMd = null; livePill = null;
-      const c = curC();
-      $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
-      $("m-pill").textContent = ws.cfg.model;
-      if (!c || !c.messages.length){
-        const fn = (accs.user?.name || "there").split(" ")[0];
-        box.innerHTML = `<div class="empty"><h1>Hello ${esc(fn)}</h1><p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p><div class="chips"></div></div>`;
-        const ch = box.querySelector(".chips");
-        ["Write a Python script to parse JSON", "Show a Linux command to check disk space", "Draft a clean README", "Explain async/await simply"].forEach(q => {
-          const b = document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=q;
-          b.onclick = () => sendMsg(q); ch.appendChild(b);
-        });
-        return;
-      }
-      const f = document.createDocumentFragment();
-      c.messages.forEach((m, i) => {
-        const el = document.createElement("div");
-        if (m.role === "user"){
-          el.className = "msg u";
-          const b = document.createElement("div"); b.className = "b"; b.textContent = m.text; el.appendChild(b);
-        } else {
-          el.className = "msg a";
-          el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
-          const w = el.querySelector(".w"), last = i === c.messages.length - 1;
-          const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
-          if (last && busy){ const p = pillEl(m.step || stepText(prev, m.text), true); w.appendChild(p); livePill = p; }
-          else if (m.step && !m.error) w.appendChild(pillEl(m.step, false));
-          const body = document.createElement("div"); body.className = "md";
-          if (last && busy) liveMd = body;
-          if (m.text){ body.innerHTML = md(m.text); if (!(last && busy)) enh(body); }
-          w.appendChild(body);
-          if (m.error){ const e = document.createElement("div"); e.className = "errb"; e.textContent = m.error; w.appendChild(e); }
-          if (!(last && busy)){
-            const a = document.createElement("div"); a.className = "acts";
-            const cp = document.createElement("button"); cp.type="button"; cp.textContent="Copy";
-            cp.onclick = () => { navigator.clipboard?.writeText(m.text||""); cp.textContent="Copied"; setTimeout(()=>cp.textContent="Copy",1200); };
-            a.appendChild(cp);
-            if (last){ const rg = document.createElement("button"); rg.type="button"; rg.textContent="Regenerate"; rg.onclick = () => regen(); a.appendChild(rg); }
-            w.appendChild(a);
-          }
-        }
-        f.appendChild(el);
-      });
-      box.replaceChildren(f);
-      $("scroll").scrollTop = $("scroll").scrollHeight;
-    }
-
-    function syncSendBtn(){
-      const b = $("send");
-      b.textContent = busy ? "■" : "↑";
-      b.disabled = !busy && !$("inp").value.trim();
-    }
-
-    function renderAll(){
-      if (!accs.user) return;
-      renderList(); renderMsgs(); syncSendBtn();
-    }
-
-    function queueDraw(m, p){
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const nx = stepText(p, m.text); m.step = nx;
-        if (livePill){ const t = livePill.querySelector(".pt"); if (t && t.textContent !== nx) t.textContent = nx; }
-        if (liveMd){ liveMd.innerHTML = md(m.text); const s = $("scroll"); if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight; }
-      });
-    }
-
-    async function streamOne(mid, body, msg, signal, prompt){
-      const key = (ws.cfg.key || API_KEY).trim();
-      const headers = { "Content-Type": "application/json", "x-goog-api-key": key };
-      if (key.startsWith("AQ.") || key.startsWith("ya29.")) headers["Authorization"] = "Bearer " + key;
-      const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(mid)}:streamGenerateContent?alt=sse`, {
-        method: "POST", signal, headers, body: JSON.stringify(body)
-      });
-      if (!res.ok){
-        const j = await res.json().catch(()=>null);
-        const det = j?.error?.message || ("HTTP " + res.status);
-        return { ok: false, busy: res.status === 503 || /high demand|overloaded|unavailable/i.test(det), det };
-      }
-      const rd = res.body.getReader(), dec = new TextDecoder();
-      let buf = "", got = false;
-      for (;;){
-        const { done, value } = await rd.read(); if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let nl;
-        while ((nl = buf.indexOf("\n")) >= 0){
-          const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
-          if (!line.startsWith("data:")) continue;
-          const ch = line.slice(5).trim(); if (!ch) continue;
-          try {
-            const p = JSON.parse(ch);
-            (p?.candidates?.[0]?.content?.parts || []).forEach(x => { if (x.text && !x.thought){ msg.text += x.text; got = true; } });
-          } catch {}
-        }
-        queueDraw(msg, prompt);
-      }
-      return { ok: got, busy: false, det: "Empty response." };
-    }
-
-    async function runGen(c, prompt){
-      if (!accs.user) return;
-      const m = c.messages[c.messages.length - 1];
-      m.text = ""; m.step = stepText(prompt, ""); delete m.error;
-      ac = new AbortController(); busy = true; renderAll();
-      const pref = (ws.cfg.model || defCfg.model).replace(/^models\//, "");
-      const chain = Array.from(new Set([pref, ...MODELS]));
-      const contents = c.messages.slice(0, -1).filter(x=>x.text).map(x=>({ role: x.role==="user"?"user":"model", parts:[{text:x.text}] }));
-      const body = { contents, generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 } };
-      if (ws.cfg.system.trim()) body.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
-      try {
-        let ok = false;
-        for (const mid of chain){
-          for (let t = 0; t < 2; t++){
-            m.text = "";
-            if (mid !== pref || t > 0){ m.step = "Switching capacity"; renderMsgs(); }
-            const out = await streamOne(mid, body, m, ac.signal, prompt);
-            if (out.ok){ m.step = "Done"; ok = true; break; }
-            if (out.busy){ await new Promise(r=>setTimeout(r, 250)); continue; }
-            m.error = out.det; ok = true; break;
-          }
-          if (ok) break;
-        }
-        if (!ok && !m.text && !m.error) m.error = "Models are busy right now. Try again shortly.";
-      } catch (e){ if (e.name !== "AbortError") m.error = e.message || String(e); }
-      finally { busy = false; ac = null; saveWs(); renderAll(); }
-    }
-
-    async function sendMsg(raw){
-      if (!accs.user || busy) return;
-      const t = (raw || "").trim(); if (!t) return;
-      let c = curC();
-      if (!c){ c = { id: "c_"+Date.now().toString(36), title: t.slice(0,44), messages: [] }; ws.chats.unshift(c); ws.active = c.id; }
-      else if (!c.messages.length) c.title = t.slice(0,44);
-      c.messages.push({ role: "user", text: t });
-      c.messages.push({ role: "assistant", text: "", step: stepText(t, "") });
-      saveWs(); $("inp").value = ""; $("inp").style.height = "auto";
-      await runGen(c, t);
-    }
-
-    async function regen(){
-      const c = curC(); if (!c || busy) return;
-      const last = c.messages[c.messages.length - 1];
-      const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user" ? c.messages[c.messages.length - 2].text : "";
-      if (!last || last.role !== "assistant") return;
-      last.text = ""; delete last.error;
-      await runGen(c, prev);
-    }
-
-    const inp = $("inp");
-    inp.addEventListener("input", () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 200) + "px"; syncSendBtn(); });
-    inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendMsg(inp.value); } });
-    $("send").addEventListener("click", () => { if (busy) ac?.abort(); else sendMsg(inp.value); });
-    $("new-c").addEventListener("click", () => { if (busy) return; ws.active = null; saveWs(); renderAll(); $("side").classList.remove("open"); inp.focus(); });
-    $("m-btn").addEventListener("click", () => $("side").classList.toggle("open"));
-    $("scroll").addEventListener("click", () => $("side").classList.remove("open"));
-
-    $("b-set").addEventListener("click", () => {
-      $("k-inp").value = ws.cfg.key || API_KEY;
-      $("m-inp").value = ws.cfg.model || defCfg.model;
-      $("s-inp").value = ws.cfg.system || "";
-      $("t-inp").value = ws.cfg.temp ?? 0.7;
-      $("t-val").textContent = $("t-inp").value;
-      $("ov-set").classList.add("open");
-    });
-    $("m-pill").addEventListener("click", () => $("b-set").click());
-    $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
-    $("set-cancel").addEventListener("click", () => $("ov-set").classList.remove("open"));
-    $("set-save").addEventListener("click", () => {
-      ws.cfg = {
-        key: ($("k-inp").value || API_KEY).trim(),
-        model: ($("m-inp").value || defCfg.model).trim(),
-        system: $("s-inp").value,
-        temp: Number($("t-inp").value) || 0.7
-      };
-      saveWs(); $("ov-set").classList.remove("open"); renderAll();
-    });
-
-    $("b-prof").addEventListener("click", () => {
-      const u = accs.user; if (!u) return;
-      $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
-      $("p-nm").textContent = u.name || u.email;
-      $("p-em").textContent = u.email;
-      $("ov-prof").classList.add("open");
-    });
-    $("prof-x").addEventListener("click", () => $("ov-prof").classList.remove("open"));
-    $("prof-out").addEventListener("click", exitApp);
-    $("b-out").addEventListener("click", exitApp);
-
-    applyAuth();
-  } catch (err) {
-    const e = document.getElementById("a-err");
-    if (e) e.textContent = "Init error: " + (err && err.message ? err.message : String(err));
+    else if (act === "google-go") doGoogle();
+    else if (act === "auth-submit") doEmailAuth();
   }
-});
+
+  \$("auth").addEventListener("click", e => {
+    const btn = e.target.closest("[data-act]");
+    if (btn) handleAuthAction(btn.getAttribute("data-act"));
+  });
+  \$("auth").addEventListener("touchend", e => {
+    const btn = e.target.closest("[data-act]");
+    if (btn) handleAuthAction(btn.getAttribute("data-act"));
+  }, { passive: true });
+
+  \$("g-mail").addEventListener("keydown", e => { if (e.key === "Enter") doGoogle(); });
+  \$("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
+
+  const curC = () => ws.chats.find(c => c.id === ws.active);
+  function stepText(p, t){
+    const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
+    if (tl.includes("```")) return "Writing code";
+    if (/\b(code|script|file|html|css|js|ts|python|json)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
+    if (/\b(command|terminal|shell|cmd|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting output" : "Running command";
+    return t ? "Responding" : "Thinking";
+  }
+  function md(t){
+    if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(String(t||""), { gfm:true, breaks:true }), { ADD_ATTR:["target"] });
+    return esc(t).replace(/\n/g, "<br>");
+  }
+  function enh(el){
+    el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+    el.querySelectorAll("pre").forEach(pre => {
+      if (pre.dataset.d) return; pre.dataset.d = "1";
+      const code = pre.querySelector("code");
+      if (code && window.hljs) { try { hljs.highlightElement(code); } catch {} }
+      const b = document.createElement("button"); b.type="button"; b.className="cp"; b.textContent="Copy";
+      b.onclick = () => { navigator.clipboard?.writeText(code ? code.innerText : pre.innerText); b.textContent="Copied"; setTimeout(()=>b.textContent="Copy",1200); };
+      pre.appendChild(b);
+    });
+  }
+  function pillEl(label, spin){
+    const d = document.createElement("div"); d.className = "pill" + (spin ? "" : " done");
+    const i = document.createElement("span"); i.className = spin ? "sp" : "dt";
+    const t = document.createElement("span"); t.className = "pt"; t.textContent = label;
+    d.append(i, t); return d;
+  }
+
+  function renderList(){
+    const w = $("c-list"), f = document.createDocumentFragment();
+    ws.chats.forEach(c => {
+      const r = document.createElement("div"); r.className = "c-row" + (c.id === ws.active ? " on" : "");
+      const b = document.createElement("button"); b.type="button"; b.className="pick"; b.textContent = c.title || "New chat";
+      b.onclick = () => { if (busy) return; ws.active = c.id; saveWs(); renderAll(); $("side").classList.remove("open"); };
+      const d = document.createElement("button"); d.type="button"; d.className="del"; d.textContent="✕";
+      d.onclick = () => { if (busy) return; ws.chats = ws.chats.filter(x=>x.id!==c.id); if (ws.active===c.id) ws.active=null; saveWs(); renderAll(); };
+      r.append(b, d); f.appendChild(r);
+    });
+    w.replaceChildren(f);
+  }
+
+  function renderMsgs(){
+    const box = $("msgs"); liveMd = null; livePill = null;
+    const c = curC();
+    $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
+    $("m-pill").textContent = ws.cfg.model;
+    if (!c || !c.messages.length){
+      const fn = (accs.user?.name || "there").split(" ")[0];
+      box.innerHTML = `<div class="empty"><h1>Hello ${esc(fn)}</h1><p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p><div class="chips"></div></div>`;
+      const ch = box.querySelector(".chips");
+      ["Write a Python script to parse JSON", "Show a Linux command to check disk space", "Draft a clean README", "Explain async/await simply"].forEach(q => {
+        const b = document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=q;
+        b.onclick = () => sendMsg(q); ch.appendChild(b);
+      });
+      return;
+    }
+    const f = document.createDocumentFragment();
+    c.messages.forEach((m, i) => {
+      const el = document.createElement("div");
+      if (m.role === "user"){
+        el.className = "msg u";
+        const b = document.createElement("div"); b.className = "b"; b.textContent = m.text; el.appendChild(b);
+      } else {
+        el.className = "msg a";
+        el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
+        const w = el.querySelector(".w"), last = i === c.messages.length - 1;
+        const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
+        if (last && busy){ const p = pillEl(m.step || stepText(prev, m.text), true); w.appendChild(p); livePill = p; }
+        else if (m.step && !m.error) w.appendChild(pillEl(m.step, false));
+        const body = document.createElement("div"); body.className = "md";
+        if (last && busy) liveMd = body;
+        if (m.text){ body.innerHTML = md(m.text); if (!(last && busy)) enh(body); }
+        w.appendChild(body);
+        if (m.error){ const e = document.createElement("div"); e.className = "errb"; e.textContent = m.error; w.appendChild(e); }
+        if (!(last && busy)){
+          const a = document.createElement("div"); a.className = "acts";
+          const cp = document.createElement("button"); cp.type="button"; cp.textContent="Copy";
+          cp.onclick = () => { navigator.clipboard?.writeText(m.text||""); cp.textContent="Copied"; setTimeout(()=>cp.textContent="Copy",1200); };
+          a.appendChild(cp);
+          if (last){ const rg = document.createElement("button"); rg.type="button"; rg.textContent="Regenerate"; rg.onclick = () => regen(); a.appendChild(rg); }
+          w.appendChild(a);
+        }
+      }
+      f.appendChild(el);
+    });
+    box.replaceChildren(f);
+    $("scroll").scrollTop = $("scroll").scrollHeight;
+  }
+
+  function syncSendBtn(){
+    const b = $("send");
+    b.textContent = busy ? "■" : "↑";
+    b.disabled = !busy && !$("inp").value.trim();
+  }
+
+  function renderAll(){
+    if (!accs.user) return;
+    renderList(); renderMsgs(); syncSendBtn();
+  }
+
+  function queueDraw(m, p){
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const nx = stepText(p, m.text); m.step = nx;
+      if (livePill){ const t = livePill.querySelector(".pt"); if (t && t.textContent !== nx) t.textContent = nx; }
+      if (liveMd){ liveMd.innerHTML = md(m.text); const s = $("scroll"); if (s.scrollHeight - s.scrollTop - s.clientHeight < 180) s.scrollTop = s.scrollHeight; }
+    });
+  }
+
+  async function streamOne(mid, body, msg, signal, prompt){
+    const key = (ws.cfg.key || API_KEY).trim();
+    const headers = { "Content-Type": "application/json", "x-goog-api-key": key };
+    if (key.startsWith("AQ.") || key.startsWith("ya29.")) headers["Authorization"] = "Bearer " + key;
+    const res = await fetch(`[https://generativelanguage.googleapis.com/v1beta/models/$](https://generativelanguage.googleapis.com/v1beta/models/$){encodeURIComponent(mid)}:streamGenerateContent?alt=sse`, {
+      method: "POST", signal, headers, body: JSON.stringify(body)
+    });
+    if (!res.ok){
+      const j = await res.json().catch(()=>null);
+      const det = j?.error?.message || ("HTTP " + res.status);
+      return { ok: false, busy: res.status === 503 || /high demand|overloaded|unavailable/i.test(det), det };
+    }
+    const rd = res.body.getReader(), dec = new TextDecoder();
+    let buf = "", got = false;
+    for (;;){
+      const { done, value } = await rd.read(); if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let nl;
+      while ((nl = buf.indexOf("\n")) >= 0){
+        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+        if (!line.startsWith("data:")) continue;
+        const ch = line.slice(5).trim(); if (!ch) continue;
+        try {
+          const p = JSON.parse(ch);
+          (p?.candidates?.[0]?.content?.parts || []).forEach(x => { if (x.text && !x.thought){ msg.text += x.text; got = true; } });
+        } catch {}
+      }
+      queueDraw(msg, prompt);
+    }
+    return { ok: got, busy: false, det: "Empty response." };
+  }
+
+  async function runGen(c, prompt){
+    if (!accs.user) return;
+    const m = c.messages[c.messages.length - 1];
+    m.text = ""; m.step = stepText(prompt, ""); delete m.error;
+    ac = new AbortController(); busy = true; renderAll();
+    const pref = (ws.cfg.model || defCfg.model).replace(/^models\//, "");
+    const chain = Array.from(new Set([pref, ...MODELS]));
+    const contents = c.messages.slice(0, -1).filter(x=>x.text).map(x=>({ role: x.role==="user"?"user":"model", parts:[{text:x.text}] }));
+    const body = { contents, generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 } };
+    if (ws.cfg.system.trim()) body.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
+    try {
+      let ok = false;
+      for (const mid of chain){
+        for (let t = 0; t < 2; t++){
+          m.text = "";
+          if (mid !== pref || t > 0){ m.step = "Switching capacity"; renderMsgs(); }
+          const out = await streamOne(mid, body, m, ac.signal, prompt);
+          if (out.ok){ m.step = "Done"; ok = true; break; }
+          if (out.busy){ await new Promise(r=>setTimeout(r, 250)); continue; }
+          m.error = out.det; ok = true; break;
+        }
+        if (ok) break;
+      }
+      if (!ok && !m.text && !m.error) m.error = "Models are busy right now. Try again shortly.";
+    } catch (e){ if (e.name !== "AbortError") m.error = e.message || String(e); }
+    finally { busy = false; ac = null; saveWs(); renderAll(); }
+  }
+
+  async function sendMsg(raw){
+    if (!accs.user || busy) return;
+    const t = (raw || "").trim(); if (!t) return;
+    let c = curC();
+    if (!c){ c = { id: "c_"+Date.now().toString(36), title: t.slice(0,44), messages: [] }; ws.chats.unshift(c); ws.active = c.id; }
+    else if (!c.messages.length) c.title = t.slice(0,44);
+    c.messages.push({ role: "user", text: t });
+    c.messages.push({ role: "assistant", text: "", step: stepText(t, "") });
+    saveWs(); $("inp").value = ""; $("inp").style.height = "auto";
+    await runGen(c, t);
+  }
+
+  async function regen(){
+    const c = curC(); if (!c || busy) return;
+    const last = c.messages[c.messages.length - 1];
+    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user" ? c.messages[c.messages.length - 2].text : "";
+    if (!last || last.role !== "assistant") return;
+    last.text = ""; delete last.error;
+    await runGen(c, prev);
+  }
+
+  const inp = $("inp");
+  inp.addEventListener("input", () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 200) + "px"; syncSendBtn(); });
+  inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendMsg(inp.value); } });
+  $("send").addEventListener("click", () => { if (busy) ac?.abort(); else sendMsg(inp.value); });
+  $("new-c").addEventListener("click", () => { if (busy) return; ws.active = null; saveWs(); renderAll(); $("side").classList.remove("open"); inp.focus(); });
+  $("m-btn").addEventListener("click", () => $("side").classList.toggle("open"));
+  $("scroll").addEventListener("click", () => $("side").classList.remove("open"));
+
+  $("b-set").addEventListener("click", () => {
+    $("k-inp").value = ws.cfg.key || API_KEY;
+    $("m-inp").value = ws.cfg.model || defCfg.model;
+    $("s-inp").value = ws.cfg.system || "";
+    $("t-inp").value = ws.cfg.temp ?? 0.7;
+    $("t-val").textContent = $("t-inp").value;
+    $("ov-set").classList.add("open");
+  });
+  $("m-pill").addEventListener("click", () => $("b-set").click());
+  $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
+  $("set-cancel").addEventListener("click", () => $("ov-set").classList.remove("open"));
+  $("set-save").addEventListener("click", () => {
+    ws.cfg = {
+      key: ($("k-inp").value || API_KEY).trim(),
+      model: ($("m-inp").value || defCfg.model).trim(),
+      system: $("s-inp").value,
+      temp: Number($("t-inp").value) || 0.7
+    };
+    saveWs(); $("ov-set").classList.remove("open"); renderAll();
+  });
+
+  $("b-prof").addEventListener("click", () => {
+    const u = accs.user; if (!u) return;
+    $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
+    $("p-nm").textContent = u.name || u.email;
+    $("p-em").textContent = u.email;
+    $("ov-prof").classList.add("open");
+  });
+  $("prof-x").addEventListener("click", () => $("ov-prof").classList.remove("open"));
+  $("prof-out").addEventListener("click", exitApp);
+  $("b-out").addEventListener("click", exitApp);
+
+  applyAuth();
+})();
 </script>
 </body>
 </html>
