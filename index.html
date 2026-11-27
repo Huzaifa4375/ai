@@ -4,12 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gavio AI</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Theme design tokens for Dark Mode and Light Mode */
+/* Theme Design Tokens */
 :root[data-theme="dark"] {
   --bg: #06070c;
   --panel: #0d1018;
@@ -58,9 +54,7 @@ html, body {
 body {
   background: var(--bg);
   color: var(--txt);
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
+  font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: flex;
   overflow: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -68,13 +62,14 @@ body {
 }
 
 button, input, textarea, select {
-  font-family: inherit;
+  font: inherit;
   color: inherit;
 }
 
 button {
   cursor: pointer;
   touch-action: manipulation;
+  user-select: none;
   transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
 }
 
@@ -192,7 +187,7 @@ button:active {
 
 .demo-btn {
   width: 100%;
-  padding: 10.5px 14px;
+  padding: 11px 14px;
   border-radius: 11px;
   border: 1px solid rgba(16, 185, 129, 0.45);
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(99, 102, 241, 0.18));
@@ -300,7 +295,7 @@ button:active {
 
 .go-auth {
   width: 100%;
-  padding: 10.5px 14px;
+  padding: 11px 14px;
   border-radius: 11px;
   border: 0;
   background: linear-gradient(135deg, var(--acc), #4f46e5);
@@ -363,8 +358,7 @@ button:active {
 }
 
 #new-c kbd {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
   color: var(--mut);
   background: var(--bg);
   padding: 2px 6px;
@@ -593,8 +587,7 @@ header {
 }
 
 #m-pill {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
   color: var(--mint);
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.35);
@@ -718,14 +711,11 @@ header {
   padding: 14px;
   overflow-x: auto;
   color: #e6ecff;
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  line-height: 1.55;
+  font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .md code {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
+  font: 13px ui-monospace, SFMono-Regular, Menlo, monospace;
   background: var(--panel2);
   padding: 2px 6px;
   border-radius: 5px;
@@ -782,8 +772,7 @@ header {
   border-radius: 999px;
   background: var(--panel);
   border: 1px solid var(--line);
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
   color: var(--mut);
   margin-bottom: 8px;
 }
@@ -1132,15 +1121,14 @@ header {
 (function() {
   "use strict";
 
-  const $ = id => document.getElementById(id);
-  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;"
-  }[c]));
+  const $ = function(id) { return document.getElementById(id); };
+  const esc = function(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c];
+    });
+  };
 
-  /* Resilient storage wrapper with in-memory fallback for restricted contexts */
+  /* Resilient storage wrapper with in-memory fallback */
   const mem = Object.create(null);
   function rd(k) {
     try {
@@ -1169,20 +1157,20 @@ header {
     return a.toString(16).padStart(8, "0") + b.toString(16).padStart(8, "0");
   }
 
-  /* Theme state management */
+  /* Theme management */
   function applyTheme(t) {
     const mode = t === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", mode);
-    wr("gavio_theme_v5", mode);
+    wr("gavio_theme_v7", mode);
     const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v5") || "dark");
+  applyTheme(rd("gavio_theme_v7") || "dark");
 
-  /* Accounts & active session state */
+  /* Account and isolated session store */
   let accs = { users: {}, session: null };
   try {
-    const raw = rd("gavio_accs_v5");
+    const raw = rd("gavio_accs_v7");
     const parsed = raw ? JSON.parse(raw) : null;
     if (parsed && typeof parsed === "object") {
       accs.users = parsed.users && typeof parsed.users === "object" ? parsed.users : {};
@@ -1191,16 +1179,11 @@ header {
   } catch (_) {}
 
   function saveAccs() {
-    wr("gavio_accs_v5", JSON.stringify(accs));
-    if (accs.session) {
-      wr("gavio_session_v5", JSON.stringify(accs.session));
-    } else {
-      wr("gavio_session_v5", "");
-    }
+    wr("gavio_accs_v7", JSON.stringify(accs));
   }
 
   const defCfg = { system: "", temp: 0.7 };
-  let ws = { chats: [], active: null, cfg: { ...defCfg } };
+  let ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
 
   function userBucketKey(email) {
     return "gavio_u_" + encodeURIComponent(String(email).trim().toLowerCase());
@@ -1208,7 +1191,7 @@ header {
 
   function loadWs() {
     if (!accs.session || !accs.session.email) {
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
       return;
     }
     try {
@@ -1219,10 +1202,10 @@ header {
         ws.active = typeof r.active === "string" ? r.active : null;
         ws.cfg = Object.assign({}, defCfg, r.cfg || {});
       } else {
-        ws = { chats: [], active: null, cfg: { ...defCfg } };
+        ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
       }
     } catch (_) {
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
     }
   }
 
@@ -1236,21 +1219,21 @@ header {
   let liveMd = null;
   let livePill = null;
   let raf = 0;
-  let mode = "login";
+  let authMode = "login";
   let searchQuery = "";
   let editingChatId = null;
 
-  /* Safe Markdown renderer with HTML escaping and sanitized links */
+  /* Safe Markdown formatter */
   function renderMarkdown(src) {
     const text = String(src || "");
     const blocks = [];
-    let safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    let safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, function(_, lang, code) {
       const idx = blocks.length;
       blocks.push(
-        `<pre><code class="lang-${esc(lang)}">${esc(code.replace(/\n$/, ""))}</code>` +
-        `<button type="button" class="cp" data-act="copy-code">Copy</button></pre>`
+        '<pre><code class="lang-' + esc(lang) + '">' + esc(code.replace(/\n$/, "")) + '</code>' +
+        '<button type="button" class="cp" data-act="copy-code">Copy</button></pre>'
       );
-      return `\u0000BLOCK${idx}\u0000`;
+      return "\u0000BLOCK" + idx + "\u0000";
     });
 
     safe = esc(safe)
@@ -1267,35 +1250,38 @@ header {
     let inUl = false;
     let inOl = false;
 
-    for (const ln of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const ln = lines[i];
       const ul = ln.match(/^\s*[-*]\s+(.+)/);
       const ol = ln.match(/^\s*\d+\.\s+(.+)/);
       if (ul) {
         if (inOl) { out += "</ol>"; inOl = false; }
         if (!inUl) { out += "<ul>"; inUl = true; }
-        out += `<li>${ul[1]}</li>`;
+        out += "<li>" + ul[1] + "</li>";
       } else if (ol) {
         if (inUl) { out += "</ul>"; inUl = false; }
         if (!inOl) { out += "<ol>"; inOl = true; }
-        out += `<li>${ol[1]}</li>`;
+        out += "<li>" + ol[1] + "</li>";
       } else {
         if (inUl) { out += "</ul>"; inUl = false; }
         if (inOl) { out += "</ol>"; inOl = false; }
-        if (ln.trim().startsWith("<h") || ln.includes("\u0000BLOCK")) out += ln;
+        if (ln.trim().startsWith("<h") || ln.indexOf("\u0000BLOCK") !== -1) out += ln;
         else if (ln.trim() === "") out += "";
-        else out += `<p>${ln}</p>`;
+        else out += "<p>" + ln + "</p>";
       }
     }
     if (inUl) out += "</ul>";
     if (inOl) out += "</ol>";
 
-    return out.replace(/\u0000BLOCK(\d+)\u0000/g, (_, i) => blocks[Number(i)] || "");
+    return out.replace(/\u0000BLOCK(\d+)\u0000/g, function(_, i) {
+      return blocks[Number(i)] || "";
+    });
   }
 
   function stepText(p, t) {
     const pl = String(p || "").toLowerCase();
     const tl = String(t || "").toLowerCase();
-    if (tl.includes("```")) return "Writing code";
+    if (tl.indexOf("```") !== -1) return "Writing code";
     if (/\b(code|script|python|js|html|css|json|function)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
     if (/\b(command|terminal|shell|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting command" : "Preparing command";
     return t ? "Streaming response" : "Thinking";
@@ -1331,7 +1317,7 @@ header {
       abortFlag = true;
       busy = false;
       editingChatId = null;
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
       $("msgs").replaceChildren();
       $("c-list").replaceChildren();
     }
@@ -1341,7 +1327,7 @@ header {
     const cleanEmail = String(u.email).trim().toLowerCase();
     const cleanName = String(u.name || cleanEmail.split("@")[0]).trim();
     const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    accs.session = { email: cleanEmail, name: cleanName, token };
+    accs.session = { email: cleanEmail, name: cleanName, token: token };
     saveAccs();
     abortFlag = false;
     applyAuth();
@@ -1358,8 +1344,8 @@ header {
   }
 
   function setAuthTab(m) {
-    mode = m;
-    const isUp = mode === "register";
+    authMode = m;
+    const isUp = authMode === "register";
     $("tab-in").classList.toggle("on", !isUp);
     $("tab-in").setAttribute("aria-selected", String(!isUp));
     $("tab-up").classList.toggle("on", isUp);
@@ -1371,13 +1357,13 @@ header {
 
   function doGoogle() {
     const em = ($("g-mail").value || "").trim().toLowerCase();
-    if (!em || !em.includes("@")) {
+    if (!em || em.indexOf("@") === -1) {
       $("a-err").textContent = "Enter a valid Google email.";
       return;
     }
     const nm = (em.split("@")[0] || "User")
       .replace(/[._-]+/g, " ")
-      .replace(/\b\w/g, c => c.toUpperCase());
+      .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
     $("a-err").textContent = "";
     enterApp({ email: em, name: nm });
   }
@@ -1389,7 +1375,7 @@ header {
     const pw = $("in-pw").value || "";
     const nm = ($("in-name").value || "").trim();
 
-    if (!em || !em.includes("@")) {
+    if (!em || em.indexOf("@") === -1) {
       err.textContent = "Enter a valid email address.";
       return;
     }
@@ -1398,14 +1384,14 @@ header {
       return;
     }
 
-    if (mode === "register") {
+    if (authMode === "register") {
       if (accs.users[em]) {
         err.textContent = "Email already registered. Switch to Sign In.";
         return;
       }
       const salt = Math.random().toString(36).slice(2, 10);
       const disp = nm || em.split("@")[0] || "User";
-      accs.users[em] = { email: em, name: disp, salt, hash: hsh(salt, pw) };
+      accs.users[em] = { email: em, name: disp, salt: salt, hash: hsh(salt, pw) };
       saveAccs();
       $("in-pw").value = "";
       enterApp({ email: em, name: disp });
@@ -1424,10 +1410,12 @@ header {
     }
   }
 
-  const curC = () => ws.chats.find(c => c.id === ws.active);
+  function curC() {
+    return ws.chats.find(function(c) { return c.id === ws.active; });
+  }
 
   function commitRename(cid, rawTitle) {
-    const c = ws.chats.find(x => x.id === cid);
+    const c = ws.chats.find(function(x) { return x.id === cid; });
     if (c) {
       const next = String(rawTitle || "").trim();
       if (next) c.title = next.slice(0, 60);
@@ -1441,10 +1429,12 @@ header {
     const w = $("c-list");
     const q = searchQuery.trim().toLowerCase();
     const filtered = q
-      ? ws.chats.filter(c =>
-          (c.title || "New chat").toLowerCase().includes(q) ||
-          (Array.isArray(c.messages) && c.messages.some(m => (m.text || "").toLowerCase().includes(q)))
-        )
+      ? ws.chats.filter(function(c) {
+          return (c.title || "New chat").toLowerCase().indexOf(q) !== -1 ||
+            (Array.isArray(c.messages) && c.messages.some(function(m) {
+              return (m.text || "").toLowerCase().indexOf(q) !== -1;
+            }));
+        })
       : ws.chats;
 
     if (!filtered.length) {
@@ -1456,7 +1446,7 @@ header {
     }
 
     const f = document.createDocumentFragment();
-    filtered.forEach(c => {
+    filtered.forEach(function(c) {
       const r = document.createElement("div");
       r.className = "c-row" + (c.id === ws.active ? " on" : "");
       r.setAttribute("role", "listitem");
@@ -1468,16 +1458,16 @@ header {
         inp.value = c.title || "New chat";
         inp.maxLength = 60;
         inp.dataset.cid = c.id;
-        inp.addEventListener("keydown", ev => {
+        inp.addEventListener("keydown", function(ev) {
           if (ev.key === "Enter") { ev.preventDefault(); commitRename(c.id, inp.value); }
           else if (ev.key === "Escape") { ev.preventDefault(); editingChatId = null; renderList(); }
         });
-        inp.addEventListener("blur", () => {
+        inp.addEventListener("blur", function() {
           if (editingChatId === c.id) commitRename(c.id, inp.value);
         });
         r.appendChild(inp);
         f.appendChild(r);
-        requestAnimationFrame(() => { inp.focus(); inp.select(); });
+        requestAnimationFrame(function() { inp.focus(); inp.select(); });
         return;
       }
 
@@ -1520,23 +1510,27 @@ header {
     $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
 
     if (!c || !c.messages.length) {
-      const fn = (accs.session?.name || "there").split(" ")[0];
+      const fn = (accs.session && accs.session.name ? accs.session.name : "there").split(" ")[0];
       const prompts = [
         "Write a Python script to parse JSON",
         "Show a Linux command to check disk space",
         "Draft a clean README",
         "Explain async/await simply"
       ];
-      box.innerHTML = `<div class="empty">
-        <h1>Hello ${esc(fn)}</h1>
-        <p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p>
-        <div class="chips">${prompts.map(q => `<button type="button" class="chip" data-act="chip-send">${esc(q)}</button>`).join("")}</div>
-      </div>`;
+      box.innerHTML =
+        '<div class="empty">' +
+        "<h1>Hello " + esc(fn) + "</h1>" +
+        "<p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p>" +
+        '<div class="chips">' +
+        prompts.map(function(q) {
+          return '<button type="button" class="chip" data-act="chip-send">' + esc(q) + "</button>";
+        }).join("") +
+        "</div></div>";
       return;
     }
 
     const f = document.createDocumentFragment();
-    c.messages.forEach((m, i) => {
+    c.messages.forEach(function(m, i) {
       const el = document.createElement("div");
       if (m.role === "user") {
         el.className = "msg u";
@@ -1546,10 +1540,10 @@ header {
         el.appendChild(b);
       } else {
         el.className = "msg a";
-        el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px" aria-hidden="true">G</div><div class="w"></div>`;
+        el.innerHTML = '<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px" aria-hidden="true">G</div><div class="w"></div>';
         const w = el.querySelector(".w");
         const last = i === c.messages.length - 1;
-        const prev = i > 0 && c.messages[i - 1]?.role === "user" ? c.messages[i - 1].text : "";
+        const prev = i > 0 && c.messages[i - 1] && c.messages[i - 1].role === "user" ? c.messages[i - 1].text : "";
 
         if (last && busy) {
           const p = pillEl(m.step || stepText(prev, m.text), true);
@@ -1614,7 +1608,7 @@ header {
 
   function queueDraw(m, p) {
     if (raf) return;
-    raf = requestAnimationFrame(() => {
+    raf = requestAnimationFrame(function() {
       raf = 0;
       const nx = stepText(p, m.text);
       m.step = nx;
@@ -1630,28 +1624,89 @@ header {
     });
   }
 
-  function buildReply(prompt) {
-    const q = prompt.trim();
+  /* Smart conversational reply engine for fallback / offline mode */
+  function localSmartReply(prompt, userName) {
+    const q = String(prompt || "").trim();
     const ql = q.toLowerCase();
+    const first = (userName || "there").split(/\s+/)[0];
+
+    if (/^(hi+|hey+|hello+|yo+|sup|hola|good morning|good afternoon|good evening)[!.?]*$/i.test(ql)) {
+      return "Hey " + first + "! Great to see you. What are we building, debugging, or exploring today?\n\n" +
+        "- **Code & Scripts:** Python, JavaScript, HTML/CSS, SQL, or shell commands\n" +
+        "- **Debugging:** Paste an error or snippet and we'll pinpoint the fix\n" +
+        "- **Writing & Docs:** Clean READMEs, summaries, or outlines\n\n" +
+        "Type anything below or click one of the starter prompts!";
+    }
+    if (/how are you|how's it going|what's up|whats up/i.test(ql)) {
+      return "Doing great, " + first + "—ready whenever you are! Tell me what you're working on and let's dive right in.";
+    }
     if (/python.*json|parse json/.test(ql)) {
-      return "Here is a clean Python snippet to parse and inspect JSON safely:\n\n```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```\n\n- Uses `pathlib.Path` for clean file reading.\n- Formats output with `indent=2` for readability.";
+      return "Here is a clean Python snippet to read and parse JSON safely:\n\n" +
+        "```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```\n\n" +
+        "- Uses `pathlib.Path` with explicit UTF-8 encoding.\n" +
+        "- Pretty-prints nested structures with `indent=2`.";
     }
     if (/linux.*disk|disk space/.test(ql)) {
-      return "Use `df -h` to check human-readable disk usage across mounted filesystems:\n\n```bash\ndf -h --total\n```\n\n- `-h` prints sizes in GB/MB.\n- Inspect top folders in the current directory with `du -sh * | sort -hr | head -n 10`.";
+      return "Use `df -h` to inspect human-readable disk usage across mounted filesystems:\n\n" +
+        "```bash\ndf -h --total\n```\n\n" +
+        "- `-h` displays sizes in GB/MB instead of raw blocks.\n" +
+        "- To locate the largest folders in your current directory, run `du -sh * | sort -hr | head -n 10`.";
     }
     if (/readme/.test(ql)) {
-      return "Here is a clean `README.md` template:\n\n```markdown\n# Project Name\n\nFast workspace built with isolated user sessions.\n\n## Quick Start\n1. Install dependencies\n2. Start the app\n```\n\nTell me your project stack if you want tailored commands.";
+      return "Here is a clean, ready-to-use `README.md` template:\n\n" +
+        "```markdown\n# Project Name\n\nConcise one-line overview of what this project does.\n\n## Quick Start\n1. Install dependencies\n2. Add environment variables\n3. Run the application\n```\n\n" +
+        "Share your tech stack if you want custom commands tailored to your repository.";
     }
     if (/async|await/.test(ql)) {
-      return "**`async` and `await`** let asynchronous code read like sequential code:\n\n1. **`async function`** returns a `Promise`.\n2. **`await`** pauses inside that function until the `Promise` settles.\n\n```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  return await res.json();\n}\n```";
+      return "**`async` and `await`** let you write asynchronous code that reads like sequential code:\n\n" +
+        "1. Marking a function `async` makes it automatically return a `Promise`.\n" +
+        "2. Using `await` pauses execution inside that function until the `Promise` settles.\n\n" +
+        "```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
     }
-    const sysNote = ws.cfg.system.trim() ? `\n- **System Instruction:** ${ws.cfg.system.trim()}` : "";
-    return `Response for **${q}**:\n\n- **Engine:** Gavio AI (\`gavio-core\`) running in your isolated account session.${sysNote}\n- **Next Step:** Ask a follow-up question or click **Regenerate** for another pass.`;
+    if (/\b(bug|error|fix|broken|issue|debug)\b/i.test(ql)) {
+      return "Let's track down **" + q + "** step by step:\n\n" +
+        "1. **Reproduce:** Check the exact input and where actual output diverges from expected output.\n" +
+        "2. **Isolate:** Narrow down the smallest function, selector, or request payload involved.\n" +
+        "3. **Verify:** Apply one focused fix and re-test.\n\n" +
+        "Paste the snippet or error message here if you want me to inspect it directly.";
+    }
+
+    const sysHint = ws.cfg.system && ws.cfg.system.trim()
+      ? "\n\n*Guided by your system instruction: " + ws.cfg.system.trim() + "*"
+      : "";
+    return "Here's a helpful starting point for **" + q + "**, " + first + ":\n\n" +
+      "- **Core Approach:** Break the goal into small, testable milestones so each part is verified early.\n" +
+      "- **Next Action:** Share any specific constraints, language, or example input if you want tailored code or a deeper breakdown." +
+      sysHint;
+  }
+
+  /* Calls Vercel /api/chat when deployed, with seamless local fallback */
+  async function fetchReply(history, prompt, userName) {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history,
+          system: ws.cfg.system || "",
+          temperature: Number(ws.cfg.temp) || 0.7,
+          userName: userName || "User"
+        })
+      });
+      if (res.ok) {
+        const data = await res.json().catch(function() { return null; });
+        if (data && typeof data.reply === "string" && data.reply.trim()) {
+          return data.reply.trim();
+        }
+      }
+    } catch (_) {}
+    return localSmartReply(prompt, userName);
   }
 
   async function runGen(c, prompt) {
     if (!accs.session) return;
     const ownerEmail = accs.session.email;
+    const ownerName = accs.session.name || ownerEmail;
     const m = c.messages[c.messages.length - 1];
     m.text = "";
     m.step = stepText(prompt, "");
@@ -1660,14 +1715,20 @@ header {
     busy = true;
     renderAll();
 
-    const full = buildReply(prompt);
-    const chunks = full.match(/.{1,6}/gs) || [full];
+    const history = c.messages
+      .slice(0, -1)
+      .filter(function(x) { return x && typeof x.text === "string" && x.text.trim(); })
+      .map(function(x) { return { role: x.role, text: x.text }; });
+
+    const fullText = await fetchReply(history, prompt, ownerName);
+    const chunks = fullText.match(/.{1,6}/gs) || [fullText];
+
     try {
-      for (const part of chunks) {
+      for (let i = 0; i < chunks.length; i++) {
         if (abortFlag || !accs.session || accs.session.email !== ownerEmail) break;
-        m.text += part;
+        m.text += chunks[i];
         queueDraw(m, prompt);
-        await new Promise(r => setTimeout(r, 12));
+        await new Promise(function(r) { setTimeout(r, 10); });
       }
       m.step = "Done";
     } finally {
@@ -1681,7 +1742,7 @@ header {
 
   async function sendMsg(raw) {
     if (!accs.session || busy) return;
-    const t = (raw || "").trim();
+    const t = String(raw || "").trim();
     if (!t) {
       $("inp").focus();
       return;
@@ -1706,7 +1767,7 @@ header {
     const c = curC();
     if (!c || busy) return;
     const last = c.messages[c.messages.length - 1];
-    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user"
+    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2] && c.messages[c.messages.length - 2].role === "user"
       ? c.messages[c.messages.length - 2].text
       : "";
     if (!last || last.role !== "assistant") return;
@@ -1715,15 +1776,11 @@ header {
     await runGen(c, prev);
   }
 
-  function copyFallback(text, btn) {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).catch(() => {});
-      }
-    } catch (_) {}
+  /* Reliable clipboard copy compatible with sandboxed iframes */
+  function copyText(text, btn) {
     try {
       const ta = document.createElement("textarea");
-      ta.value = text;
+      ta.value = String(text || "");
       ta.setAttribute("readonly", "");
       ta.style.position = "fixed";
       ta.style.opacity = "0";
@@ -1735,12 +1792,12 @@ header {
     if (btn) {
       const prev = btn.textContent;
       btn.textContent = "Copied";
-      setTimeout(() => { btn.textContent = prev || "Copy"; }, 1200);
+      setTimeout(function() { btn.textContent = prev || "Copy"; }, 1200);
     }
   }
 
-  /* Centralized action handler for all interactive controls */
-  document.addEventListener("click", e => {
+  /* Single delegated click listener for every [data-act] button */
+  document.addEventListener("click", function(e) {
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const act = btn.dataset.act;
@@ -1795,7 +1852,7 @@ header {
       if (busy) return;
       const cid = btn.dataset.cid;
       if (editingChatId === cid) editingChatId = null;
-      ws.chats = ws.chats.filter(x => x.id !== cid);
+      ws.chats = ws.chats.filter(function(x) { return x.id !== cid; });
       if (ws.active === cid) ws.active = null;
       saveWs();
       renderAll();
@@ -1808,17 +1865,17 @@ header {
       else sendMsg($("inp").value);
     } else if (act === "copy-msg") {
       const c = curC();
-      const m = c?.messages[Number(btn.dataset.midx)];
-      if (m) copyFallback(m.text || "", btn);
+      const m = c && c.messages[Number(btn.dataset.midx)];
+      if (m) copyText(m.text || "", btn);
     } else if (act === "copy-code") {
-      const code = btn.parentElement?.querySelector("code");
-      if (code) copyFallback(code.innerText, btn);
+      const code = btn.parentElement && btn.parentElement.querySelector("code");
+      if (code) copyText(code.innerText, btn);
     } else if (act === "regen") {
       regen();
     } else if (act === "open-set") {
       $("th-inp").value = document.documentElement.getAttribute("data-theme") || "dark";
       $("s-inp").value = ws.cfg.system || "";
-      $("t-inp").value = ws.cfg.temp ?? 0.7;
+      $("t-inp").value = ws.cfg.temp != null ? ws.cfg.temp : 0.7;
       $("t-val").textContent = $("t-inp").value;
       $("ov-set").classList.add("open");
     } else if (act === "close-set") {
@@ -1846,27 +1903,27 @@ header {
     }
   });
 
-  $("c-search").addEventListener("input", e => {
+  $("c-search").addEventListener("input", function(e) {
     searchQuery = e.target.value || "";
     $("c-search-clear").classList.toggle("show", Boolean(searchQuery));
     renderList();
   });
 
   const inp = $("inp");
-  inp.addEventListener("input", () => {
+  inp.addEventListener("input", function() {
     inp.style.height = "auto";
     inp.style.height = Math.min(inp.scrollHeight, 200) + "px";
     syncSendBtn();
   });
 
-  inp.addEventListener("keydown", e => {
+  inp.addEventListener("keydown", function(e) {
     if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
       e.preventDefault();
       sendMsg(inp.value);
     }
   });
 
-  document.addEventListener("keydown", e => {
+  document.addEventListener("keydown", function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       if (!busy && accs.session) {
@@ -1879,16 +1936,19 @@ header {
     }
   });
 
-  $("t-inp").addEventListener("input", e => {
+  $("t-inp").addEventListener("input", function(e) {
     $("t-val").textContent = e.target.value;
   });
-  $("g-mail").addEventListener("keydown", e => {
+
+  $("g-mail").addEventListener("keydown", function(e) {
     if (e.key === "Enter") doGoogle();
   });
-  $("in-pw").addEventListener("keydown", e => {
+
+  $("in-pw").addEventListener("keydown", function(e) {
     if (e.key === "Enter") doEmailAuth();
   });
-  $("scroll").addEventListener("click", e => {
+
+  $("scroll").addEventListener("click", function(e) {
     if (!e.target.closest("[data-act]")) $("side").classList.remove("open");
   });
 
