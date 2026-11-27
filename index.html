@@ -1,978 +1,4 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gavio AI</title>
-<style>
-/* Theme Design Tokens */
-:root[data-theme="dark"] {
-  --bg: #06070c;
-  --panel: #0d1018;
-  --panel2: #151b29;
-  --side: #040509;
-  --line: #1e2638;
-  --txt: #f3f5fa;
-  --mut: #8c96ab;
-  --acc: #6366f1;
-  --acc2: #818cf8;
-  --mint: #10b981;
-  --user: #192236;
-  --code: #04060a;
-  --err: #fb7185;
-  --errbg: #290e16;
-  color-scheme: dark;
-}
-
-:root[data-theme="light"] {
-  --bg: #f4f6fb;
-  --panel: #ffffff;
-  --panel2: #eef2f9;
-  --side: #e9eef7;
-  --line: #d5dde9;
-  --txt: #0f172a;
-  --mut: #526075;
-  --acc: #4f46e5;
-  --acc2: #4338ca;
-  --mint: #059669;
-  --user: #e0e7ff;
-  --code: #0f172a;
-  --err: #e11d48;
-  --errbg: #ffe4e6;
-  color-scheme: light;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  background: var(--bg);
-  color: var(--txt);
-  font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  display: flex;
-  overflow: hidden;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  -webkit-font-smoothing: antialiased;
-}
-
-button, input, textarea, select {
-  font: inherit;
-  color: inherit;
-}
-
-button {
-  cursor: pointer;
-  touch-action: manipulation;
-  user-select: none;
-  transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
-}
-
-button:hover {
-  filter: brightness(1.06);
-}
-
-button:active {
-  transform: scale(0.97);
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes rot {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Authentication Gate */
-#auth {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background:
-    radial-gradient(640px 300px at 50% 0%, rgba(99, 102, 241, 0.2), transparent),
-    radial-gradient(520px 280px at 85% 15%, rgba(16, 185, 129, 0.12), transparent),
-    var(--bg);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  overflow-y: auto;
-}
-
-#auth.show {
-  display: flex;
-  animation: fadeUp 0.2s ease;
-}
-
-.auth-card {
-  width: min(410px, 100%);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 22px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: auto;
-  animation: popIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.top-b {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.brand-l {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.badge {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--acc), var(--mint));
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  font-size: 17px;
-  color: #fff;
-  flex-shrink: 0;
-  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.28);
-}
-
-.top-b h1 {
-  margin: 0;
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.sub {
-  margin: 0;
-  color: var(--mut);
-  font-size: 13px;
-}
-
-.theme-pill {
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  color: var(--txt);
-  border-radius: 9px;
-  padding: 6px 11px;
-  font-size: 12.5px;
-  font-weight: 600;
-}
-
-.demo-btn {
-  width: 100%;
-  padding: 11px 14px;
-  border-radius: 11px;
-  border: 1px solid rgba(16, 185, 129, 0.45);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(99, 102, 241, 0.18));
-  font-weight: 600;
-  font-size: 13.5px;
-}
-
-.tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  background: var(--bg);
-  padding: 4px;
-  border-radius: 11px;
-  border: 1px solid var(--line);
-}
-
-.tbtn {
-  border: 0;
-  background: transparent;
-  padding: 8px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13.5px;
-  color: var(--mut);
-}
-
-.tbtn.on {
-  background: var(--panel2);
-  color: var(--txt);
-}
-
-.gbtn {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 11px;
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  font-weight: 500;
-  font-size: 13.5px;
-}
-
-.gbox {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 11px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-}
-
-.gbox.open {
-  display: flex;
-  animation: fadeUp 0.16s ease;
-}
-
-.gbox small {
-  color: var(--mut);
-  font-size: 12px;
-}
-
-.or {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--mut);
-  font-size: 12px;
-}
-
-.or::before, .or::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-
-.grp {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--mut);
-}
-
-.grp input {
-  border: 1px solid var(--line);
-  background: var(--bg);
-  border-radius: 10px;
-  padding: 9px 11px;
-  font-size: 14px;
-  width: 100%;
-  transition: border-color 0.16s ease;
-}
-
-.grp input:focus {
-  border-color: var(--acc2);
-  outline: none;
-}
-
-.go-auth {
-  width: 100%;
-  padding: 11px 14px;
-  border-radius: 11px;
-  border: 0;
-  background: linear-gradient(135deg, var(--acc), #4f46e5);
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.err-txt {
-  min-height: 18px;
-  font-size: 12.5px;
-  color: var(--err);
-}
-
-/* Main Workspace */
-#ws {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-#ws.hide {
-  display: none;
-}
-
-#side {
-  width: 270px;
-  background: var(--side);
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
-}
-
-.s-head {
-  padding: 15px 14px 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.s-head span {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-}
-
-#new-c {
-  margin: 8px 12px 8px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13.5px;
-  font-weight: 500;
-}
-
-#new-c kbd {
-  font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: var(--mut);
-  background: var(--bg);
-  padding: 2px 6px;
-  border-radius: 5px;
-  border: 1px solid var(--line);
-}
-
-.s-search {
-  margin: 0 12px 10px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.s-search input {
-  width: 100%;
-  padding: 7px 28px 7px 10px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  font-size: 13px;
-  color: var(--txt);
-  transition: border-color 0.16s ease;
-}
-
-.s-search input::placeholder {
-  color: var(--mut);
-}
-
-.s-search input:focus {
-  border-color: var(--acc2);
-  outline: none;
-}
-
-.s-clear {
-  position: absolute;
-  right: 5px;
-  border: 0;
-  background: none;
-  color: var(--mut);
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  display: none;
-}
-
-.s-clear.show {
-  display: block;
-}
-
-.s-clear:hover {
-  color: var(--txt);
-  background: var(--panel2);
-}
-
-#c-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 8px;
-}
-
-.c-empty {
-  padding: 16px 10px;
-  text-align: center;
-  color: var(--mut);
-  font-size: 12.5px;
-}
-
-.c-row {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  border-radius: 9px;
-  padding: 0 4px 0 10px;
-  margin-bottom: 2px;
-  transition: background-color 0.15s ease;
-}
-
-.c-row:hover, .c-row.on {
-  background: var(--panel2);
-}
-
-.c-row .pick {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 0;
-  border: 0;
-  background: none;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 13.5px;
-}
-
-.c-row .ren, .c-row .del {
-  border: 0;
-  background: none;
-  color: var(--mut);
-  padding: 4px 6px;
-  border-radius: 6px;
-  opacity: 0.65;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
-.c-row:hover .ren, .c-row:hover .del {
-  opacity: 1;
-}
-
-.c-row .ren:hover {
-  color: var(--acc2);
-  background: var(--panel);
-}
-
-.c-row .del:hover {
-  color: var(--err);
-  background: var(--errbg);
-}
-
-.c-ren-inp {
-  flex: 1;
-  min-width: 0;
-  margin: 4px 4px 4px 0;
-  padding: 4px 7px;
-  border-radius: 6px;
-  border: 1px solid var(--acc2);
-  background: var(--bg);
-  color: var(--txt);
-  font-size: 13px;
-}
-
-.s-foot {
-  padding: 10px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.s-foot button {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 9px;
-  border: 0;
-  background: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
-  color: var(--mut);
-  font-size: 13.5px;
-}
-
-.s-foot button:hover {
-  background: var(--panel);
-  color: var(--txt);
-}
-
-.av {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--acc), var(--mint));
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.u-nm {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--txt);
-  font-weight: 500;
-}
-
-.main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 18px;
-  border-bottom: 1px solid var(--line);
-  background: var(--panel);
-}
-
-#m-btn {
-  display: none;
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  border-radius: 8px;
-  padding: 5px 10px;
-}
-
-#c-title {
-  font-weight: 600;
-  font-size: 14.5px;
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.h-btn {
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  color: var(--txt);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-#m-pill {
-  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: var(--mint);
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  border-radius: 999px;
-  padding: 3px 11px;
-}
-
-#scroll {
-  flex: 1;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
-
-.col {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 24px 20px 14px;
-}
-
-.empty {
-  padding-top: 9vh;
-  animation: fadeUp 0.25s ease;
-}
-
-.empty h1 {
-  margin: 0 0 8px;
-  font-size: clamp(28px, 4.5vw, 38px);
-  letter-spacing: -0.02em;
-}
-
-.empty p {
-  margin: 0 0 20px;
-  color: var(--mut);
-  max-width: 48ch;
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.chip {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  border-radius: 11px;
-  padding: 9px 14px;
-  font-size: 13.5px;
-  text-align: left;
-}
-
-.chip:hover {
-  border-color: var(--acc2);
-  background: var(--panel2);
-  transform: translateY(-1px);
-}
-
-.msg {
-  margin: 0 0 20px;
-  animation: fadeUp 0.18s ease;
-}
-
-.msg.u {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.msg.u .b {
-  background: var(--user);
-  border: 1px solid var(--line);
-  padding: 10px 15px;
-  border-radius: 16px 16px 4px 16px;
-  max-width: 82%;
-  white-space: pre-wrap;
-  font-size: 14.5px;
-}
-
-.msg.a {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.msg.a .w {
-  min-width: 0;
-  flex: 1;
-}
-
-.md > :first-child {
-  margin-top: 0;
-}
-
-.md > :last-child {
-  margin-bottom: 0;
-}
-
-.md p, .md ul, .md ol, .md pre, .md blockquote {
-  margin: 0 0 12px;
-}
-
-.md h1, .md h2, .md h3 {
-  margin: 14px 0 8px;
-  line-height: 1.3;
-}
-
-.md a {
-  color: var(--acc2);
-}
-
-.md pre {
-  position: relative;
-  background: var(--code);
-  border-radius: 11px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-}
-
-.md pre code {
-  display: block;
-  background: none;
-  padding: 14px;
-  overflow-x: auto;
-  color: #e6ecff;
-  font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-.md code {
-  font: 13px ui-monospace, SFMono-Regular, Menlo, monospace;
-  background: var(--panel2);
-  padding: 2px 6px;
-  border-radius: 5px;
-}
-
-.cp {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  color: #f3f5fa;
-  border-radius: 7px;
-  padding: 3px 9px;
-  font-size: 12px;
-}
-
-.acts {
-  display: flex;
-  gap: 4px;
-  margin-top: 6px;
-}
-
-.acts button {
-  border: 0;
-  background: none;
-  color: var(--mut);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 12.5px;
-}
-
-.acts button:hover {
-  background: var(--panel2);
-  color: var(--txt);
-}
-
-.cursor {
-  display: inline-block;
-  width: 7px;
-  height: 15px;
-  background: var(--acc2);
-  vertical-align: middle;
-  margin-left: 3px;
-  border-radius: 2px;
-  animation: blink 0.75s infinite;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: var(--mut);
-  margin-bottom: 8px;
-}
-
-.pill.done {
-  opacity: 0.75;
-}
-
-.sp {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  border: 2px solid var(--line);
-  border-top-color: var(--acc2);
-  animation: rot 0.65s linear infinite;
-}
-
-.dt {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--mint);
-}
-
-.errb {
-  background: var(--errbg);
-  color: var(--err);
-  padding: 10px 14px;
-  border-radius: 10px;
-  margin-top: 8px;
-  font-size: 13.5px;
-  white-space: pre-wrap;
-}
-
-.comp {
-  padding: 0 20px 18px;
-  background: var(--bg);
-}
-
-.cbox {
-  max-width: 760px;
-  margin: 0 auto;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 8px 8px 8px 16px;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease;
-}
-
-.cbox:focus-within {
-  border-color: var(--acc2);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
-}
-
-#inp {
-  flex: 1;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  resize: none;
-  max-height: 200px;
-  padding: 6px 0;
-  outline: none;
-}
-
-#send {
-  border: 0;
-  background: var(--acc);
-  color: #fff;
-  border-radius: 11px;
-  width: 36px;
-  height: 36px;
-  font-size: 17px;
-  flex-shrink: 0;
-  font-weight: 700;
-}
-
-#send.dim {
-  opacity: 0.45;
-}
-
-.hint {
-  text-align: center;
-  color: var(--mut);
-  font-size: 12px;
-  margin-top: 7px;
-}
-
-.ov {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.ov.open {
-  display: flex;
-  animation: fadeUp 0.16s ease;
-}
-
-.mcard {
-  width: min(420px, 100%);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  animation: popIn 0.18s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.mcard h2 {
-  margin: 0;
-  font-size: 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.mcard label {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.mcard small {
-  color: var(--mut);
-  font-weight: 400;
-  font-size: 12px;
-}
-
-.mcard input, .mcard textarea, .mcard select {
-  border: 1px solid var(--line);
-  background: var(--bg);
-  color: inherit;
-  border-radius: 10px;
-  padding: 9px 11px;
-  font: inherit;
-  width: 100%;
-}
-
-.mrow {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
-.b2 {
-  border: 1px solid var(--line);
-  background: var(--panel2);
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 13.5px;
-  font-weight: 500;
-}
-
-.b1 {
-  border: 0;
-  background: var(--acc);
-  color: #fff;
-  border-radius: 10px;
-  padding: 8px 16px;
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-@media (max-width: 760px) {
-  #side {
-    position: fixed;
-    inset: 0 auto 0 0;
-    z-index: 30;
-    transform: translateX(-100%);
-  }
-  #side.open {
-    transform: none;
-  }
-  #m-btn {
-    display: block;
-  }
-  #m-pill, #new-c kbd {
-    display: none;
-  }
-}
-</style>
-</head>
-<body>
-
+<!-- ... existing code ... -->
 <!-- Authentication Modal / Gate -->
 <div id="auth" role="dialog" aria-modal="true" aria-label="Gavio AI Sign In">
   <div class="auth-card">
@@ -981,18 +7,18 @@ header {
         <div class="badge" aria-hidden="true">G</div>
         <h1>Gavio AI</h1>
       </div>
-      <button type="button" class="theme-pill" data-act="toggle-theme" aria-label="Toggle dark or light mode">☀ / ☾</button>
+      <button type="button" class="theme-pill" onclick="window.GavioApp&&window.GavioApp.act('toggle-theme',this,event)" data-act="toggle-theme" aria-label="Toggle dark or light mode">☀ / ☾</button>
     </div>
     <p class="sub">Sign in or register to open your private Gavio AI workspace.</p>
 
-    <button type="button" class="demo-btn" data-act="demo-login">⚡ Instant Demo Sign In</button>
+    <button type="button" class="demo-btn" onclick="window.GavioApp&&window.GavioApp.act('demo-login',this,event)" data-act="demo-login">⚡ Instant Demo Sign In</button>
 
     <div class="tabs" role="tablist">
-      <button type="button" class="tbtn on" id="tab-in" data-act="tab-login" role="tab" aria-selected="true">Sign In</button>
-      <button type="button" class="tbtn" id="tab-up" data-act="tab-register" role="tab" aria-selected="false">Register</button>
+      <button type="button" class="tbtn on" id="tab-in" onclick="window.GavioApp&&window.GavioApp.act('tab-login',this,event)" data-act="tab-login" role="tab" aria-selected="true">Sign In</button>
+      <button type="button" class="tbtn" id="tab-up" onclick="window.GavioApp&&window.GavioApp.act('tab-register',this,event)" data-act="tab-register" role="tab" aria-selected="false">Register</button>
     </div>
 
-    <button type="button" class="gbtn" data-act="google-open">
+    <button type="button" class="gbtn" onclick="window.GavioApp&&window.GavioApp.act('google-open',this,event)" data-act="google-open">
       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
         <path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/>
         <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/>
@@ -1006,7 +32,7 @@ header {
       <small>Enter your Google email:</small>
       <div style="display:flex;gap:8px">
         <input id="g-mail" type="email" placeholder="you@gmail.com" style="flex:1;border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 10px">
-        <button type="button" class="b1" data-act="google-go">Continue</button>
+        <button type="button" class="b1" onclick="window.GavioApp&&window.GavioApp.act('google-go',this,event)" data-act="google-go">Continue</button>
       </div>
     </div>
 
@@ -1029,7 +55,7 @@ header {
 
     <div class="err-txt" id="a-err" role="status" aria-live="polite"></div>
 
-    <button type="button" class="go-auth" id="a-go" data-act="auth-submit">Sign In</button>
+    <button type="button" class="go-auth" id="a-go" onclick="window.GavioApp&&window.GavioApp.act('auth-submit',this,event)" data-act="auth-submit">Sign In</button>
   </div>
 </div>
 
@@ -1040,27 +66,27 @@ header {
       <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px" aria-hidden="true">G</div>
       <span>Gavio AI</span>
     </div>
-    <button type="button" id="new-c" data-act="new-chat"><span>+ New chat</span><kbd>Ctrl K</kbd></button>
+    <button type="button" id="new-c" onclick="window.GavioApp&&window.GavioApp.act('new-chat',this,event)" data-act="new-chat"><span>+ New chat</span><kbd>Ctrl K</kbd></button>
     <div class="s-search">
       <input id="c-search" type="search" placeholder="Search chats…" autocomplete="off" aria-label="Search chats">
-      <button type="button" class="s-clear" id="c-search-clear" data-act="clear-search" aria-label="Clear search">✕</button>
+      <button type="button" class="s-clear" id="c-search-clear" onclick="window.GavioApp&&window.GavioApp.act('clear-search',this,event)" data-act="clear-search" aria-label="Clear search">✕</button>
     </div>
     <div id="c-list" role="list"></div>
     <div class="s-foot">
-      <button type="button" data-act="open-prof">
+      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('open-prof',this,event)" data-act="open-prof">
         <span class="av" id="s-av">D</span>
         <span class="u-nm" id="s-nm">Demo User</span>
       </button>
-      <button type="button" data-act="open-set">⚙ Settings</button>
-      <button type="button" data-act="sign-out" style="color:var(--err)">↪ Sign out</button>
+      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('open-set',this,event)" data-act="open-set">⚙ Settings</button>
+      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('sign-out',this,event)" data-act="sign-out" style="color:var(--err)">↪ Sign out</button>
     </div>
   </aside>
 
   <div class="main">
     <header>
-      <button type="button" id="m-btn" data-act="toggle-side" aria-label="Toggle sidebar">☰</button>
+      <button type="button" id="m-btn" onclick="window.GavioApp&&window.GavioApp.act('toggle-side',this,event)" data-act="toggle-side" aria-label="Toggle sidebar">☰</button>
       <div id="c-title">New chat</div>
-      <button type="button" class="h-btn" id="theme-btn" data-act="toggle-theme">Light Mode</button>
+      <button type="button" class="h-btn" id="theme-btn" onclick="window.GavioApp&&window.GavioApp.act('toggle-theme',this,event)" data-act="toggle-theme">Light Mode</button>
       <span id="m-pill">gavio-core</span>
     </header>
     <div id="scroll">
@@ -1069,7 +95,7 @@ header {
     <div class="comp">
       <div class="cbox">
         <textarea id="inp" rows="1" placeholder="Message Gavio AI…" aria-label="Message Gavio AI"></textarea>
-        <button type="button" id="send" class="dim" data-act="send-or-stop" aria-label="Send message">↑</button>
+        <button type="button" id="send" class="dim" onclick="window.GavioApp&&window.GavioApp.act('send-or-stop',this,event)" data-act="send-or-stop" aria-label="Send message">↑</button>
       </div>
       <div class="hint">Enter to send · Shift+Enter for new line</div>
     </div>
@@ -1079,7 +105,7 @@ header {
 <!-- Settings Modal -->
 <div class="ov" id="ov-set" role="dialog" aria-modal="true" aria-label="Settings">
   <div class="mcard">
-    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-set" aria-label="Close settings">✕</button></h2>
+    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" onclick="window.GavioApp&&window.GavioApp.act('close-set',this,event)" data-act="close-set" aria-label="Close settings">✕</button></h2>
     <label>Appearance
       <select id="th-inp">
         <option value="dark">Dark Mode</option>
@@ -1093,8 +119,8 @@ header {
       <input id="t-inp" type="range" min="0" max="2" step="0.1" value="0.7">
     </label>
     <div class="mrow">
-      <button type="button" class="b2" data-act="close-set">Cancel</button>
-      <button type="button" class="b1" data-act="save-set">Save</button>
+      <button type="button" class="b2" onclick="window.GavioApp&&window.GavioApp.act('close-set',this,event)" data-act="close-set">Cancel</button>
+      <button type="button" class="b1" onclick="window.GavioApp&&window.GavioApp.act('save-set',this,event)" data-act="save-set">Save</button>
     </div>
   </div>
 </div>
@@ -1102,7 +128,7 @@ header {
 <!-- Profile Modal -->
 <div class="ov" id="ov-prof" role="dialog" aria-modal="true" aria-label="Profile">
   <div class="mcard">
-    <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-prof" aria-label="Close profile">✕</button></h2>
+    <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" onclick="window.GavioApp&&window.GavioApp.act('close-prof',this,event)" data-act="close-prof" aria-label="Close profile">✕</button></h2>
     <div style="display:flex;align-items:center;gap:12px">
       <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">D</div>
       <div>
@@ -1112,7 +138,7 @@ header {
     </div>
     <small>Chats and settings are scoped strictly to this signed-in account.</small>
     <div class="mrow">
-      <button type="button" class="b2" data-act="sign-out" style="color:var(--err);border-color:var(--err)">Sign out</button>
+      <button type="button" class="b2" onclick="window.GavioApp&&window.GavioApp.act('sign-out',this,event)" data-act="sign-out" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
   </div>
 </div>
@@ -1161,16 +187,16 @@ header {
   function applyTheme(t) {
     const mode = t === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", mode);
-    wr("gavio_theme_v7", mode);
+    wr("gavio_theme_v8", mode);
     const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v7") || "dark");
+  applyTheme(rd("gavio_theme_v8") || "dark");
 
   /* Account and isolated session store */
   let accs = { users: {}, session: null };
   try {
-    const raw = rd("gavio_accs_v7");
+    const raw = rd("gavio_accs_v8");
     const parsed = raw ? JSON.parse(raw) : null;
     if (parsed && typeof parsed === "object") {
       accs.users = parsed.users && typeof parsed.users === "object" ? parsed.users : {};
@@ -1179,14 +205,14 @@ header {
   } catch (_) {}
 
   function saveAccs() {
-    wr("gavio_accs_v7", JSON.stringify(accs));
+    wr("gavio_accs_v8", JSON.stringify(accs));
   }
 
   const defCfg = { system: "", temp: 0.7 };
   let ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
 
   function userBucketKey(email) {
-    return "gavio_u_" + encodeURIComponent(String(email).trim().toLowerCase());
+    return "gavio_u8_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
   function loadWs() {
@@ -1216,6 +242,7 @@ header {
 
   let busy = false;
   let abortFlag = false;
+  let activeController = null;
   let liveMd = null;
   let livePill = null;
   let raf = 0;
@@ -1231,7 +258,7 @@ header {
       const idx = blocks.length;
       blocks.push(
         '<pre><code class="lang-' + esc(lang) + '">' + esc(code.replace(/\n$/, "")) + '</code>' +
-        '<button type="button" class="cp" data-act="copy-code">Copy</button></pre>'
+        '<button type="button" class="cp" onclick="window.GavioApp&&window.GavioApp.act(\'copy-code\',this,event)" data-act="copy-code">Copy</button></pre>'
       );
       return "\u0000BLOCK" + idx + "\u0000";
     });
@@ -1284,6 +311,7 @@ header {
     if (tl.indexOf("```") !== -1) return "Writing code";
     if (/\b(code|script|python|js|html|css|json|function)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
     if (/\b(command|terminal|shell|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting command" : "Preparing command";
+    if (/\b(what is|define|meaning|explain|who is|why|how does)\b/.test(pl)) return t ? "Answering question" : "Looking up answer";
     return t ? "Streaming response" : "Thinking";
   }
 
@@ -1315,6 +343,7 @@ header {
       renderAll();
     } else {
       abortFlag = true;
+      if (activeController) { try { activeController.abort(); } catch (_) {} }
       busy = false;
       editingChatId = null;
       ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
@@ -1335,6 +364,7 @@ header {
 
   function exitApp() {
     abortFlag = true;
+    if (activeController) { try { activeController.abort(); } catch (_) {} }
     busy = false;
     $("ov-prof").classList.remove("open");
     $("ov-set").classList.remove("open");
@@ -1476,6 +506,7 @@ header {
       b.className = "pick";
       b.dataset.act = "pick-chat";
       b.dataset.cid = c.id;
+      b.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('pick-chat',this,event)");
       b.textContent = c.title || "New chat";
 
       const rn = document.createElement("button");
@@ -1483,6 +514,7 @@ header {
       rn.className = "ren";
       rn.dataset.act = "ren-chat";
       rn.dataset.cid = c.id;
+      rn.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('ren-chat',this,event)");
       rn.title = "Rename chat";
       rn.setAttribute("aria-label", "Rename chat");
       rn.textContent = "✎";
@@ -1492,6 +524,7 @@ header {
       d.className = "del";
       d.dataset.act = "del-chat";
       d.dataset.cid = c.id;
+      d.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('del-chat',this,event)");
       d.title = "Delete chat";
       d.setAttribute("aria-label", "Delete chat");
       d.textContent = "✕";
@@ -1512,18 +545,18 @@ header {
     if (!c || !c.messages.length) {
       const fn = (accs.session && accs.session.name ? accs.session.name : "there").split(" ")[0];
       const prompts = [
+        "What is evaporation?",
         "Write a Python script to parse JSON",
         "Show a Linux command to check disk space",
-        "Draft a clean README",
         "Explain async/await simply"
       ];
       box.innerHTML =
         '<div class="empty">' +
         "<h1>Hello " + esc(fn) + "</h1>" +
-        "<p>Ask Gavio AI for code, terminal commands, writing, or fast answers.</p>" +
+        "<p>Ask Gavio AI anything—science concepts, code, debugging, terminal commands, or writing.</p>" +
         '<div class="chips">' +
         prompts.map(function(q) {
-          return '<button type="button" class="chip" data-act="chip-send">' + esc(q) + "</button>";
+          return '<button type="button" class="chip" onclick="window.GavioApp&&window.GavioApp.act(\'chip-send\',this,event)" data-act="chip-send">' + esc(q) + "</button>";
         }).join("") +
         "</div></div>";
       return;
@@ -1574,12 +607,14 @@ header {
           cp.type = "button";
           cp.dataset.act = "copy-msg";
           cp.dataset.midx = String(i);
+          cp.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('copy-msg',this,event)");
           cp.textContent = "Copy";
           a.appendChild(cp);
           if (last) {
             const rg = document.createElement("button");
             rg.type = "button";
             rg.dataset.act = "regen";
+            rg.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('regen',this,event)");
             rg.textContent = "Regenerate";
             a.appendChild(rg);
           }
@@ -1624,21 +659,132 @@ header {
     });
   }
 
-  /* Smart conversational reply engine for fallback / offline mode */
-  function localSmartReply(prompt, userName) {
+  /* Extract topic from definition/question queries like "what is mean of evapouration" */
+  function extractTopic(q) {
+    const cleaned = String(q || "")
+      .replace(/[?!.]+$/g, "")
+      .replace(/^(please\s+|can you\s+|tell me\s+|explain\s+)/i, "")
+      .replace(/^(what is the meaning of|what is mean of|what does|what is|what are|define|meaning of|definition of|who is|who are)\s+/i, "")
+      .replace(/\s+mean$/i, "")
+      .replace(/^(a|an|the)\s+/i, "")
+      .trim();
+    return cleaned;
+  }
+
+  /* Tier 2: Live keyless AI completion via Pollinations text API */
+  async function fetchLiveAI(history, prompt, userName, signal) {
+    const sys = [
+      "You are Gavio AI, a sharp, friendly, and genuinely helpful assistant.",
+      "Answer the user's question directly, accurately, and naturally in Markdown.",
+      "Handle casual greetings warmly and concisely, and explain concepts or code clearly.",
+      "The user's name is " + (userName || "User") + ".",
+      ws.cfg.system && ws.cfg.system.trim() ? ("Additional user instruction: " + ws.cfg.system.trim()) : ""
+    ].filter(Boolean).join(" ");
+
+    const messagesPayload = [{ role: "system", content: sys }].concat(
+      history.slice(-10).map(function(m) {
+        return { role: m.role === "assistant" ? "assistant" : "user", content: m.text };
+      })
+    );
+
+    try {
+      const postRes = await fetch("https://text.pollinations.ai/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: signal,
+        body: JSON.stringify({
+          messages: messagesPayload,
+          model: "openai",
+          temperature: Number(ws.cfg.temp) || 0.7,
+          private: true
+        })
+      });
+      if (postRes.ok) {
+        const txt = (await postRes.text()).trim();
+        if (txt && txt.length > 1 && txt.indexOf("<!DOCTYPE") === -1) {
+          return txt;
+        }
+      }
+    } catch (err) {
+      if (err && err.name === "AbortError") throw err;
+    }
+
+    try {
+      const compactPrompt = sys + "\n\nUser: " + prompt + "\nAssistant:";
+      const getUrl = "https://text.pollinations.ai/" + encodeURIComponent(compactPrompt) +
+        "?model=openai&temperature=" + encodeURIComponent(String(Number(ws.cfg.temp) || 0.7));
+      const getRes = await fetch(getUrl, { signal: signal });
+      if (getRes.ok) {
+        const txt = (await getRes.text()).trim();
+        if (txt && txt.length > 1 && txt.indexOf("<!DOCTYPE") === -1) {
+          return txt;
+        }
+      }
+    } catch (err) {
+      if (err && err.name === "AbortError") throw err;
+    }
+
+    return null;
+  }
+
+  /* Tier 3A: Live Wikipedia REST API lookup for definitions & factual topics */
+  async function fetchWikipediaSummary(topic, signal) {
+    if (!topic || topic.length < 2 || topic.length > 80) return null;
+    try {
+      const searchUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&limit=1&namespace=0&format=json&origin=*&search=" + encodeURIComponent(topic);
+      const sRes = await fetch(searchUrl, { signal: signal });
+      if (!sRes.ok) return null;
+      const sData = await sRes.json();
+      const matchedTitle = Array.isArray(sData) && Array.isArray(sData[1]) && sData[1][0] ? sData[1][0] : topic;
+
+      const sumUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(matchedTitle.replace(/\s+/g, "_"));
+      const res = await fetch(sumUrl, { signal: signal });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data && data.extract && data.type !== "disambiguation") {
+        return {
+          title: data.title || matchedTitle,
+          extract: data.extract.trim(),
+          url: data.content_urls && data.content_urls.desktop ? data.content_urls.desktop.page : ""
+        };
+      }
+    } catch (err) {
+      if (err && err.name === "AbortError") throw err;
+    }
+    return null;
+  }
+
+  /* Tier 3B: Smart offline NLU & knowledge fallback (never robotic templates) */
+  function smartOfflineReply(prompt, userName) {
     const q = String(prompt || "").trim();
     const ql = q.toLowerCase();
     const first = (userName || "there").split(/\s+/)[0];
 
-    if (/^(hi+|hey+|hello+|yo+|sup|hola|good morning|good afternoon|good evening)[!.?]*$/i.test(ql)) {
-      return "Hey " + first + "! Great to see you. What are we building, debugging, or exploring today?\n\n" +
-        "- **Code & Scripts:** Python, JavaScript, HTML/CSS, SQL, or shell commands\n" +
-        "- **Debugging:** Paste an error or snippet and we'll pinpoint the fix\n" +
-        "- **Writing & Docs:** Clean READMEs, summaries, or outlines\n\n" +
-        "Type anything below or click one of the starter prompts!";
+    if (/^(hi+|hey+|hello+|yo+|sup|hola|salam|assalam|good morning|good afternoon|good evening)\b/i.test(ql) && q.split(/\s+/).length <= 6) {
+      return "Hey " + first + "! Doing great—what's on your mind? Ask me anything from science and coding to everyday questions.";
     }
-    if (/how are you|how's it going|what's up|whats up/i.test(ql)) {
-      return "Doing great, " + first + "—ready whenever you are! Tell me what you're working on and let's dive right in.";
+    if (/\b(wsp|wassup|what'?s up|how are you|how r u|how'?s it going)\b/i.test(ql)) {
+      return "Not much, " + first + "—just ready to help you out! What are we working on or looking up today?";
+    }
+    if (/\b(thanks|thank you|thx|tysm)\b/i.test(ql)) {
+      return "Anytime, " + first + "! Let me know whenever you want to dive into something else.";
+    }
+    if (/evap[ou]+ration/.test(ql)) {
+      return "**Evaporation** is the process where a **liquid changes into a gas (vapor)** at temperatures below its boiling point.\n\n" +
+        "### How It Works\n" +
+        "- **Surface Escape:** Molecules at the surface of a liquid absorb heat energy from their surroundings, move faster, and break free into the air as gas.\n" +
+        "- **Cooling Effect:** Because the fastest, warmest molecules leave first, the remaining liquid cools down (which is why sweat cools your skin).\n" +
+        "- **Key Factors:** Higher temperature, larger surface area, faster wind/airflow, and lower humidity all speed up evaporation.\n\n" +
+        "*Example:* Wet clothes drying in the sun or a puddle disappearing on a warm day.";
+    }
+    if (/condensation/.test(ql)) {
+      return "**Condensation** is the reverse of evaporation—when **water vapor (gas) cools down and turns back into liquid droplets**, such as water forming on the outside of a cold glass or clouds forming in the sky.";
+    }
+    if (/photosynthesis/.test(ql)) {
+      return "**Photosynthesis** is the process green plants, algae, and some bacteria use to convert **sunlight, water ($\text{H}_2\text{O}$), and carbon dioxide ($\text{CO}_2$)** into **glucose (chemical energy)** and **oxygen ($\text{O}_2$)** using chlorophyll.";
+    }
+    if (/gravity/.test(ql)) {
+      return "**Gravity** is the natural force of attraction between objects that have mass. Earth's gravity keeps us grounded, pulls objects downward when dropped, and keeps the Moon in orbit around Earth.";
     }
     if (/python.*json|parse json/.test(ql)) {
       return "Here is a clean Python snippet to read and parse JSON safely:\n\n" +
@@ -1650,42 +796,40 @@ header {
       return "Use `df -h` to inspect human-readable disk usage across mounted filesystems:\n\n" +
         "```bash\ndf -h --total\n```\n\n" +
         "- `-h` displays sizes in GB/MB instead of raw blocks.\n" +
-        "- To locate the largest folders in your current directory, run `du -sh * | sort -hr | head -n 10`.";
+        "- Run `du -sh * | sort -hr | head -n 10` to find the largest folders in your current directory.";
     }
     if (/readme/.test(ql)) {
       return "Here is a clean, ready-to-use `README.md` template:\n\n" +
-        "```markdown\n# Project Name\n\nConcise one-line overview of what this project does.\n\n## Quick Start\n1. Install dependencies\n2. Add environment variables\n3. Run the application\n```\n\n" +
-        "Share your tech stack if you want custom commands tailored to your repository.";
+        "```markdown\n# Project Name\n\nConcise overview of what this project does.\n\n## Quick Start\n1. Install dependencies\n2. Add environment variables\n3. Run the application\n```";
     }
     if (/async|await/.test(ql)) {
-      return "**`async` and `await`** let you write asynchronous code that reads like sequential code:\n\n" +
+      return "**`async` and `await`** let you write asynchronous code that reads like normal step-by-step code:\n\n" +
         "1. Marking a function `async` makes it automatically return a `Promise`.\n" +
         "2. Using `await` pauses execution inside that function until the `Promise` settles.\n\n" +
         "```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
     }
-    if (/\b(bug|error|fix|broken|issue|debug)\b/i.test(ql)) {
-      return "Let's track down **" + q + "** step by step:\n\n" +
-        "1. **Reproduce:** Check the exact input and where actual output diverges from expected output.\n" +
-        "2. **Isolate:** Narrow down the smallest function, selector, or request payload involved.\n" +
-        "3. **Verify:** Apply one focused fix and re-test.\n\n" +
-        "Paste the snippet or error message here if you want me to inspect it directly.";
+
+    const mathMatch = q.replace(/^(what is|calculate|solve)\s+/i, "").replace(/[?=\s]+$/g, "");
+    if (/^[0-9+\-*/().\s]+$/.test(mathMatch) && /[+\-*/]/.test(mathMatch)) {
+      try {
+        const val = Function('"use strict"; return (' + mathMatch + ");")();
+        if (typeof val === "number" && isFinite(val)) {
+          return "**" + mathMatch + "** equals **" + val + "**.";
+        }
+      } catch (_) {}
     }
 
-    const sysHint = ws.cfg.system && ws.cfg.system.trim()
-      ? "\n\n*Guided by your system instruction: " + ws.cfg.system.trim() + "*"
-      : "";
-    return "Here's a helpful starting point for **" + q + "**, " + first + ":\n\n" +
-      "- **Core Approach:** Break the goal into small, testable milestones so each part is verified early.\n" +
-      "- **Next Action:** Share any specific constraints, language, or example input if you want tailored code or a deeper breakdown." +
-      sysHint;
+    return "I'm currently in offline mode and couldn't reach the live AI server for **" + q + "**. Check your internet connection or Vercel `/api/chat` endpoint and click **Regenerate** for a full live answer!";
   }
 
-  /* Calls Vercel /api/chat when deployed, with seamless local fallback */
-  async function fetchReply(history, prompt, userName) {
+  /* Master 3-tier AI resolver */
+  async function fetchReply(history, prompt, userName, signal) {
+    /* Tier 1: Vercel serverless /api/chat */
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: signal,
         body: JSON.stringify({
           messages: history,
           system: ws.cfg.system || "",
@@ -1699,8 +843,26 @@ header {
           return data.reply.trim();
         }
       }
-    } catch (_) {}
-    return localSmartReply(prompt, userName);
+    } catch (err) {
+      if (err && err.name === "AbortError") throw err;
+    }
+
+    /* Tier 2: Live keyless AI completion endpoint */
+    const liveReply = await fetchLiveAI(history, prompt, userName, signal);
+    if (liveReply) return liveReply;
+
+    /* Tier 3A: Live Wikipedia summary for factual/definition queries */
+    const topic = extractTopic(prompt);
+    if (topic && /\b(what|define|meaning|definition|explain|who)\b/i.test(prompt)) {
+      const wiki = await fetchWikipediaSummary(topic, signal);
+      if (wiki && wiki.extract) {
+        const link = wiki.url ? ("\n\n[Read more on Wikipedia](" + wiki.url + ")") : "";
+        return "**" + wiki.title + "**\n\n" + wiki.extract + link;
+      }
+    }
+
+    /* Tier 3B: Smart offline NLU fallback */
+    return smartOfflineReply(prompt, userName);
   }
 
   async function runGen(c, prompt) {
@@ -1712,6 +874,7 @@ header {
     m.step = stepText(prompt, "");
     delete m.error;
     abortFlag = false;
+    activeController = new AbortController();
     busy = true;
     renderAll();
 
@@ -1720,19 +883,36 @@ header {
       .filter(function(x) { return x && typeof x.text === "string" && x.text.trim(); })
       .map(function(x) { return { role: x.role, text: x.text }; });
 
-    const fullText = await fetchReply(history, prompt, ownerName);
-    const chunks = fullText.match(/.{1,6}/gs) || [fullText];
+    let fullText = "";
+    try {
+      fullText = await fetchReply(history, prompt, ownerName, activeController.signal);
+    } catch (err) {
+      if (err && err.name === "AbortError") {
+        busy = false;
+        activeController = null;
+        if (accs.session && accs.session.email === ownerEmail) {
+          m.step = "Stopped";
+          saveWs();
+          renderAll();
+        }
+        return;
+      }
+      fullText = smartOfflineReply(prompt, ownerName);
+    }
+
+    const chunks = fullText.match(/.{1,8}/gs) || [fullText];
 
     try {
       for (let i = 0; i < chunks.length; i++) {
         if (abortFlag || !accs.session || accs.session.email !== ownerEmail) break;
         m.text += chunks[i];
         queueDraw(m, prompt);
-        await new Promise(function(r) { setTimeout(r, 10); });
+        await new Promise(function(r) { setTimeout(r, 8); });
       }
       m.step = "Done";
     } finally {
       busy = false;
+      activeController = null;
       if (accs.session && accs.session.email === ownerEmail) {
         saveWs();
         renderAll();
@@ -1796,11 +976,8 @@ header {
     }
   }
 
-  /* Single delegated click listener for every [data-act] button */
-  document.addEventListener("click", function(e) {
-    const btn = e.target.closest("[data-act]");
-    if (!btn) return;
-    const act = btn.dataset.act;
+  function handleAction(act, btn, ev) {
+    if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
 
     if (act === "toggle-theme") {
       const cur = document.documentElement.getAttribute("data-theme");
@@ -1824,6 +1001,7 @@ header {
       doEmailAuth();
     } else if (act === "new-chat") {
       abortFlag = true;
+      if (activeController) { try { activeController.abort(); } catch (_) {} }
       busy = false;
       editingChatId = null;
       ws.active = null;
@@ -1861,8 +1039,12 @@ header {
     } else if (act === "chip-send") {
       sendMsg(btn.textContent);
     } else if (act === "send-or-stop") {
-      if (busy) abortFlag = true;
-      else sendMsg($("inp").value);
+      if (busy) {
+        abortFlag = true;
+        if (activeController) { try { activeController.abort(); } catch (_) {} }
+      } else {
+        sendMsg($("inp").value);
+      }
     } else if (act === "copy-msg") {
       const c = curC();
       const m = c && c.messages[Number(btn.dataset.midx)];
@@ -1901,6 +1083,16 @@ header {
     } else if (act === "sign-out") {
       exitApp();
     }
+  }
+
+  window.GavioApp = { act: handleAction };
+
+  /* Delegated click listener as secondary fallback */
+  document.addEventListener("click", function(e) {
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    if (btn.hasAttribute("onclick")) return;
+    handleAction(btn.dataset.act, btn, e);
   });
 
   $("c-search").addEventListener("input", function(e) {
@@ -1952,7 +1144,11 @@ header {
     if (!e.target.closest("[data-act]")) $("side").classList.remove("open");
   });
 
-  applyAuth();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyAuth);
+  } else {
+    applyAuth();
+  }
 })();
 </script>
 </body>
