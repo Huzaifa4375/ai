@@ -1,63 +1,57 @@
 <!doctype html>
-<html lang="en" data-theme="dark" style="background:#0b0d12;color:#f3f5fa">
+<html lang="en" data-theme="dark" style="background:#0b0d12;color:#eef1f8">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gavio AI</title>
 <style>
-/* Dark-First & Light Mode Design Tokens */
 :root[data-theme="dark"]{
   --bg:#0b0d12;
-  --panel:#131620;
-  --panel2:#1b202e;
-  --side:#080a0f;
-  --line:#252b3d;
-  --txt:#f3f5fa;
-  --mut:#949db3;
+  --panel:#121620;
+  --panel2:#1a202e;
+  --side:#080a0e;
+  --line:#242c3d;
+  --txt:#eef1f8;
+  --mut:#949eb3;
   --acc:#6366f1;
   --acc2:#818cf8;
   --mint:#10b981;
-  --user:#1e2538;
-  --code:#07090e;
+  --user:#1d2538;
+  --code:#07090d;
   --err:#fb7185;
-  --errbg:#2b1019;
-  --shadow:0 24px 56px rgba(0,0,0,.6);
+  --errbg:#2b1018;
   color-scheme:dark;
 }
 :root[data-theme="light"]{
-  --bg:#f8fafc;
+  --bg:#f5f7fb;
   --panel:#ffffff;
-  --panel2:#f1f5f9;
-  --side:#f1f5f9;
-  --line:#e2e8f0;
+  --panel2:#edf1f8;
+  --side:#e8edf6;
+  --line:#d4dce9;
   --txt:#0f172a;
-  --mut:#64748b;
+  --mut:#526075;
   --acc:#4f46e5;
   --acc2:#4338ca;
   --mint:#059669;
-  --user:#eef2ff;
+  --user:#e0e7ff;
   --code:#0f172a;
   --err:#e11d48;
   --errbg:#ffe4e6;
-  --shadow:0 20px 48px rgba(15,23,42,.12);
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  color:var(--txt);
-  font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+html,body{height:100%;margin:0;background:var(--bg);color:var(--txt)}
+body{
+  font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  display:flex;
   overflow:hidden;
-  -webkit-font-smoothing:antialiased;
+  transition:background-color .2s ease,color .2s ease;
 }
-body{display:flex;transition:background-color .2s ease,color .2s ease}
 button,input,textarea,select{font:inherit;color:inherit}
 button{
   cursor:pointer;
   touch-action:manipulation;
-  transition:transform .12s ease,background-color .16s ease,border-color .16s ease,opacity .16s ease,box-shadow .16s ease;
+  transition:transform .12s ease,background-color .16s ease,border-color .16s ease,opacity .16s ease;
 }
 button:hover{filter:brightness(1.06)}
 button:active{transform:scale(.97)}
@@ -67,25 +61,10 @@ button:active{transform:scale(.97)}
 @keyframes rot{to{transform:rotate(360deg)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* Brand Gradient & Badges */
-.badge{
-  width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,#6366f1 0%,#38bdf8 52%,#10b981 100%);
-  display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;
-  box-shadow:0 4px 14px rgba(99,102,241,.35);
-}
-.grad-txt{
-  background:linear-gradient(120deg,#818cf8 0%,#38bdf8 50%,#34d399 100%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-
-/* Authentication Screen */
 #auth{
-  position:fixed;inset:0;z-index:9000;
+  position:fixed;inset:0;z-index:9999;
   background:
-    radial-gradient(680px 320px at 50% 0%, rgba(99,102,241,.18), transparent),
+    radial-gradient(640px 300px at 50% 0%, rgba(99,102,241,.22), transparent),
     radial-gradient(520px 280px at 85% 15%, rgba(16,185,129,.12), transparent),
     var(--bg);
   display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto;
@@ -96,138 +75,84 @@ button:active{transform:scale(.97)}
   width:min(410px,100%);
   background:var(--panel);
   border:1px solid var(--line);
-  border-radius:22px;
+  border-radius:20px;
   padding:24px;
-  box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:13px;
+  box-shadow:0 24px 64px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;gap:12px;
   margin:auto;
   animation:popIn .22s ease;
 }
 .top-b{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand-l{display:flex;align-items:center;gap:10px}
-.top-b h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.02em}
-.sub{margin:0;color:var(--mut);font-size:13.5px}
+.badge{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--acc),var(--mint));
+  display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;
+}
+.top-b h1{margin:0;font-size:21px;font-weight:700}
+.sub{margin:0;color:var(--mut);font-size:13px}
 
 .theme-pill{
   border:1px solid var(--line);background:var(--panel2);color:var(--txt);
-  border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;
+  border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:600;
 }
 
 .demo-btn{
-  width:100%;padding:11px 14px;border-radius:12px;
+  width:100%;padding:10.5px 14px;border-radius:11px;
   border:1px solid rgba(16,185,129,.45);
-  background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(99,102,241,.16));
+  background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(99,102,241,.18));
   font-weight:600;font-size:13.5px;
 }
 
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:12px;border:1px solid var(--line)}
-.tbtn{border:0;background:transparent;padding:8px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--mut)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
+.tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
 .tbtn.on{background:var(--panel2);color:var(--txt)}
 
 .gbtn{
-  width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);
-  background:var(--panel2);display:flex;align-items:center;justify-content:center;gap:10px;
-  font-weight:600;font-size:13.5px;
+  width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel2);display:flex;align-items:center;justify-content:center;gap:9px;
+  font-weight:500;font-size:13.5px;
 }
 
 .or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 
-.grp{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:500;color:var(--mut)}
+.grp{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:500;color:var(--mut)}
 .grp input{
-  border:1px solid var(--line);background:var(--bg);border-radius:11px;
-  padding:10px 12px;font-size:14px;width:100%;color:var(--txt);
+  border:1px solid var(--line);background:var(--bg);border-radius:10px;
+  padding:9px 11px;font-size:14px;width:100%;
 }
 .grp input:focus{border-color:var(--acc2);outline:none}
 
 .go-auth{
-  width:100%;padding:11px 14px;border-radius:12px;border:0;
+  width:100%;padding:10.5px 14px;border-radius:11px;border:0;
   background:linear-gradient(135deg,var(--acc),#4f46e5);
   color:#fff;font-weight:600;font-size:14px;
 }
 .err-txt{min-height:18px;font-size:12.5px;color:var(--err)}
 
-/* Multi-Step Google Sign-In Modal */
-#ov-google{
-  position:fixed;inset:0;z-index:9500;
-  background:rgba(0,0,0,.74);
-  backdrop-filter:blur(4px);
-  display:none;align-items:center;justify-content:center;padding:16px;
-}
-#ov-google.open{display:flex;animation:fadeUp .16s ease}
-.g-modal{
-  width:min(404px,100%);
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:24px;
-  box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:14px;
-  animation:popIn .18s ease;
-}
-.g-head{display:flex;align-items:center;justify-content:space-between}
-.g-title-wrap{display:flex;align-items:center;gap:10px}
-.g-title-wrap h3{margin:0;font-size:17px;font-weight:700}
-.g-sub{margin:0;color:var(--mut);font-size:13px}
-.g-steps-bar{display:flex;gap:6px}
-.g-dot{flex:1;height:3px;border-radius:99px;background:var(--line);transition:background-color .2s}
-.g-dot.on{background:var(--acc2)}
-.g-acc-list{display:flex;flex-direction:column;gap:7px}
-.g-acc-item{
-  width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);
-  background:var(--panel2);display:flex;align-items:center;gap:11px;text-align:left;
-}
-.g-acc-item:hover{border-color:var(--acc2)}
-.g-acc-info{min-width:0;flex:1}
-.g-acc-name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.g-acc-mail{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.g-pill-user{
-  display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;
-  border:1px solid var(--line);background:var(--panel2);font-size:12.5px;font-weight:500;align-self:flex-start;
-}
-.g-code-box{
-  display:flex;flex-direction:column;gap:9px;padding:12px;border-radius:12px;
-  background:var(--bg);border:1px solid var(--line);
-}
-.g-code-banner{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  font-size:12px;color:var(--mint);background:rgba(16,185,129,.1);
-  border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:7px 10px;
-}
-.g-code-inp{
-  letter-spacing:.35em;text-align:center;font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace;
-  padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--txt);width:100%;
-}
-.g-code-inp:focus{border-color:var(--acc2);outline:none}
-.g-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
-
-/* Workspace Layout */
 #ws{display:flex;width:100%;height:100%}
 #ws.hide{display:none}
 
 #side{
-  width:272px;background:var(--side);border-right:1px solid var(--line);
+  width:270px;background:var(--side);border-right:1px solid var(--line);
   display:flex;flex-direction:column;flex-shrink:0;
-  transition:transform .22s ease,width .22s ease,background-color .2s ease;
+  transition:transform .22s ease,background-color .2s ease;
 }
-#side.collapsed{width:0;overflow:hidden;border-right:0}
-
-.s-head{padding:15px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.s-brand{display:flex;align-items:center;gap:10px}
-.s-brand span{font-weight:700;font-size:17.5px;letter-spacing:-.02em}
-
+.s-head{padding:15px 14px 8px;display:flex;align-items:center;gap:10px}
+.s-head span{font-weight:700;font-size:18px}
 #new-c{
-  margin:8px 12px 8px;padding:10px 13px;border-radius:12px;
+  margin:8px 12px 8px;padding:9px 12px;border-radius:10px;
   border:1px solid var(--line);background:var(--panel);
-  display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:500;
 }
-#new-c:hover{border-color:var(--acc2)}
-#new-c kbd{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);background:var(--bg);padding:2px 6px;border-radius:6px;border:1px solid var(--line)}
+#new-c kbd{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);background:var(--bg);padding:2px 6px;border-radius:5px;border:1px solid var(--line)}
 
-/* Sidebar Search */
-.s-search{margin:0 12px 10px;position:relative;display:flex;align-items:center}
+.s-search{
+  margin:0 12px 10px;position:relative;display:flex;align-items:center;
+}
 .s-search input{
-  width:100%;padding:8px 30px 8px 11px;border-radius:10px;
+  width:100%;padding:7px 28px 7px 10px;border-radius:9px;
   border:1px solid var(--line);background:var(--panel);
   font-size:13px;color:var(--txt);
 }
@@ -241,90 +166,84 @@ button:active{transform:scale(.97)}
 .s-clear:hover{color:var(--txt);background:var(--panel2)}
 
 #c-list{flex:1;overflow-y:auto;padding:0 8px}
-.c-empty{padding:16px 10px;text-align:center;color:var(--mut);font-size:12.5px}
-.c-row{display:flex;align-items:center;gap:2px;border-radius:10px;padding:0 4px 0 10px;margin-bottom:2px}
+.c-empty{padding:14px 10px;text-align:center;color:var(--mut);font-size:12.5px}
+.c-row{display:flex;align-items:center;gap:2px;border-radius:9px;padding:0 4px 0 10px;margin-bottom:2px}
 .c-row:hover,.c-row.on{background:var(--panel2)}
-.c-row .pick{flex:1;min-width:0;padding:8.5px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+.c-row .pick{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
 .c-row .ren,.c-row .del{border:0;background:none;color:var(--mut);padding:4px 6px;border-radius:6px;opacity:.65;font-size:12px;flex-shrink:0}
 .c-row:hover .ren,.c-row:hover .del{opacity:1}
 .c-row .ren:hover{color:var(--acc2);background:var(--panel)}
 .c-row .del:hover{color:var(--err);background:var(--errbg)}
 .c-ren-inp{
-  flex:1;min-width:0;margin:4px 4px 4px 0;padding:5px 8px;border-radius:7px;
+  flex:1;min-width:0;margin:4px 4px 4px 0;padding:4px 7px;border-radius:6px;
   border:1px solid var(--acc2);background:var(--bg);color:var(--txt);font-size:13px;
 }
 
 .s-foot{padding:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
 .s-foot button{
-  width:100%;padding:8.5px 10px;border-radius:10px;border:0;background:none;
+  width:100%;padding:8px 10px;border-radius:9px;border:0;background:none;
   display:flex;align-items:center;gap:10px;text-align:left;color:var(--mut);font-size:13.5px;
 }
 .s-foot button:hover{background:var(--panel);color:var(--txt)}
 .av{
-  width:25px;height:25px;border-radius:50%;
+  width:24px;height:24px;border-radius:50%;
   background:linear-gradient(135deg,var(--acc),var(--mint));
   color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;
 }
 .u-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt);font-weight:500}
 
-/* Main Content Area */
-.main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%;background:var(--bg)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
 header{
-  display:flex;align-items:center;gap:10px;padding:12px 18px;
-  border-bottom:1px solid var(--line);background:var(--bg);
+  display:flex;align-items:center;gap:10px;padding:11px 18px;
+  border-bottom:1px solid var(--line);background:var(--panel);
 }
-#m-btn{
-  border:1px solid var(--line);background:var(--panel);border-radius:9px;
-  padding:5px 10px;font-size:14px;
-}
+#m-btn{display:none;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:5px 10px}
 #c-title{font-weight:600;font-size:14.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .h-btn{
-  border:1px solid var(--line);background:var(--panel);color:var(--txt);
-  border-radius:999px;padding:5px 13px;font-size:12px;font-weight:600;
+  border:1px solid var(--line);background:var(--panel2);color:var(--txt);
+  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;
 }
 #m-pill{
   font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mint);
   background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);
-  border-radius:999px;padding:4px 12px;font-weight:600;
+  border-radius:999px;padding:3px 11px;
 }
 
 #scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
-.col{max-width:780px;margin:0 auto;padding:24px 20px 18px}
+.col{max-width:780px;margin:0 auto;padding:24px 20px 14px}
 
-/* Centered Hero Greeting & Prompt Cards */
 .empty{padding-top:8vh;animation:fadeUp .25s ease}
-.empty h1{margin:0 0 8px;font-size:clamp(30px,4.8vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.15}
-.empty .hero-sub{margin:0 0 26px;color:var(--mut);font-size:16px;max-width:52ch}
-.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.empty h1{
+  margin:0 0 8px;
+  font-size:clamp(28px,4.5vw,40px);
+  background:linear-gradient(135deg,var(--txt),var(--acc2));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.empty p{margin:0 0 22px;color:var(--mut);max-width:52ch;font-size:15px}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .chip{
-  border:1px solid var(--line);background:var(--panel);border-radius:15px;
-  padding:14px 16px;font-size:13.5px;text-align:left;
-  display:flex;flex-direction:column;gap:5px;
+  border:1px solid var(--line);background:var(--panel);border-radius:14px;
+  padding:13px 15px;font-size:13.5px;text-align:left;line-height:1.45;
 }
 .chip:hover{border-color:var(--acc2);background:var(--panel2);transform:translateY(-1px)}
-.chip-kicker{font-size:11.5px;font-weight:600;color:var(--acc2);text-transform:uppercase;letter-spacing:.04em}
-.chip-txt{color:var(--txt);font-weight:500}
 
-/* Chat Messages */
-.msg{margin:0 0 22px;animation:fadeUp .18s ease}
+.msg{margin:0 0 20px;animation:fadeUp .18s ease}
 .msg.u{display:flex;justify-content:flex-end}
-.msg.u .b{
-  background:var(--user);border:1px solid var(--line);
-  padding:11px 16px;border-radius:20px 20px 6px 20px;max-width:82%;
-  white-space:pre-wrap;font-size:14.5px;
-}
-.msg.a{display:flex;gap:13px;align-items:flex-start}
+.msg.u .b{background:var(--user);border:1px solid var(--line);padding:10px 15px;border-radius:18px 18px 4px 18px;max-width:82%;white-space:pre-wrap;font-size:14.5px}
+.msg.a{display:flex;gap:12px;align-items:flex-start}
 .msg.a .w{min-width:0;flex:1}
 .md>:first-child{margin-top:0}.md>:last-child{margin-bottom:0}
 .md p,.md ul,.md ol,.md pre,.md table,.md blockquote{margin:0 0 12px}
 .md h1,.md h2,.md h3{margin:14px 0 8px;line-height:1.3}
 .md a{color:var(--acc2)}
-.md pre{position:relative;background:var(--code);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.md pre{position:relative;background:var(--code);border-radius:11px;overflow:hidden;border:1px solid var(--line)}
 .md pre code{display:block;background:none;padding:14px;overflow-x:auto;color:#e6ecff;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
 .md code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--panel2);padding:2px 6px;border-radius:5px}
 .cp{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--panel2);color:#f3f5fa;border-radius:7px;padding:3px 9px;font-size:12px}
 .acts{display:flex;gap:4px;margin-top:6px}
-.acts button{border:0;background:none;color:var(--mut);padding:4px 9px;border-radius:7px;font-size:12.5px}
+.acts button{border:0;background:none;color:var(--mut);padding:3px 8px;border-radius:6px;font-size:12.5px}
 .acts button:hover{background:var(--panel2);color:var(--txt)}
 
 .cursor{display:inline-block;width:7px;height:15px;background:var(--acc2);vertical-align:middle;margin-left:3px;border-radius:2px;animation:blink .75s infinite}
@@ -335,27 +254,17 @@ header{
 .dt{width:8px;height:8px;border-radius:50%;background:var(--mint)}
 .errb{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:13.5px;white-space:pre-wrap}
 
-/* Floating Pill Message Composer */
-.comp{padding:4px 20px 18px;background:var(--bg)}
-.cbox{
-  max-width:780px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
-  border-radius:24px;display:flex;align-items:flex-end;gap:10px;padding:10px 10px 10px 18px;
-  box-shadow:0 8px 28px rgba(0,0,0,.22);
-}
+.comp{padding:0 20px 18px;background:var(--bg)}
+.cbox{max-width:780px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;display:flex;align-items:flex-end;gap:8px;padding:9px 10px 9px 18px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
 .cbox:focus-within{border-color:var(--acc2)}
 #inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:6px 0;outline:none}
-#send{
-  border:0;background:var(--acc);color:#fff;border-radius:50%;
-  width:38px;height:38px;font-size:17px;flex-shrink:0;font-weight:700;
-  display:grid;place-items:center;
-}
+#send{border:0;background:var(--acc);color:#fff;border-radius:50%;width:36px;height:36px;font-size:17px;flex-shrink:0;font-weight:700}
 #send.dim{opacity:.45}
-.hint{text-align:center;color:var(--mut);font-size:12px;margin-top:8px}
+.hint{text-align:center;color:var(--mut);font-size:12px;margin-top:7px}
 
-/* Settings & Profile Modals */
-.ov{position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,.68);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:16px}
+.ov{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
 .ov.open{display:flex;animation:fadeUp .16s ease}
-.mcard{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;animation:popIn .18s ease;box-shadow:var(--shadow)}
+.mcard{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px;animation:popIn .18s ease;box-shadow:0 24px 60px rgba(0,0,0,.5)}
 .mcard h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 .mcard label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500}
 .mcard small{color:var(--mut);font-weight:400;font-size:12px}
@@ -364,167 +273,98 @@ header{
 .b2{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 14px;font-size:13.5px;font-weight:500}
 .b1{border:0;background:var(--acc);color:#fff;border-radius:10px;padding:8px 16px;font-size:13.5px;font-weight:600}
 
+.g-acc-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
+  border:1px solid var(--line);background:var(--bg);text-align:left;width:100%;
+}
+.g-acc-item:hover{border-color:var(--acc2);background:var(--panel2)}
+.g-code-row{display:flex;gap:8px;align-items:center}
+.g-code-row input{letter-spacing:4px;font-weight:700;text-align:center;font-size:16px}
+
 @media (max-width:760px){
-  #side{position:fixed;inset:0 auto 0 0;z-index:40;transform:translateX(-100%);width:272px}
-  #side.collapsed{width:272px;transform:translateX(-100%)}
+  #side{position:fixed;inset:0 auto 0 0;z-index:30;transform:translateX(-100%)}
   #side.open{transform:none}
+  #m-btn{display:block}
   #m-pill,#new-c kbd{display:none}
-  .chips{grid-template-columns:1fr}
 }
 </style>
 </head>
-<body style="background:#0b0d12;color:#f3f5fa">
+<body style="background:#0b0d12;color:#eef1f8">
 
-<!-- Authentication Gate -->
-<div id="auth" role="dialog" aria-modal="true" aria-label="Gavio AI Sign In">
+<div id="auth">
   <div class="auth-card">
     <div class="top-b">
       <div class="brand-l">
-        <div class="badge" aria-hidden="true">G</div>
+        <div class="badge">G</div>
         <h1>Gavio AI</h1>
       </div>
-      <button type="button" class="theme-pill" onclick="window.GavioApp&&window.GavioApp.act('toggle-theme',this,event)" data-act="toggle-theme" aria-label="Toggle dark or light mode">☀ / ☾</button>
+      <button type="button" class="theme-pill" data-act="toggle-theme" onclick="window.Gavio && window.Gavio.act('toggle-theme',this,event)">☀ / ☾</button>
     </div>
-    <p class="sub">Sign in or register to open your private Gavio AI workspace.</p>
+    <p class="sub">Sign in or register to open your isolated Gavio AI workspace.</p>
 
-    <button type="button" class="demo-btn" onclick="window.GavioApp&&window.GavioApp.act('demo-login',this,event)" data-act="demo-login">⚡ Instant Demo Sign In</button>
+    <button type="button" class="demo-btn" data-act="demo-login" onclick="window.Gavio && window.Gavio.act('demo-login',this,event)">⚡ Instant Demo Sign In</button>
 
-    <div class="tabs" role="tablist">
-      <button type="button" class="tbtn on" id="tab-in" onclick="window.GavioApp&&window.GavioApp.act('tab-login',this,event)" data-act="tab-login" role="tab" aria-selected="true">Sign In</button>
-      <button type="button" class="tbtn" id="tab-up" onclick="window.GavioApp&&window.GavioApp.act('tab-register',this,event)" data-act="tab-register" role="tab" aria-selected="false">Register</button>
+    <div class="tabs">
+      <button type="button" class="tbtn on" id="tab-in" data-act="tab-login" onclick="window.Gavio && window.Gavio.act('tab-login',this,event)">Sign In</button>
+      <button type="button" class="tbtn" id="tab-up" data-act="tab-register" onclick="window.Gavio && window.Gavio.act('tab-register',this,event)">Register</button>
     </div>
 
-    <button type="button" class="gbtn" onclick="window.GavioApp&&window.GavioApp.act('google-open',this,event)" data-act="google-open">
-      <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/>
-        <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/>
-        <path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/>
-        <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/>
-      </svg>
-      Continue with Google
+    <button type="button" class="gbtn" data-act="google-modal-open" onclick="window.Gavio && window.Gavio.act('google-modal-open',this,event)">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.7 3.4 14.6 2.5 12 2.5 6.8 2.5 2.5 6.8 2.5 12s4.3 9.5 9.5 9.5c5.5 0 9.1-3.9 9.1-9.3 0-.6-.1-1.1-.2-1.6H12z"/></svg>
+      <span>Continue with Google</span>
     </button>
 
     <div class="or">or continue with email</div>
 
     <div class="grp" id="name-grp" style="display:none">
       <label for="in-name">Name</label>
-      <input id="in-name" type="text" placeholder="Your name" autocomplete="name">
+      <input id="in-name" type="text" placeholder="Your name">
     </div>
 
     <div class="grp">
       <label for="in-mail">Email</label>
-      <input id="in-mail" type="email" placeholder="you@example.com" autocomplete="email">
+      <input id="in-mail" type="email" placeholder="you@example.com">
     </div>
 
     <div class="grp">
       <label for="in-pw">Password</label>
-      <input id="in-pw" type="password" placeholder="Password" autocomplete="current-password">
+      <input id="in-pw" type="password" placeholder="Password">
     </div>
 
-    <div class="err-txt" id="a-err" role="status" aria-live="polite"></div>
+    <div class="err-txt" id="a-err"></div>
 
-    <button type="button" class="go-auth" id="a-go" onclick="window.GavioApp&&window.GavioApp.act('auth-submit',this,event)" data-act="auth-submit">Sign In</button>
+    <button type="button" class="go-auth" id="a-go" data-act="auth-submit" onclick="window.Gavio && window.Gavio.act('auth-submit',this,event)">Sign In</button>
   </div>
 </div>
 
-<!-- Multi-Step Google Sign-In Modal (3 Steps: Picker -> Email & Password -> 6-Digit 2-Step Verification) -->
-<div id="ov-google" role="dialog" aria-modal="true" aria-label="Sign in with Google">
-  <div class="g-modal">
-    <div class="g-head">
-      <div class="g-title-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.6c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.6-5.2 3.6-8.8z"/>
-          <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.2 0-5.9-2.1-6.8-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/>
-          <path fill="#FBBC05" d="M5.2 14.2c-.2-.7-.4-1.5-.4-2.2s.2-1.5.4-2.2V6.7H1.2C.4 8.3 0 10.1 0 12s.4 3.7 1.2 5.3l4-3.1z"/>
-          <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.7l4 3.1c.9-2.9 3.6-5 6.8-5z"/>
-        </svg>
-        <h3 id="g-step-title">Choose an account</h3>
-      </div>
-      <button type="button" class="b2" style="padding:3px 9px" onclick="window.GavioApp&&window.GavioApp.act('google-close',this,event)" data-act="google-close" aria-label="Close Google sign in">✕</button>
-    </div>
-
-    <div class="g-steps-bar" aria-hidden="true">
-      <div class="g-dot on" id="g-dot-1"></div>
-      <div class="g-dot" id="g-dot-2"></div>
-      <div class="g-dot" id="g-dot-3"></div>
-    </div>
-
-    <p class="g-sub" id="g-step-sub">to continue to <strong>Gavio AI</strong></p>
-
-    <!-- Step 1: Account Chooser -->
-    <div id="g-step-1" class="g-acc-list"></div>
-
-    <!-- Step 2: Email & Password Entry -->
-    <div id="g-step-2" style="display:none;flex-direction:column;gap:10px">
-      <div class="grp">
-        <label for="g-email-inp">Google Email</label>
-        <input id="g-email-inp" type="email" placeholder="you@gmail.com" autocomplete="email">
-      </div>
-      <div class="grp">
-        <label for="g-name-inp">Display name (optional)</label>
-        <input id="g-name-inp" type="text" placeholder="Your Name" autocomplete="name">
-      </div>
-      <div class="grp">
-        <label for="g-pw-inp">Password</label>
-        <input id="g-pw-inp" type="password" placeholder="Enter password (min 4 chars)" autocomplete="current-password">
-      </div>
-    </div>
-
-    <!-- Step 3: 6-Digit 2-Step Verification -->
-    <div id="g-step-3" style="display:none;flex-direction:column;gap:10px">
-      <div class="g-pill-user">
-        <span class="av" id="g-pill-av" style="width:20px;height:20px;font-size:11px">G</span>
-        <span id="g-pill-mail">you@gmail.com</span>
-      </div>
-      <div class="g-code-box">
-        <div class="g-code-banner">
-          <span>Security Code: <strong id="g-demo-code">482910</strong></span>
-          <button type="button" class="b2" style="padding:3px 9px;font-size:11.5px" onclick="window.GavioApp&&window.GavioApp.act('google-autofill',this,event)" data-act="google-autofill">Auto-fill demo code</button>
-        </div>
-        <label for="g-code-inp" style="font-size:12.5px;color:var(--mut)">Enter the 6-digit 2-Step Verification code</label>
-        <input id="g-code-inp" class="g-code-inp" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
-      </div>
-    </div>
-
-    <div class="err-txt" id="g-err" role="status" aria-live="polite"></div>
-
-    <div class="g-actions">
-      <button type="button" class="b2" id="g-back-btn" onclick="window.GavioApp&&window.GavioApp.act('google-back',this,event)" data-act="google-back">Cancel</button>
-      <button type="button" class="b1" id="g-next-btn" onclick="window.GavioApp&&window.GavioApp.act('google-next',this,event)" data-act="google-next">Next</button>
-    </div>
-  </div>
-</div>
-
-<!-- Main Application Shell -->
 <div id="ws">
-  <aside id="side" aria-label="Chat sidebar">
+  <aside id="side">
     <div class="s-head">
-      <div class="s-brand">
-        <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px" aria-hidden="true">G</div>
-        <span>Gavio AI</span>
-      </div>
+      <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px">G</div>
+      <span>Gavio AI</span>
     </div>
-    <button type="button" id="new-c" onclick="window.GavioApp&&window.GavioApp.act('new-chat',this,event)" data-act="new-chat"><span>+ New chat</span><kbd>Ctrl K</kbd></button>
+    <button type="button" id="new-c" data-act="new-chat" onclick="window.Gavio && window.Gavio.act('new-chat',this,event)"><span>+ New chat</span><kbd>Ctrl K</kbd></button>
     <div class="s-search">
-      <input id="c-search" type="search" placeholder="Search chats…" autocomplete="off" aria-label="Search chats">
-      <button type="button" class="s-clear" id="c-search-clear" onclick="window.GavioApp&&window.GavioApp.act('clear-search',this,event)" data-act="clear-search" aria-label="Clear search">✕</button>
+      <input id="c-search" type="search" placeholder="Search chats…" autocomplete="off">
+      <button type="button" class="s-clear" id="c-search-clear" data-act="clear-search" onclick="window.Gavio && window.Gavio.act('clear-search',this,event)" aria-label="Clear search">✕</button>
     </div>
-    <div id="c-list" role="list"></div>
+    <div id="c-list"></div>
     <div class="s-foot">
-      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('open-prof',this,event)" data-act="open-prof">
+      <button type="button" data-act="open-prof" onclick="window.Gavio && window.Gavio.act('open-prof',this,event)">
         <span class="av" id="s-av">D</span>
         <span class="u-nm" id="s-nm">Demo User</span>
       </button>
-      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('open-set',this,event)" data-act="open-set">⚙ Settings</button>
-      <button type="button" onclick="window.GavioApp&&window.GavioApp.act('sign-out',this,event)" data-act="sign-out" style="color:var(--err)">↪ Sign out</button>
+      <button type="button" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">⚙ Settings & API Key</button>
+      <button type="button" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err)">↪ Sign out</button>
     </div>
   </aside>
 
   <div class="main">
     <header>
-      <button type="button" id="m-btn" onclick="window.GavioApp&&window.GavioApp.act('toggle-side',this,event)" data-act="toggle-side" aria-label="Toggle sidebar">☰</button>
+      <button type="button" id="m-btn" data-act="toggle-side" onclick="window.Gavio && window.Gavio.act('toggle-side',this,event)">☰</button>
       <div id="c-title">New chat</div>
-      <button type="button" class="h-btn" id="theme-btn" onclick="window.GavioApp&&window.GavioApp.act('toggle-theme',this,event)" data-act="toggle-theme">Light Mode</button>
+      <button type="button" class="h-btn" id="key-badge" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">+ Add API Key</button>
+      <button type="button" class="h-btn" id="theme-btn" data-act="toggle-theme" onclick="window.Gavio && window.Gavio.act('toggle-theme',this,event)">Light Mode</button>
       <span id="m-pill">gavio-core</span>
     </header>
     <div id="scroll">
@@ -532,18 +372,74 @@ header{
     </div>
     <div class="comp">
       <div class="cbox">
-        <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything…" aria-label="Message Gavio AI"></textarea>
-        <button type="button" id="send" class="dim" onclick="window.GavioApp&&window.GavioApp.act('send-or-stop',this,event)" data-act="send-or-stop" aria-label="Send message">↑</button>
+        <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything…"></textarea>
+        <button type="button" id="send" class="dim" data-act="send-or-stop" onclick="window.Gavio && window.Gavio.act('send-or-stop',this,event)" aria-label="Send message">↑</button>
       </div>
-      <div class="hint">Enter to send · Shift+Enter for new line</div>
+      <div class="hint">Enter to send · Shift+Enter for new line · Add your API key in Settings for full live answers</div>
     </div>
   </div>
 </div>
 
-<!-- Settings Modal -->
-<div class="ov" id="ov-set" role="dialog" aria-modal="true" aria-label="Settings">
+<!-- Google Multi-Step Sign-In Modal -->
+<div class="ov" id="ov-google">
   <div class="mcard">
-    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" onclick="window.GavioApp&&window.GavioApp.act('close-set',this,event)" data-act="close-set" aria-label="Close settings">✕</button></h2>
+    <h2>
+      <span style="display:flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.7 3.4 14.6 2.5 12 2.5 6.8 2.5 2.5 6.8 2.5 12s4.3 9.5 9.5 9.5c5.5 0 9.1-3.9 9.1-9.3 0-.6-.1-1.1-.2-1.6H12z"/></svg>
+        <span>Sign in with Google</span>
+      </span>
+      <button type="button" class="b2" style="padding:3px 9px" data-act="google-modal-close" onclick="window.Gavio && window.Gavio.act('google-modal-close',this,event)">✕</button>
+    </h2>
+
+    <div id="g-step-1" style="display:flex;flex-direction:column;gap:9px">
+      <small>Choose a Google account to continue to <strong>Gavio AI</strong></small>
+      <div id="g-saved-list" style="display:flex;flex-direction:column;gap:7px"></div>
+      <button type="button" class="g-acc-item" data-act="google-use-other" onclick="window.Gavio && window.Gavio.act('google-use-other',this,event)">
+        <span class="av" style="background:var(--panel2);color:var(--txt)">+</span>
+        <span>Use another Google account</span>
+      </button>
+    </div>
+
+    <div id="g-step-2" style="display:none;flex-direction:column;gap:10px">
+      <small>Enter your Google email and password to verify identity:</small>
+      <label>Google Email
+        <input id="g-email-inp" type="email" placeholder="you@gmail.com">
+      </label>
+      <label>Google Account Password
+        <input id="g-pass-inp" type="password" placeholder="Enter your password">
+      </label>
+      <div class="mrow">
+        <button type="button" class="b2" data-act="google-back-1" onclick="window.Gavio && window.Gavio.act('google-back-1',this,event)">Back</button>
+        <button type="button" class="b1" data-act="google-send-code" onclick="window.Gavio && window.Gavio.act('google-send-code',this,event)">Next</button>
+      </div>
+    </div>
+
+    <div id="g-step-3" style="display:none;flex-direction:column;gap:10px">
+      <small id="g-verify-desc">2-Step Verification: Enter the 6-digit security code sent to your account.</small>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--line);padding:8px 11px;border-radius:10px;font-size:12.5px">
+        <span>Security Code: <strong id="g-code-hint" style="color:var(--mint);letter-spacing:2px">482910</strong></span>
+        <button type="button" class="b2" style="padding:3px 9px;font-size:12px" data-act="google-fill-code" onclick="window.Gavio && window.Gavio.act('google-fill-code',this,event)">Auto-fill</button>
+      </div>
+      <div class="g-code-row">
+        <input id="g-code-inp" type="text" maxlength="6" inputmode="numeric" placeholder="000000">
+      </div>
+      <div class="mrow">
+        <button type="button" class="b2" data-act="google-back-2" onclick="window.Gavio && window.Gavio.act('google-back-2',this,event)">Back</button>
+        <button type="button" class="b1" data-act="google-verify-finish" onclick="window.Gavio && window.Gavio.act('google-verify-finish',this,event)">Verify & Sign In</button>
+      </div>
+    </div>
+
+    <div class="err-txt" id="g-err"></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-set">
+  <div class="mcard">
+    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-set" onclick="window.Gavio && window.Gavio.act('close-set',this,event)">✕</button></h2>
+    <label>API Key (Stored privately in your account session)
+      <input id="k-inp" type="password" placeholder="Paste your AIza... API key here">
+      <small>Enables live AI responses for any topic directly in your browser or via Vercel.</small>
+    </label>
     <label>Appearance
       <select id="th-inp">
         <option value="dark">Dark Mode</option>
@@ -557,16 +453,15 @@ header{
       <input id="t-inp" type="range" min="0" max="2" step="0.1" value="0.7">
     </label>
     <div class="mrow">
-      <button type="button" class="b2" onclick="window.GavioApp&&window.GavioApp.act('close-set',this,event)" data-act="close-set">Cancel</button>
-      <button type="button" class="b1" onclick="window.GavioApp&&window.GavioApp.act('save-set',this,event)" data-act="save-set">Save</button>
+      <button type="button" class="b2" data-act="close-set" onclick="window.Gavio && window.Gavio.act('close-set',this,event)">Cancel</button>
+      <button type="button" class="b1" data-act="save-set" onclick="window.Gavio && window.Gavio.act('save-set',this,event)">Save</button>
     </div>
   </div>
 </div>
 
-<!-- Profile Modal -->
-<div class="ov" id="ov-prof" role="dialog" aria-modal="true" aria-label="Profile">
+<div class="ov" id="ov-prof">
   <div class="mcard">
-    <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" onclick="window.GavioApp&&window.GavioApp.act('close-prof',this,event)" data-act="close-prof" aria-label="Close profile">✕</button></h2>
+    <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-prof" onclick="window.Gavio && window.Gavio.act('close-prof',this,event)">✕</button></h2>
     <div style="display:flex;align-items:center;gap:12px">
       <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">D</div>
       <div>
@@ -574,298 +469,116 @@ header{
         <div id="p-em" style="color:var(--mut);font-size:13px">demo@gavio.ai</div>
       </div>
     </div>
-    <small>Chats and settings are scoped strictly to this signed-in account.</small>
+    <small>All chats, API keys, and settings are isolated strictly to this signed-in user account.</small>
     <div class="mrow">
-      <button type="button" class="b2" onclick="window.GavioApp&&window.GavioApp.act('sign-out',this,event)" data-act="sign-out" style="color:var(--err);border-color:var(--err)">Sign out</button>
+      <button type="button" class="b2" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  "use strict";
+(function(){
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
 
-  var $ = function(id) { return document.getElementById(id); };
-  var esc = function(s) {
-    return String(s == null ? "" : s).replace(/[&<>"]/g, function(c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c];
-    });
-  };
-
-  /* Resilient storage wrapper with in-memory fallback */
-  var mem = Object.create(null);
-  function rd(k) {
-    try {
-      var v = window.localStorage.getItem(k);
-      if (v !== null) return v;
-    } catch (_) {}
+  const mem = {};
+  function rd(k){
+    try { const v = window.localStorage.getItem(k); if (v !== null) return v; } catch {}
     return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
   }
-  function wr(k, v) {
+  function wr(k, v){
     mem[k] = String(v);
-    try {
-      window.localStorage.setItem(k, String(v));
-    } catch (_) {}
+    try { window.localStorage.setItem(k, String(v)); } catch {}
   }
 
-  /* Salted dual-round FNV-1a 32-bit digest for local account credentials */
-  function hsh(salt, pw) {
-    var s = String(salt) + ":" + String(pw);
-    var a = 0x811c9dc5;
-    var b = 0x01000193;
-    for (var i = 0; i < s.length; i++) {
-      var c = s.charCodeAt(i);
+  function hsh(salt, pw){
+    const s = salt + ":" + pw;
+    let a = 0x811c9dc5, b = 0x01000193;
+    for (let i = 0; i < s.length; i++){
+      const c = s.charCodeAt(i);
       a = Math.imul(a ^ c, 0x01000193) >>> 0;
       b = Math.imul(b ^ (c + i), 0x85ebca6b) >>> 0;
     }
-    return a.toString(16).padStart(8, "0") + b.toString(16).padStart(8, "0");
+    return a.toString(16).padStart(8,"0") + b.toString(16).padStart(8,"0");
   }
 
-  /* Dark-First & Light Mode Theme Management */
-  function applyTheme(t) {
-    var mode = t === "light" ? "light" : "dark";
+  function applyTheme(t){
+    const mode = t === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", mode);
-    document.documentElement.style.background = mode === "light" ? "#f8fafc" : "#0b0d12";
-    document.documentElement.style.color = mode === "light" ? "#0f172a" : "#f3f5fa";
-    document.body.style.background = mode === "light" ? "#f8fafc" : "#0b0d12";
-    document.body.style.color = mode === "light" ? "#0f172a" : "#f3f5fa";
-    wr("gavio_theme_v11", mode);
-    var tb = $("theme-btn");
+    document.documentElement.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
+    document.body.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
+    document.body.style.color = mode === "light" ? "#0f172a" : "#eef1f8";
+    wr("gavio_theme_v13", mode);
+    const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v11") || "dark");
+  applyTheme(rd("gavio_theme_v13") || "dark");
 
-  /* Isolated Account & Session Store (v11) */
-  var accs = { users: {}, googleAccounts: [], session: null };
+  let accs = { users: {}, googleAccounts: [], session: null };
   try {
-    var raw = rd("gavio_accs_v11");
-    var parsed = raw ? JSON.parse(raw) : null;
-    if (parsed && typeof parsed === "object") {
-      accs.users = parsed.users && typeof parsed.users === "object" ? parsed.users : {};
-      accs.googleAccounts = Array.isArray(parsed.googleAccounts) ? parsed.googleAccounts : [];
-      accs.session = parsed.session && typeof parsed.session === "object" ? parsed.session : null;
+    const p = JSON.parse(rd("gavio_accs_v13") || "null");
+    if (p && typeof p === "object") {
+      accs.users = p.users || {};
+      accs.googleAccounts = Array.isArray(p.googleAccounts) ? p.googleAccounts : [];
+      accs.session = p.session || null;
     }
-  } catch (_) {}
+  } catch {}
+  function saveAccs(){ wr("gavio_accs_v13", JSON.stringify(accs)); }
 
-  function saveAccs() {
-    wr("gavio_accs_v11", JSON.stringify(accs));
+  const defCfg = { apiKey: "", system: "", temp: 0.7 };
+  let ws = { chats: [], active: null, cfg: { ...defCfg } };
+
+  function userBucketKey(email){
+    return "gavio_u13_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
-  var defCfg = { system: "", temp: 0.7 };
-  var ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
-
-  function userBucketKey(email) {
-    return "gavio_u11_" + encodeURIComponent(String(email).trim().toLowerCase());
-  }
-
-  function loadWs() {
+  function loadWs(){
     if (!accs.session || !accs.session.email) {
-      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
+      ws = { chats: [], active: null, cfg: { ...defCfg } };
       return;
     }
     try {
-      var raw = rd(userBucketKey(accs.session.email));
-      var r = raw ? JSON.parse(raw) : null;
+      const r = JSON.parse(rd(userBucketKey(accs.session.email)) || "null");
       if (r && typeof r === "object") {
         ws.chats = Array.isArray(r.chats) ? r.chats : [];
         ws.active = typeof r.active === "string" ? r.active : null;
         ws.cfg = Object.assign({}, defCfg, r.cfg || {});
       } else {
-        ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
+        ws = { chats: [], active: null, cfg: { ...defCfg } };
       }
-    } catch (_) {
-      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
+    } catch {
+      ws = { chats: [], active: null, cfg: { ...defCfg } };
     }
+    syncKeyBadge();
   }
 
-  function saveWs() {
+  function saveWs(){
     if (!accs.session || !accs.session.email) return;
     wr(userBucketKey(accs.session.email), JSON.stringify(ws));
+    syncKeyBadge();
   }
 
-  var busy = false;
-  var abortFlag = false;
-  var activeController = null;
-  var liveMd = null;
-  var livePill = null;
-  var raf = 0;
-  var authMode = "login";
-  var searchQuery = "";
-  var editingChatId = null;
-
-  /* 3-Step Google Sign-In Modal State */
-  var gState = {
-    step: 1,
-    email: "",
-    name: "",
-    code: "482910"
-  };
-
-  function gen6DigitCode() {
-    return String(Math.floor(100000 + Math.random() * 900000));
+  function syncKeyBadge(){
+    const kb = $("key-badge");
+    if (!kb) return;
+    const hasKey = Boolean((ws.cfg.apiKey || "").trim());
+    kb.textContent = hasKey ? "● API Key Active" : "+ Add API Key";
+    kb.style.color = hasKey ? "var(--mint)" : "var(--txt)";
+    kb.style.borderColor = hasKey ? "rgba(16,185,129,.45)" : "var(--line)";
   }
 
-  function renderGoogleStep() {
-    $("g-err").textContent = "";
-    $("g-step-1").style.display = gState.step === 1 ? "flex" : "none";
-    $("g-step-2").style.display = gState.step === 2 ? "flex" : "none";
-    $("g-step-3").style.display = gState.step === 3 ? "flex" : "none";
+  let busy = false, abortFlag = false, liveMd = null, livePill = null, raf = 0, mode = "login";
+  let searchQuery = "", editingChatId = null;
+  let gPending = { email: "", name: "", code: "" };
 
-    $("g-dot-1").classList.toggle("on", gState.step >= 1);
-    $("g-dot-2").classList.toggle("on", gState.step >= 2);
-    $("g-dot-3").classList.toggle("on", gState.step >= 3);
-
-    if (gState.step === 1) {
-      $("g-step-title").textContent = "Choose an account";
-      $("g-step-sub").innerHTML = "to continue to <strong>Gavio AI</strong>";
-      $("g-back-btn").textContent = "Cancel";
-      $("g-next-btn").style.display = "none";
-
-      var list = $("g-step-1");
-      var saved = accs.googleAccounts.length
-        ? accs.googleAccounts
-        : [{ email: "alex.rivera@gmail.com", name: "Alex Rivera" }];
-
-      var frag = document.createDocumentFragment();
-      saved.forEach(function(item) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "g-acc-item";
-        btn.dataset.act = "google-pick";
-        btn.dataset.gemail = item.email;
-        btn.dataset.gname = item.name;
-        btn.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('google-pick',this,event)");
-        btn.innerHTML =
-          '<span class="av" style="width:32px;height:32px;font-size:13px">' + esc((item.name || item.email)[0].toUpperCase()) + "</span>" +
-          '<div class="g-acc-info">' +
-          '<div class="g-acc-name">' + esc(item.name || item.email.split("@")[0]) + "</div>" +
-          '<div class="g-acc-mail">' + esc(item.email) + "</div>" +
-          "</div>";
-        frag.appendChild(btn);
-      });
-
-      var another = document.createElement("button");
-      another.type = "button";
-      another.className = "g-acc-item";
-      another.dataset.act = "google-another";
-      another.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('google-another',this,event)");
-      another.innerHTML =
-        '<span class="av" style="width:32px;height:32px;font-size:14px;background:var(--panel);border:1px solid var(--line);color:var(--txt)">+</span>' +
-        '<div class="g-acc-info"><div class="g-acc-name">Use another account</div><div class="g-acc-mail">Sign in with email &amp; password</div></div>';
-      frag.appendChild(another);
-      list.replaceChildren(frag);
-    } else if (gState.step === 2) {
-      $("g-step-title").textContent = "Sign in with Google";
-      $("g-step-sub").textContent = "Verify your email and password";
-      $("g-back-btn").textContent = "Back";
-      $("g-next-btn").style.display = "inline-block";
-      $("g-next-btn").textContent = "Next";
-      $("g-email-inp").value = gState.email || $("in-mail").value || "";
-      $("g-name-inp").value = gState.name || "";
-      $("g-pw-inp").value = "";
-      requestAnimationFrame(function() {
-        if ($("g-email-inp").value) $("g-pw-inp").focus();
-        else $("g-email-inp").focus();
-      });
-    } else if (gState.step === 3) {
-      gState.code = gen6DigitCode();
-      $("g-step-title").textContent = "2-Step Verification";
-      $("g-step-sub").textContent = "Enter the 6-digit code to finish signing in.";
-      $("g-pill-av").textContent = (gState.name || gState.email)[0].toUpperCase();
-      $("g-pill-mail").textContent = gState.email;
-      $("g-demo-code").textContent = gState.code;
-      $("g-code-inp").value = "";
-      $("g-back-btn").textContent = "Back";
-      $("g-next-btn").style.display = "inline-block";
-      $("g-next-btn").textContent = "Verify & Sign In";
-      requestAnimationFrame(function() { $("g-code-inp").focus(); });
-    }
-  }
-
-  function openGoogleModal() {
-    gState.step = 1;
-    gState.email = "";
-    gState.name = "";
-    $("ov-google").classList.add("open");
-    renderGoogleStep();
-  }
-
-  function closeGoogleModal() {
-    $("ov-google").classList.remove("open");
-    $("g-err").textContent = "";
-  }
-
-  function advanceGoogleStep() {
-    var err = $("g-err");
-    err.textContent = "";
-
-    if (gState.step === 2) {
-      var em = ($("g-email-inp").value || "").trim().toLowerCase();
-      if (!em || em.indexOf("@") === -1 || em.indexOf(".") === -1) {
-        err.textContent = "Enter a valid Google email address.";
-        return;
-      }
-      var pw = $("g-pw-inp").value || "";
-      if (pw.length < 4) {
-        err.textContent = "Enter your password (at least 4 characters).";
-        return;
-      }
-      var customName = ($("g-name-inp").value || "").trim();
-      var derived = (em.split("@")[0] || "User")
-        .replace(/[._-]+/g, " ")
-        .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-      gState.email = em;
-      gState.name = customName || derived;
-
-      var existing = accs.users[gState.email];
-      if (existing && existing.hash) {
-        if (hsh(existing.salt || "", pw) !== existing.hash) {
-          err.textContent = "Incorrect password for this account. Try again.";
-          return;
-        }
-      } else {
-        var salt = Math.random().toString(36).slice(2, 10);
-        accs.users[gState.email] = {
-          email: gState.email,
-          name: gState.name,
-          salt: salt,
-          hash: hsh(salt, pw)
-        };
-        saveAccs();
-      }
-      gState.step = 3;
-      renderGoogleStep();
-    } else if (gState.step === 3) {
-      var entered = ($("g-code-inp").value || "").replace(/\s+/g, "");
-      if (entered !== gState.code) {
-        err.textContent = "Invalid 6-digit code. Click 'Auto-fill demo code' or match the code above.";
-        return;
-      }
-      var existsIdx = accs.googleAccounts.findIndex(function(a) { return a.email === gState.email; });
-      if (existsIdx === -1) {
-        accs.googleAccounts.unshift({ email: gState.email, name: gState.name });
-      } else {
-        accs.googleAccounts[existsIdx].name = gState.name;
-      }
-      saveAccs();
-      closeGoogleModal();
-      enterApp({ email: gState.email, name: gState.name });
-    }
-  }
-
-  /* Safe Markdown Renderer */
-  function renderMarkdown(src) {
-    var text = String(src || "");
-    var blocks = [];
-    var safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, function(_, lang, code) {
-      var idx = blocks.length;
-      blocks.push(
-        '<pre><code class="lang-' + esc(lang) + '">' + esc(code.replace(/\n$/, "")) + '</code>' +
-        '<button type="button" class="cp" onclick="window.GavioApp&&window.GavioApp.act(\'copy-code\',this,event)" data-act="copy-code">Copy</button></pre>'
-      );
-      return "\u0000BLOCK" + idx + "\u0000";
+  function renderMarkdown(src){
+    const text = String(src || "");
+    const blocks = [];
+    let safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+      const idx = blocks.length;
+      blocks.push(`<pre><code class="lang-${esc(lang)}">${esc(code.replace(/\n$/,""))}</code><button type="button" class="cp" data-act="copy-code" onclick="window.Gavio && window.Gavio.act('copy-code',this,event)">Copy</button></pre>`);
+      return `\u0000BLOCK${idx}\u0000`;
     });
-
     safe = esc(safe)
       .replace(/`([^`\n]+)`/g, "<code>$1</code>")
       .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
@@ -875,67 +588,57 @@ header{
       .replace(/^# (.+)$/gm, "<h1>$1</h1>")
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
-    var lines = safe.split("\n");
-    var out = "";
-    var inUl = false;
-    var inOl = false;
-
-    for (var i = 0; i < lines.length; i++) {
-      var ln = lines[i];
-      var ul = ln.match(/^\s*[-*]\s+(.+)/);
-      var ol = ln.match(/^\s*\d+\.\s+(.+)/);
-      if (ul) {
-        if (inOl) { out += "</ol>"; inOl = false; }
-        if (!inUl) { out += "<ul>"; inUl = true; }
-        out += "<li>" + ul[1] + "</li>";
-      } else if (ol) {
-        if (inUl) { out += "</ul>"; inUl = false; }
-        if (!inOl) { out += "<ol>"; inOl = true; }
-        out += "<li>" + ol[1] + "</li>";
+    const lines = safe.split("\n");
+    let out = "", inUl = false, inOl = false;
+    for (const ln of lines){
+      const ul = ln.match(/^\s*[-*]\s+(.+)/);
+      const ol = ln.match(/^\s*\d+\.\s+(.+)/);
+      if (ul){
+        if (inOl){ out += "</ol>"; inOl = false; }
+        if (!inUl){ out += "<ul>"; inUl = true; }
+        out += `<li>${ul[1]}</li>`;
+      } else if (ol){
+        if (inUl){ out += "</ul>"; inUl = false; }
+        if (!inOl){ out += "<ol>"; inOl = true; }
+        out += `<li>${ol[1]}</li>`;
       } else {
-        if (inUl) { out += "</ul>"; inUl = false; }
-        if (inOl) { out += "</ol>"; inOl = false; }
-        if (ln.trim().startsWith("<h") || ln.indexOf("\u0000BLOCK") !== -1) out += ln;
+        if (inUl){ out += "</ul>"; inUl = false; }
+        if (inOl){ out += "</ol>"; inOl = false; }
+        if (ln.trim().startsWith("<h") || ln.includes("\u0000BLOCK")) out += ln;
         else if (ln.trim() === "") out += "";
-        else out += "<p>" + ln + "</p>";
+        else out += `<p>${ln}</p>`;
       }
     }
     if (inUl) out += "</ul>";
     if (inOl) out += "</ol>";
-
-    return out.replace(/\u0000BLOCK(\d+)\u0000/g, function(_, i) {
-      return blocks[Number(i)] || "";
-    });
+    return out.replace(/\u0000BLOCK(\d+)\u0000/g, (_, i) => blocks[Number(i)] || "");
   }
 
-  function stepText(p, t) {
-    var pl = String(p || "").toLowerCase();
-    var tl = String(t || "").toLowerCase();
-    if (tl.indexOf("```") !== -1) return "Writing code";
-    if (/\b(code|script|python|js|javascript|html|css|json|react|function)\b/.test(pl)) return t ? "Writing code" : "Drafting code";
-    if (/\b(command|terminal|shell|bash|npm|git|linux)\b/.test(pl)) return t ? "Formatting command" : "Preparing command";
-    if (/\b(what is|define|meaning|explain|who is|why|how does)\b/.test(pl)) return t ? "Answering question" : "Looking up answer";
+  function stepText(p, t){
+    const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
+    if (tl.includes("```")) return "Writing code";
+    if (/\b(code|script|python|js|html|css|json|function|pterodactyl|install|linux|ubuntu|bash)\b/.test(pl)) return t ? "Generating commands" : "Preparing commands";
     return t ? "Streaming response" : "Thinking";
   }
 
-  function pillEl(label, spin) {
-    var d = document.createElement("div");
+  function pillEl(label, spin){
+    const d = document.createElement("div");
     d.className = "pill" + (spin ? "" : " done");
-    var i = document.createElement("span");
+    const i = document.createElement("span");
     i.className = spin ? "sp" : "dt";
-    var t = document.createElement("span");
+    const t = document.createElement("span");
     t.className = "pt";
     t.textContent = label;
     d.append(i, t);
     return d;
   }
 
-  function applyAuth() {
-    var on = Boolean(accs.session && accs.session.email);
+  function applyAuth(){
+    const on = Boolean(accs.session && accs.session.email);
     $("auth").classList.toggle("show", !on);
     $("ws").classList.toggle("hide", !on);
-    if (on) {
-      var nm = accs.session.name || accs.session.email;
+    if (on){
+      const nm = accs.session.name || accs.session.email;
       $("s-nm").textContent = nm;
       $("s-av").textContent = nm[0].toUpperCase();
       searchQuery = "";
@@ -946,99 +649,115 @@ header{
       renderAll();
     } else {
       abortFlag = true;
-      if (activeController) { try { activeController.abort(); } catch (_) {} }
       busy = false;
       editingChatId = null;
-      ws = { chats: [], active: null, cfg: Object.assign({}, defCfg) };
+      ws = { chats: [], active: null, cfg: { ...defCfg } };
       $("msgs").replaceChildren();
       $("c-list").replaceChildren();
     }
   }
 
-  function enterApp(u) {
-    var cleanEmail = String(u.email).trim().toLowerCase();
-    var cleanName = String(u.name || cleanEmail.split("@")[0]).trim();
-    var token = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    accs.session = { email: cleanEmail, name: cleanName, token: token };
+  function enterApp(u){
+    const cleanEmail = String(u.email).trim().toLowerCase();
+    const cleanName = String(u.name || cleanEmail.split("@")[0]).trim();
+    const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    accs.session = { email: cleanEmail, name: cleanName, token };
     saveAccs();
     abortFlag = false;
     applyAuth();
   }
 
-  function exitApp() {
+  function exitApp(){
     abortFlag = true;
-    if (activeController) { try { activeController.abort(); } catch (_) {} }
     busy = false;
     $("ov-prof").classList.remove("open");
     $("ov-set").classList.remove("open");
-    closeGoogleModal();
+    $("ov-google").classList.remove("open");
     accs.session = null;
     saveAccs();
     applyAuth();
   }
 
-  function setAuthTab(m) {
-    authMode = m;
-    var isUp = authMode === "register";
+  function setAuthTab(m){
+    mode = m;
+    const isUp = mode === "register";
     $("tab-in").classList.toggle("on", !isUp);
-    $("tab-in").setAttribute("aria-selected", String(!isUp));
     $("tab-up").classList.toggle("on", isUp);
-    $("tab-up").setAttribute("aria-selected", String(isUp));
     $("name-grp").style.display = isUp ? "flex" : "none";
     $("a-go").textContent = isUp ? "Create Account" : "Sign In";
     $("a-err").textContent = "";
   }
 
-  function doEmailAuth() {
-    var err = $("a-err");
+  function openGoogleModal(){
+    $("g-err").textContent = "";
+    const list = $("g-saved-list");
+    list.replaceChildren();
+    if (accs.googleAccounts.length){
+      accs.googleAccounts.forEach(acc => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "g-acc-item";
+        b.dataset.act = "google-pick-saved";
+        b.dataset.email = acc.email;
+        b.innerHTML = `<span class="av">${esc((acc.name || acc.email)[0].toUpperCase())}</span><span style="display:flex;flex-direction:column;min-width:0"><strong style="font-size:13.5px">${esc(acc.name)}</strong><small>${esc(acc.email)}</small></span>`;
+        list.appendChild(b);
+      });
+      $("g-step-1").style.display = "flex";
+      $("g-step-2").style.display = "none";
+      $("g-step-3").style.display = "none";
+    } else {
+      $("g-step-1").style.display = "none";
+      $("g-step-2").style.display = "flex";
+      $("g-step-3").style.display = "none";
+    }
+    $("ov-google").classList.add("open");
+  }
+
+  function startGoogleVerify(email, name){
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    gPending = { email, name, code };
+    $("g-code-hint").textContent = code;
+    $("g-verify-desc").textContent = `2-Step Verification: Enter the 6-digit security code for ${email}.`;
+    $("g-code-inp").value = "";
+    $("g-err").textContent = "";
+    $("g-step-1").style.display = "none";
+    $("g-step-2").style.display = "none";
+    $("g-step-3").style.display = "flex";
+  }
+
+  function doEmailAuth(){
+    const err = $("a-err");
     err.textContent = "";
-    var em = ($("in-mail").value || "").trim().toLowerCase();
-    var pw = $("in-pw").value || "";
-    var nm = ($("in-name").value || "").trim();
+    const em = ($("in-mail").value || "").trim().toLowerCase();
+    const pw = $("in-pw").value || "";
+    const nm = ($("in-name").value || "").trim();
 
-    if (!em || em.indexOf("@") === -1) {
-      err.textContent = "Enter a valid email address.";
-      return;
-    }
-    if (!pw) {
-      err.textContent = "Enter a password.";
-      return;
-    }
+    if (!em || !em.includes("@")) { err.textContent = "Enter a valid email address."; return; }
+    if (!pw || pw.length < 4) { err.textContent = "Enter a password (at least 4 characters)."; return; }
 
-    if (authMode === "register") {
-      if (accs.users[em]) {
-        err.textContent = "Email already registered. Switch to Sign In.";
-        return;
-      }
-      var salt = Math.random().toString(36).slice(2, 10);
-      var disp = nm || em.split("@")[0] || "User";
-      accs.users[em] = { email: em, name: disp, salt: salt, hash: hsh(salt, pw) };
+    if (mode === "register"){
+      if (accs.users[em]) { err.textContent = "Email already registered. Switch to Sign In."; return; }
+      const salt = Math.random().toString(36).slice(2, 10);
+      const disp = nm || em.split("@")[0] || "User";
+      accs.users[em] = { email: em, name: disp, salt, hash: hsh(salt, pw) };
       saveAccs();
       $("in-pw").value = "";
       enterApp({ email: em, name: disp });
     } else {
-      var acc = accs.users[em];
-      if (!acc) {
-        err.textContent = "No account found. Click Register first.";
-        return;
-      }
-      if (hsh(acc.salt || "", pw) !== acc.hash) {
-        err.textContent = "Incorrect password.";
-        return;
-      }
+      const acc = accs.users[em];
+      if (!acc) { err.textContent = "No account found. Click Register first."; return; }
+      if (hsh(acc.salt || "", pw) !== acc.hash) { err.textContent = "Incorrect password."; return; }
       $("in-pw").value = "";
       enterApp({ email: acc.email, name: acc.name });
     }
   }
 
-  function curC() {
-    return ws.chats.find(function(c) { return c.id === ws.active; });
-  }
+  const curC = () => ws.chats.find(c => c.id === ws.active);
 
-  function commitRename(cid, rawTitle) {
-    var c = ws.chats.find(function(x) { return x.id === cid; });
-    if (c) {
-      var next = String(rawTitle || "").trim();
+  function commitRename(cid, rawTitle){
+    const c = ws.chats.find(x => x.id === cid);
+    if (c){
+      const next = String(rawTitle || "").trim();
       if (next) c.title = next.slice(0, 60);
       saveWs();
     }
@@ -1046,78 +765,72 @@ header{
     renderAll();
   }
 
-  function renderList() {
-    var w = $("c-list");
-    var q = searchQuery.trim().toLowerCase();
-    var filtered = q
-      ? ws.chats.filter(function(c) {
-          return (c.title || "New chat").toLowerCase().indexOf(q) !== -1 ||
-            (Array.isArray(c.messages) && c.messages.some(function(m) {
-              return (m.text || "").toLowerCase().indexOf(q) !== -1;
-            }));
-        })
+  function renderList(){
+    const w = $("c-list");
+    const q = searchQuery.trim().toLowerCase();
+    const filtered = q
+      ? ws.chats.filter(c =>
+          (c.title || "New chat").toLowerCase().includes(q) ||
+          (Array.isArray(c.messages) && c.messages.some(m => (m.text || "").toLowerCase().includes(q)))
+        )
       : ws.chats;
 
-    if (!filtered.length) {
-      var empty = document.createElement("div");
+    if (!filtered.length){
+      const empty = document.createElement("div");
       empty.className = "c-empty";
       empty.textContent = q ? "No matching chats." : "No saved chats yet.";
       w.replaceChildren(empty);
       return;
     }
 
-    var f = document.createDocumentFragment();
-    filtered.forEach(function(c) {
-      var r = document.createElement("div");
+    const f = document.createDocumentFragment();
+    filtered.forEach(c => {
+      const r = document.createElement("div");
       r.className = "c-row" + (c.id === ws.active ? " on" : "");
-      r.setAttribute("role", "listitem");
 
-      if (editingChatId === c.id) {
-        var inp = document.createElement("input");
+      if (editingChatId === c.id){
+        const inp = document.createElement("input");
         inp.type = "text";
         inp.className = "c-ren-inp";
         inp.value = c.title || "New chat";
         inp.maxLength = 60;
         inp.dataset.cid = c.id;
-        inp.addEventListener("keydown", function(ev) {
-          if (ev.key === "Enter") { ev.preventDefault(); commitRename(c.id, inp.value); }
-          else if (ev.key === "Escape") { ev.preventDefault(); editingChatId = null; renderList(); }
+        inp.addEventListener("keydown", ev => {
+          if (ev.key === "Enter"){ ev.preventDefault(); commitRename(c.id, inp.value); }
+          else if (ev.key === "Escape"){ ev.preventDefault(); editingChatId = null; renderList(); }
         });
-        inp.addEventListener("blur", function() {
+        inp.addEventListener("blur", () => {
           if (editingChatId === c.id) commitRename(c.id, inp.value);
         });
         r.appendChild(inp);
         f.appendChild(r);
-        requestAnimationFrame(function() { inp.focus(); inp.select(); });
+        requestAnimationFrame(() => { inp.focus(); inp.select(); });
         return;
       }
 
-      var b = document.createElement("button");
+      const b = document.createElement("button");
       b.type = "button";
       b.className = "pick";
       b.dataset.act = "pick-chat";
       b.dataset.cid = c.id;
-      b.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('pick-chat',this,event)");
       b.textContent = c.title || "New chat";
 
-      var rn = document.createElement("button");
+      const rn = document.createElement("button");
       rn.type = "button";
       rn.className = "ren";
       rn.dataset.act = "ren-chat";
       rn.dataset.cid = c.id;
-      rn.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('ren-chat',this,event)");
       rn.title = "Rename chat";
-      rn.setAttribute("aria-label", "Rename chat");
+      rn.ariaLabel = "Rename chat";
       rn.textContent = "✎";
 
-      var d = document.createElement("button");
+      const d = document.createElement("button");
       d.type = "button";
       d.className = "del";
       d.dataset.act = "del-chat";
       d.dataset.cid = c.id;
-      d.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('del-chat',this,event)");
       d.title = "Delete chat";
-      d.setAttribute("aria-label", "Delete chat");
+      d.ariaLabel = "Delete chat";
       d.textContent = "✕";
 
       r.append(b, rn, d);
@@ -1126,89 +839,80 @@ header{
     w.replaceChildren(f);
   }
 
-  function renderMsgs() {
-    var box = $("msgs");
+  function renderMsgs(){
+    const box = $("msgs");
     liveMd = null;
     livePill = null;
-    var c = curC();
+    const c = curC();
     $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
 
-    if (!c || !c.messages.length) {
-      var fn = (accs.session && accs.session.name ? accs.session.name : "there").split(" ")[0];
-      var cards = [
-        { kicker: "Science", prompt: "What is evaporation?" },
-        { kicker: "Python", prompt: "Write a Python script to parse JSON" },
-        { kicker: "Terminal", prompt: "Show a Linux command to check disk space" },
-        { kicker: "JavaScript", prompt: "Explain async/await simply" }
+    if (!c || !c.messages.length){
+      const fn = (accs.session?.name || "there").split(" ")[0];
+      const prompts = [
+        "How to install Pterodactyl Panel on Ubuntu with all commands",
+        "What is evaporation and how does it work?",
+        "Write a clean Python script to parse JSON",
+        "Explain async/await in JavaScript simply"
       ];
-      box.innerHTML =
-        '<div class="empty">' +
-        '<h1>Hello, <span class="grad-txt">' + esc(fn) + "</span></h1>" +
-        '<p class="hero-sub">How can Gavio AI help you build, learn, or solve something today?</p>' +
-        '<div class="chips">' +
-        cards.map(function(item) {
-          return '<button type="button" class="chip" data-prompt="' + esc(item.prompt) + '" onclick="window.GavioApp&&window.GavioApp.act(\'chip-send\',this,event)" data-act="chip-send">' +
-            '<span class="chip-kicker">' + esc(item.kicker) + "</span>" +
-            '<span class="chip-txt">' + esc(item.prompt) + "</span>" +
-            "</button>";
-        }).join("") +
-        "</div></div>";
+      box.innerHTML = `<div class="empty">
+        <h1>Hello, ${esc(fn)}</h1>
+        <p>Ask Gavio AI anything—code, server setup commands, science, writing, or fast answers.</p>
+        <div class="chips">${prompts.map(q => `<button type="button" class="chip" data-act="chip-send" onclick="window.Gavio && window.Gavio.act('chip-send',this,event)">${esc(q)}</button>`).join("")}</div>
+      </div>`;
       return;
     }
 
-    var f = document.createDocumentFragment();
-    c.messages.forEach(function(m, i) {
-      var el = document.createElement("div");
-      if (m.role === "user") {
+    const f = document.createDocumentFragment();
+    c.messages.forEach((m, i) => {
+      const el = document.createElement("div");
+      if (m.role === "user"){
         el.className = "msg u";
-        var b = document.createElement("div");
+        const b = document.createElement("div");
         b.className = "b";
         b.textContent = m.text;
         el.appendChild(b);
       } else {
         el.className = "msg a";
-        el.innerHTML = '<div class="badge" style="width:28px;height:28px;font-size:13px;border-radius:9px;margin-top:2px" aria-hidden="true">G</div><div class="w"></div>';
-        var w = el.querySelector(".w");
-        var last = i === c.messages.length - 1;
-        var prev = i > 0 && c.messages[i - 1] && c.messages[i - 1].role === "user" ? c.messages[i - 1].text : "";
+        el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
+        const w = el.querySelector(".w");
+        const last = i === c.messages.length - 1;
+        const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
 
-        if (last && busy) {
-          var p = pillEl(m.step || stepText(prev, m.text), true);
+        if (last && busy){
+          const p = pillEl(m.step || stepText(prev, m.text), true);
           w.appendChild(p);
           livePill = p;
-        } else if (m.step && !m.error) {
+        } else if (m.step && !m.error){
           w.appendChild(pillEl(m.step, false));
         }
 
-        var body = document.createElement("div");
+        const body = document.createElement("div");
         body.className = "md";
         if (last && busy) liveMd = body;
         if (m.text) body.innerHTML = renderMarkdown(m.text) + (last && busy ? '<span class="cursor"></span>' : "");
         else if (last && busy) body.innerHTML = '<span class="cursor"></span>';
         w.appendChild(body);
 
-        if (m.error) {
-          var e = document.createElement("div");
+        if (m.error){
+          const e = document.createElement("div");
           e.className = "errb";
           e.textContent = m.error;
           w.appendChild(e);
         }
 
-        if (!(last && busy)) {
-          var a = document.createElement("div");
+        if (!(last && busy)){
+          const a = document.createElement("div");
           a.className = "acts";
-          var cp = document.createElement("button");
+          const cp = document.createElement("button");
           cp.type = "button";
           cp.dataset.act = "copy-msg";
           cp.dataset.midx = String(i);
-          cp.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('copy-msg',this,event)");
           cp.textContent = "Copy";
           a.appendChild(cp);
-          if (last) {
-            var rg = document.createElement("button");
+          if (last){
+            const rg = document.createElement("button");
             rg.type = "button";
             rg.dataset.act = "regen";
-            rg.setAttribute("onclick", "window.GavioApp&&window.GavioApp.act('regen',this,event)");
             rg.textContent = "Regenerate";
             a.appendChild(rg);
           }
@@ -1221,426 +925,247 @@ header{
     $("scroll").scrollTop = $("scroll").scrollHeight;
   }
 
-  function syncSendBtn() {
-    var b = $("send");
-    var hasTxt = Boolean($("inp").value.trim());
+  function syncSendBtn(){
+    const b = $("send");
+    const hasTxt = Boolean($("inp").value.trim());
     b.textContent = busy ? "■" : "↑";
     b.classList.toggle("dim", !busy && !hasTxt);
   }
 
-  function renderAll() {
+  function renderAll(){
     if (!accs.session) return;
     renderList();
     renderMsgs();
     syncSendBtn();
   }
 
-  function queueDraw(m, p) {
+  function queueDraw(m, p){
     if (raf) return;
-    raf = requestAnimationFrame(function() {
+    raf = requestAnimationFrame(() => {
       raf = 0;
-      var nx = stepText(p, m.text);
+      const nx = stepText(p, m.text);
       m.step = nx;
-      if (livePill) {
-        var t = livePill.querySelector(".pt");
+      if (livePill){
+        const t = livePill.querySelector(".pt");
         if (t && t.textContent !== nx) t.textContent = nx;
       }
-      if (liveMd) {
+      if (liveMd){
         liveMd.innerHTML = renderMarkdown(m.text) + '<span class="cursor"></span>';
-        var s = $("scroll");
+        const s = $("scroll");
         if (s.scrollHeight - s.scrollTop - s.clientHeight < 220) s.scrollTop = s.scrollHeight;
       }
     });
   }
 
-  function extractTopic(q) {
-    return String(q || "")
-      .replace(/[?!.]+$/g, "")
-      .replace(/^(please\s+|can you\s+|tell me\s+|explain\s+)/i, "")
-      .replace(/^(what is the meaning of|what is mean of|what does|what is|what are|define|meaning of|definition of|who is|who are)\s+/i, "")
-      .replace(/\s+mean$/i, "")
-      .replace(/^(a|an|the)\s+/i, "")
-      .trim();
-  }
-
-  function pickVariant(list) {
-    return list[Math.floor(Math.random() * list.length)];
-  }
-
-  /* Helper to wrap fetch with a timeout linked to parent AbortSignal */
-  function fetchWithTimeout(url, options, timeoutMs) {
-    var ctrl = new AbortController();
-    var parentSignal = options && options.signal;
-    if (parentSignal) {
-      if (parentSignal.aborted) ctrl.abort();
-      else parentSignal.addEventListener("abort", function() { ctrl.abort(); }, { once: true });
+  async function tryUserDirectKey(history){
+    const key = (ws.cfg.apiKey || "").trim();
+    if (!key) return null;
+    const contents = history.slice(-16).map(m => ({
+      role: m.role === "user" ? "user" : "model",
+      parts: [{ text: m.text }]
+    }));
+    const payload = {
+      contents,
+      generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 }
+    };
+    if ((ws.cfg.system || "").trim()){
+      payload.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
     }
-    var timer = setTimeout(function() { ctrl.abort(); }, timeoutMs);
-    var merged = Object.assign({}, options || {}, { signal: ctrl.signal });
-    return fetch(url, merged).finally(function() { clearTimeout(timer); });
-  }
-
-  /* Tier 2: Live public AI completion fallback (Pollinations text API) */
-  async function fetchLiveAI(history, prompt, userName, signal) {
-    var sys = [
-      "You are Gavio AI, a sharp, warm, and genuinely helpful AI assistant.",
-      "Answer directly, accurately, and naturally in Markdown.",
-      "Reply warmly and concisely to casual greetings without bulleted lists.",
-      "The user's name is " + (userName || "User") + ".",
-      ws.cfg.system && ws.cfg.system.trim() ? ("Additional user instruction: " + ws.cfg.system.trim()) : ""
-    ].filter(Boolean).join(" ");
-
-    var messagesPayload = [{ role: "system", content: sys }].concat(
-      history.slice(-10).map(function(m) {
-        return { role: m.role === "assistant" ? "assistant" : "user", content: m.text };
-      })
-    );
-
-    try {
-      var postRes = await fetchWithTimeout("https://text.pollinations.ai/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: signal,
-        body: JSON.stringify({
-          messages: messagesPayload,
-          model: "openai",
-          temperature: Number(ws.cfg.temp) || 0.7,
-          private: true
-        })
-      }, 6500);
-      if (postRes.ok) {
-        var txt = (await postRes.text()).trim();
-        if (txt && txt.length > 1 && txt.indexOf("<!DOCTYPE") === -1) {
-          return txt;
-        }
-      }
-    } catch (err) {
-      if (signal && signal.aborted) throw err;
-    }
-
-    try {
-      var compactPrompt = sys + "\n\nUser: " + prompt + "\nAssistant:";
-      var getUrl = "https://text.pollinations.ai/" + encodeURIComponent(compactPrompt) +
-        "?model=openai&temperature=" + encodeURIComponent(String(Number(ws.cfg.temp) || 0.7));
-      var getRes = await fetchWithTimeout(getUrl, { signal: signal }, 6500);
-      if (getRes.ok) {
-        var gtxt = (await getRes.text()).trim();
-        if (gtxt && gtxt.length > 1 && gtxt.indexOf("<!DOCTYPE") === -1) {
-          return gtxt;
-        }
-      }
-    } catch (err) {
-      if (signal && signal.aborted) throw err;
-    }
-
-    return null;
-  }
-
-  /* Tier 3A: Live Wikipedia REST API lookup for definitions & factual topics */
-  async function fetchWikipediaSummary(topic, signal) {
-    if (!topic || topic.length < 2 || topic.length > 80) return null;
-    try {
-      var searchUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&limit=1&namespace=0&format=json&origin=*&search=" + encodeURIComponent(topic);
-      var sRes = await fetchWithTimeout(searchUrl, { signal: signal }, 4500);
-      if (!sRes.ok) return null;
-      var sData = await sRes.json();
-      var matchedTitle = Array.isArray(sData) && Array.isArray(sData[1]) && sData[1][0] ? sData[1][0] : topic;
-
-      var sumUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(matchedTitle.replace(/\s+/g, "_"));
-      var res = await fetchWithTimeout(sumUrl, { signal: signal }, 4500);
-      if (!res.ok) return null;
-      var data = await res.json();
-      if (data && data.extract && data.type !== "disambiguation") {
-        return {
-          title: data.title || matchedTitle,
-          extract: data.extract.trim(),
-          url: data.content_urls && data.content_urls.desktop ? data.content_urls.desktop.page : ""
-        };
-      }
-    } catch (err) {
-      if (signal && signal.aborted) throw err;
-    }
-    return null;
-  }
-
-  /* Tier 3B: Rich Conversational NLU & Built-In Knowledge Engine (Zero boilerplate templates) */
-  function smartConversationalReply(prompt, userName, history) {
-    var q = String(prompt || "").trim();
-    var ql = q.toLowerCase();
-    var words = ql.replace(/[^a-z0-9\s']/g, " ").trim().split(/\s+/).filter(Boolean);
-    var first = (userName || "there").split(/\s+/)[0];
-
-    /* 1. Islamic & cultural greetings */
-    if (/^(assalam|asalam|salam|aoa|assalamu)\b/i.test(ql)) {
-      return pickVariant([
-        "Wa Alaikum Assalam, " + first + "! Hope you're doing great today. How can I help you out?",
-        "Wa Alaikum Assalam " + first + "! Good to see you—what's on your mind today?"
-      ]);
-    }
-
-    /* 2. Fuzzy casual greetings & slang (hi, hii, hello, hellow, helo, hey, hey dude wsp, yo, sup, good morning) */
-    var isGreetingWord = words.length > 0 && /^(hi+|hii+|hello+|hellow+|helo+|hey+|heyy+|yo+|sup|hola|howdy|greetings|gm|gn)$/.test(words[0]);
-    var hasCasualFollow = words.slice(1).every(function(w) {
-      return /^(there|dude|bro|man|mate|buddy|friend|guy|guys|gavio|ai|wsp|wassup|sup|what|whats|up|how|are|you|u|r|doing|it|going|good|morning|afternoon|evening|night)$/.test(w);
+    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
-    if ((isGreetingWord && words.length <= 6 && hasCasualFollow) || /^(good\s+(morning|afternoon|evening|night)|wsp|wassup|what'?s\s+up|how\s+(are|r)\s+(you|u)|how'?s\s+it\s+going)[!?.]*$/i.test(ql)) {
-      if (/\b(wsp|wassup|what'?s\s+up|how\s+(are|r)\s+(you|u)|how'?s\s+it\s+going)\b/i.test(ql)) {
-        return pickVariant([
-          "Hey " + first + "! Doing great over here—just ready to help you code, brainstorm, or answer whatever you're curious about. What's up with you?",
-          "Not much, " + first + "! All systems running smoothly. What are we working on or looking into today?",
-          "Hey " + first + ", all good here! Tell me what's on your mind—whether it's a coding problem, a quick question, or an idea you want to bounce around."
-        ]);
-      }
-      return pickVariant([
-        "Hey " + first + "! Great to see you. What can I help you with today?",
-        "Hello " + first + "! How's your day going? Ask me anything—code, explanations, writing, or quick questions.",
-        "Hey there, " + first + "! I'm here and ready. What would you like to jump into?"
-      ]);
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new Error(data?.error?.message || `API Key request failed (${res.status})`);
     }
-
-    /* 3. Gratitude & farewells */
-    if (/^(thanks|thank you|thx|tysm|appreciate it|cheers)[!?.]*$/i.test(ql)) {
-      return pickVariant([
-        "You're very welcome, " + first + "! Let me know anytime you need anything else.",
-        "Anytime, " + first + "! Happy to help."
-      ]);
-    }
-    if (/^(bye|goodbye|see ya|cya|later|take care)[!?.]*$/i.test(ql)) {
-      return "Catch you later, " + first + "! Have a great rest of your day.";
-    }
-
-    /* 4. Identity / capability questions */
-    if (/\b(who are you|what are you|your name|what can you do)\b/i.test(ql)) {
-      return "I'm **Gavio AI**, your personal workspace assistant. You can ask me to explain science or tech topics, write and debug code in Python/JavaScript/HTML/Linux, solve math problems, or help draft clean writing.";
-    }
-
-    /* 5. Jokes */
-    if (/\b(joke|make me laugh|funny)\b/i.test(ql)) {
-      return pickVariant([
-        "Why do programmers prefer dark mode?\n\nBecause light attracts bugs! 🐛",
-        "A SQL query walks into a bar, walks up to two tables, and asks...\n\n*\"Mind if I join you?\"*"
-      ]);
-    }
-
-    /* 6. Science & Knowledge Concepts */
-    if (/evap[ou]+ration/.test(ql)) {
-      return "**Evaporation** is the process where a **liquid turns into a gas (vapor)** at temperatures below its boiling point.\n\n" +
-        "### How It Works\n" +
-        "- **Surface Molecules Escape:** Molecules near the surface absorb heat energy, move faster, and break free into the air as gas.\n" +
-        "- **Cooling Effect:** Because the warmest, fastest-moving molecules leave first, the remaining liquid cools down (which is why sweating cools your body).\n" +
-        "- **What Speeds It Up:** Higher temperature, wider surface area, stronger airflow/wind, and lower humidity.\n\n" +
-        "*Everyday examples:* Wet clothes drying in the sun, puddles disappearing after rain, or steam rising from warm tea.";
-    }
-    if (/condensation/.test(ql)) {
-      return "**Condensation** is the opposite of evaporation—it happens when **gas (water vapor) cools down and turns back into liquid droplets**.\n\n*Example:* Water droplets forming on the outside of an ice-cold glass, or water vapor cooling high in the atmosphere to form clouds.";
-    }
-    if (/precipitation/.test(ql)) {
-      return "**Precipitation** is any form of water—such as **rain, snow, sleet, or hail**—that forms in the atmosphere and falls back to Earth when cloud droplets grow too heavy to stay suspended.";
-    }
-    if (/photosynthesis/.test(ql)) {
-      return "**Photosynthesis** is how green plants, algae, and certain bacteria convert **light energy** into **chemical energy**:\n\n" +
-        "- **Inputs:** Sunlight + Water ($H_2O$) + Carbon Dioxide ($CO_2$)\n" +
-        "- **Outputs:** Glucose (sugar for plant growth) + Oxygen ($O_2$)\n" +
-        "- **Where it happens:** Inside **chloroplasts** using the green pigment **chlorophyll**.";
-    }
-    if (/gravity/.test(ql)) {
-      return "**Gravity** is the fundamental force of attraction between any two objects that have mass. The more massive an object is, the stronger its gravitational pull—which is why Earth keeps us grounded and keeps the Moon in orbit around it.";
-    }
-    if (/black\s*hole/.test(ql)) {
-      return "A **black hole** is a region in space where gravity is so extraordinarily strong that nothing—not even light—can escape once it crosses the **event horizon**. Most stellar black holes form when a massive star collapses at the end of its life.";
-    }
-    if (/\b(atom|atoms)\b/.test(ql)) {
-      return "An **atom** is the basic building block of ordinary matter. It consists of a dense central **nucleus** (containing positively charged **protons** and neutral **neutrons**) surrounded by a cloud of negatively charged **electrons**.";
-    }
-    if (/\bdna\b/.test(ql)) {
-      return "**DNA (Deoxyribonucleic Acid)** is the double-helix molecule inside living cells that carries the genetic instructions for how an organism grows, develops, functions, and reproduces.";
-    }
-    if (/\b(artificial intelligence|what is ai|machine learning)\b/i.test(ql)) {
-      return "**Artificial Intelligence (AI)** refers to computer systems designed to perform tasks that normally require human intelligence—such as understanding language, recognizing patterns, reasoning, and generating code or text.\n\n**Machine Learning (ML)** is a core branch of AI where models learn patterns directly from data rather than following hard-coded rules.";
-    }
-    if (/\bblockchain\b/i.test(ql)) {
-      return "A **blockchain** is a distributed, append-only digital ledger shared across a network of computers. Transactions are grouped into cryptographically linked **blocks**, making past records tamper-evident without needing a single central authority.";
-    }
-    if (/\bquantum computing\b/i.test(ql)) {
-      return "**Quantum computing** uses principles of quantum mechanics—like **superposition** and **entanglement**—with **qubits** instead of classical 0/1 bits, allowing quantum processors to tackle certain optimization, simulation, and cryptography problems exponentially faster.";
-    }
-
-    /* 7. Safe Arithmetic & Math Solver */
-    var mathExpr = q
-      .replace(/^(what is|what's|calculate|compute|solve|evaluate)\s+/i, "")
-      .replace(/\bx\b/gi, "*")
-      .replace(/÷/g, "/")
-      .replace(/[?=\s]+$/g, "");
-    if (/^[0-9+\-*/().%\s]+$/.test(mathExpr) && /[+\-*/%]/.test(mathExpr)) {
-      try {
-        var result = Function('"use strict"; return (' + mathExpr + ");")();
-        if (typeof result === "number" && isFinite(result)) {
-          var formatted = Number.isInteger(result) ? String(result) : String(Number(result.toFixed(8)));
-          return "`" + mathExpr + "` = **" + formatted + "**";
-        }
-      } catch (_) {}
-    }
-
-    /* 8. Coding & Terminal Helpers */
-    if (/python.*json|parse json/.test(ql)) {
-      return "Here is a clean Python snippet to read and parse JSON safely:\n\n" +
-        "```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```\n\n" +
-        "- Uses `pathlib.Path` with explicit UTF-8 encoding.\n" +
-        "- Pretty-prints nested fields with `indent=2`.";
-    }
-    if (/linux.*disk|disk space/.test(ql)) {
-      return "Use `df -h` to inspect human-readable disk usage across mounted filesystems:\n\n" +
-        "```bash\ndf -h --total\n```\n\n" +
-        "- `-h` displays sizes in GB/MB instead of raw blocks.\n" +
-        "- Run `du -sh * | sort -hr | head -n 10` to find the largest folders in your current directory.";
-    }
-    if (/git\b/.test(ql)) {
-      return "Here are the most useful everyday Git commands:\n\n" +
-        "```bash\ngit status              # Check modified & staged files\ngit add .               # Stage all changes\ngit commit -m \"Update\"  # Create a commit\ngit push origin main    # Push to remote branch\n```";
-    }
-    if (/readme/.test(ql)) {
-      return "Here is a clean, ready-to-use `README.md` template:\n\n" +
-        "```markdown\n# Project Name\n\nConcise overview of what this project does.\n\n## Quick Start\n1. Install dependencies\n2. Add environment variables\n3. Run the application\n```";
-    }
-    if (/async|await/.test(ql)) {
-      return "**`async` and `await`** let you write asynchronous JavaScript that reads like normal step-by-step code:\n\n" +
-        "1. Marking a function `async` makes it automatically return a `Promise`.\n" +
-        "2. Using `await` pauses execution inside that function until the `Promise` settles.\n\n" +
-        "```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
-    }
-    if (/html|css|webpage|website/.test(ql) && /\b(create|build|make|template|example|code)\b/i.test(ql)) {
-      return "Here is a clean responsive HTML5 starter template:\n\n" +
-        "```html\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Page Title</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>\n```";
-    }
-
-    /* 9. Natural context-aware response when offline / sandboxed */
-    var sysNote = ws.cfg.system && ws.cfg.system.trim()
-      ? ("\n\n*(Active custom instruction: " + ws.cfg.system.trim() + ")*")
-      : "";
-    return "Got it, " + first + "—you're asking about **" + q + "**.\n\n" +
-      "Right now this browser preview is running in offline sandbox mode (external AI endpoints are blocked by the iframe), so I can't pull live web results for that specific query yet. " +
-      "Try asking me a **science concept** (like *what is evaporation* or *photosynthesis*), a **math calculation**, or a **Python/JavaScript/Linux coding question**—or deploy with `/api/chat` on Vercel for full live answers!" + sysNote;
+    const txt = (data?.candidates?.[0]?.content?.parts || []).map(p => p?.text || "").join("").trim();
+    return txt || null;
   }
 
-  /* Master 3-Tier AI Resolver: /api/chat -> Live Pollinations AI -> Wikipedia REST API + Smart Conversational NLU */
-  async function fetchReply(history, prompt, userName, signal) {
-    /* Tier 1: Vercel serverless /api/chat */
+  async function tryServerEndpoint(history, userName){
     try {
-      var res = await fetchWithTimeout("/api/chat", {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 5500);
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        signal: signal,
+        signal: ctrl.signal,
         body: JSON.stringify({
-          messages: history,
+          messages: history.slice(-14),
           system: ws.cfg.system || "",
           temperature: Number(ws.cfg.temp) || 0.7,
-          userName: userName || "User"
+          userName
         })
-      }, 5000);
-      if (res.ok) {
-        var data = await res.json().catch(function() { return null; });
-        if (data && typeof data.reply === "string" && data.reply.trim()) {
-          return data.reply.trim();
-        }
-      }
-    } catch (err) {
-      if (signal && signal.aborted) throw err;
+      });
+      clearTimeout(t);
+      if (!res.ok) return null;
+      const data = await res.json().catch(() => null);
+      return data?.reply && typeof data.reply === "string" ? data.reply.trim() : null;
+    } catch {
+      return null;
     }
-
-    /* Fast local path for pure greetings so replies feel instant */
-    var trimmed = String(prompt || "").trim();
-    var lower = trimmed.toLowerCase();
-    var firstWord = lower.replace(/[^a-z]/g, " ").trim().split(/\s+/)[0] || "";
-    if (/^(hi+|hii+|hello+|hellow+|helo+|hey+|heyy+|yo+|sup|hola|salam|assalam|wsp|wassup)$/.test(firstWord) && trimmed.split(/\s+/).length <= 5) {
-      return smartConversationalReply(trimmed, userName, history);
-    }
-
-    /* Tier 2: Live keyless AI completion endpoint */
-    var liveReply = await fetchLiveAI(history, prompt, userName, signal);
-    if (liveReply) return liveReply;
-
-    /* Tier 3A: Live Wikipedia REST API lookup for definitions & factual queries */
-    var topic = extractTopic(prompt);
-    if (topic && /\b(what|define|meaning|definition|explain|who)\b/i.test(prompt)) {
-      var wiki = await fetchWikipediaSummary(topic, signal);
-      if (wiki && wiki.extract) {
-        var link = wiki.url ? ("\n\n[Read more on Wikipedia](" + wiki.url + ")") : "";
-        return "**" + wiki.title + "**\n\n" + wiki.extract + link;
-      }
-    }
-
-    /* Tier 3B: Smart conversational & built-in knowledge NLU */
-    return smartConversationalReply(prompt, userName, history);
   }
 
-  async function runGen(c, prompt) {
+  async function tryLiveCompletion(history, userName){
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 7500);
+      const sys = (ws.cfg.system || "").trim() ||
+        `You are Gavio AI, a helpful, natural, concise AI assistant chatting with ${userName}. Answer any question directly and clearly.`;
+      const msgs = [{ role: "system", content: sys }].concat(
+        history.slice(-10).map(m => ({ role: m.role, content: m.text }))
+      );
+      const res = await fetch("https://text.pollinations.ai/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: ctrl.signal,
+        body: JSON.stringify({
+          messages: msgs,
+          model: "openai",
+          temperature: Number(ws.cfg.temp) || 0.7
+        })
+      });
+      clearTimeout(t);
+      if (!res.ok) return null;
+      const txt = (await res.text()).trim();
+      if (!txt || txt.startsWith("<!DOCTYPE") || txt.includes("502 Bad Gateway")) return null;
+      return txt;
+    } catch {
+      return null;
+    }
+  }
+
+  async function tryWikiLookup(prompt){
+    const m = prompt.trim().match(/^(?:what\s+is(?:\s+the)?(?:\s+mean(?:ing)?\s+of)?|define|who\s+is|explain|tell\s+me\s+about)\s+(.+?)[\s?.!]*$/i);
+    if (!m) return null;
+    let topic = m[1].trim().replace(/^(a|an|the)\s+/i, "");
+    if (!topic || topic.length > 60) return null;
+    const corrections = { evapouration: "Evaporation", photosynthsis: "Photosynthesis" };
+    topic = corrections[topic.toLowerCase()] || topic;
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 4000);
+      const res = await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(topic), { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!res.ok) return null;
+      const data = await res.json().catch(() => null);
+      if (data?.extract && data.type !== "disambiguation") return data.extract;
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  function smartOfflineReply(prompt, userName){
+    const q = prompt.trim();
+    const ql = q.toLowerCase().replace(/[!?.,]+$/g, "").trim();
+    const first = (userName || "there").split(/\s+/)[0];
+
+    if (/^(h+e+l+o+w*|h+i+|h+e+y+|y+o+|s+u+p+|h+o+l+a+|a+s+s+a+l+a+m|good\s*(morning|afternoon|evening))(\s+(dude|bro|man|there|gavio|ai|mate|friend|wsp|wassup|what'?s\s*up))?$/i.test(ql) ||
+        /^(hey\s+dude\s+wsp|wsp|wassup|what'?s\s*up|how\s+are\s+you|how\s+r\s+u|how'?s\s+it\s+going)$/i.test(ql)){
+      return `Hey ${first}! Doing great—what's up? Ask me anything (coding, Linux/server commands, science, math, or writing), or add your API key in **Settings** for full live cloud answers.`;
+    }
+
+    if (/pterodactyl/i.test(ql)){
+      return `Here are the complete commands to install **Pterodactyl Panel** on Ubuntu 22.04/24.04:\n\n### 1. Update System & Install Dependencies\n\`\`\`bash\napt update && apt upgrade -y\napt -y install software-properties-common curl apt-transport-https ca-certificates gnupg\nLC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php\ncurl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg\necho "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list\napt update\napt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server\ncurl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\n\`\`\`\n\n### 2. Download Pterodactyl Panel\n\`\`\`bash\nmkdir -p /var/www/pterodactyl && cd /var/www/pterodactyl\ncurl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz\ntar -xzvf panel.tar.gz\nchmod -R 755 storage/* bootstrap/cache/\n\`\`\`\n\n### 3. Configure Database & Environment\n\`\`\`bash\nmariadb -u root -e "CREATE DATABASE panel; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'StrongPassword123!'; GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH PRIVILEGES;"\ncp .env.example .env\nCOMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader\nphp artisan key:generate --force\nphp artisan p:environment:setup\nphp artisan p:environment:database\nphp artisan migrate --seed --force\nphp artisan p:user:make\nchown -R www-data:www-data /var/www/pterodactyl/*\n\`\`\`\n\n### 4. Queue Worker & Cron\n\`\`\`bash\n(crontab -l 2>/dev/null; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1") | crontab -\nsystemctl enable --now redis-server\n\`\`\`\n\nWant the **Nginx SSL config** and **Wings daemon** commands too? Just ask!`;
+    }
+
+    if (/evapouration|evaporation/i.test(ql)){
+      return "**Evaporation** is the process where a liquid turns into a gas (vapor) at temperatures below its boiling point.\n\n- **How it happens:** Faster-moving molecules near the surface gain enough kinetic energy to break free from the liquid into the air.\n- **Cooling effect:** Because the highest-energy molecules escape first, the remaining liquid cools down (which is why sweat cools your skin).";
+    }
+
+    if (/photosynthesis/i.test(ql)){
+      return "**Photosynthesis** is the process plants, algae, and some bacteria use to convert **light energy** into **chemical energy (glucose)**.\n\n- **Inputs:** Carbon dioxide (`CO₂`), water (`H₂O`), and sunlight\n- **Outputs:** Glucose (`C₆H₁₂O₆`) and oxygen (`O₂`)";
+    }
+
+    const pctMatch = ql.match(/(\d+(?:\.\d+)?)\s*%\s*of\s*(\d+(?:\.\d+)?)/);
+    if (pctMatch){
+      const pct = Number(pctMatch[1]), base = Number(pctMatch[2]);
+      return `**${pct}% of ${base}** is **${Number(((pct / 100) * base).toFixed(6))}**.`;
+    }
+    const mathMatch = ql.match(/^(?:what\s+is\s+|calculate\s+|solve\s+)?([0-9+\-*/().\s^]+)$/);
+    if (mathMatch && /[+\-*/^]/.test(mathMatch[1])){
+      try {
+        const expr = mathMatch[1].replace(/\^/g, "**");
+        if (/^[0-9+\-*/().\s*]+$/.test(expr)){
+          const val = Function(`"use strict"; return (${expr});`)();
+          if (typeof val === "number" && Number.isFinite(val)){
+            return `**${mathMatch[1].trim()}** = **${val}**`;
+          }
+        }
+      } catch {}
+    }
+
+    if (/python.*json|parse json/i.test(ql)){
+      return "Here is a clean Python snippet to parse JSON:\n\n```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```";
+    }
+    if (/async|await/i.test(ql)){
+      return "**`async` and `await`** let you write asynchronous JavaScript that reads like synchronous code:\n\n```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
+    }
+
+    return `To get unrestricted live AI answers for **"${q}"** inside this preview iframe, click **+ Add API Key** in the top bar (or **Settings** in the sidebar) and paste your \`AIza...\` key—or deploy this file to Vercel with \`/api/chat\`.`;
+  }
+
+  async function runGen(c, prompt){
     if (!accs.session) return;
-    var ownerEmail = accs.session.email;
-    var ownerName = accs.session.name || ownerEmail;
-    var m = c.messages[c.messages.length - 1];
+    const ownerEmail = accs.session.email;
+    const ownerName = accs.session.name || ownerEmail;
+    const m = c.messages[c.messages.length - 1];
     m.text = "";
     m.step = stepText(prompt, "");
     delete m.error;
     abortFlag = false;
-    activeController = new AbortController();
     busy = true;
     renderAll();
 
-    var history = c.messages
+    const history = c.messages
       .slice(0, -1)
-      .filter(function(x) { return x && typeof x.text === "string" && x.text.trim(); })
-      .map(function(x) { return { role: x.role, text: x.text }; });
+      .filter(x => x && typeof x.text === "string" && x.text.trim())
+      .map(x => ({ role: x.role, text: x.text }));
 
-    var fullText = "";
+    let fullText = null;
     try {
-      fullText = await fetchReply(history, prompt, ownerName, activeController.signal);
+      fullText = await tryUserDirectKey(history);
     } catch (err) {
-      if (abortFlag || (err && err.name === "AbortError")) {
-        busy = false;
-        activeController = null;
-        if (accs.session && accs.session.email === ownerEmail) {
-          m.step = "Stopped";
-          saveWs();
-          renderAll();
-        }
-        return;
-      }
-      fullText = smartConversationalReply(prompt, ownerName, history);
+      m.error = err?.message || "Invalid API Key.";
     }
+    if (!fullText && !m.error) fullText = await tryServerEndpoint(history, ownerName);
+    if (!fullText && !m.error) fullText = await tryLiveCompletion(history, ownerName);
+    if (!fullText && !m.error) fullText = await tryWikiLookup(prompt);
+    if (!fullText && !m.error) fullText = smartOfflineReply(prompt, ownerName);
 
-    var chunks = fullText.match(/.{1,10}/gs) || [fullText];
-
+    const outText = fullText || "";
+    const chunks = outText.match(/.{1,8}/gs) || (outText ? [outText] : []);
     try {
-      for (var i = 0; i < chunks.length; i++) {
+      for (const part of chunks){
         if (abortFlag || !accs.session || accs.session.email !== ownerEmail) break;
-        m.text += chunks[i];
+        m.text += part;
         queueDraw(m, prompt);
-        await new Promise(function(r) { setTimeout(r, 8); });
+        await new Promise(r => setTimeout(r, 10));
       }
       m.step = "Done";
     } finally {
       busy = false;
-      activeController = null;
-      if (accs.session && accs.session.email === ownerEmail) {
+      if (accs.session && accs.session.email === ownerEmail){
         saveWs();
         renderAll();
       }
     }
   }
 
-  async function sendMsg(raw) {
+  async function sendMsg(raw){
     if (!accs.session || busy) return;
-    var t = String(raw || "").trim();
-    if (!t) {
-      $("inp").focus();
-      return;
-    }
-    var c = curC();
-    if (!c) {
+    const t = (raw || "").trim();
+    if (!t){ $("inp").focus(); return; }
+    let c = curC();
+    if (!c){
       c = { id: "c_" + Date.now().toString(36), title: t.slice(0, 44), messages: [] };
       ws.chats.unshift(c);
       ws.active = c.id;
-    } else if (!c.messages.length) {
+    } else if (!c.messages.length){
       c.title = t.slice(0, 44);
     }
     c.messages.push({ role: "user", text: t });
@@ -1651,83 +1176,77 @@ header{
     await runGen(c, t);
   }
 
-  async function regen() {
-    var c = curC();
+  async function regen(){
+    const c = curC();
     if (!c || busy) return;
-    var last = c.messages[c.messages.length - 1];
-    var prev = c.messages.length > 1 && c.messages[c.messages.length - 2] && c.messages[c.messages.length - 2].role === "user"
-      ? c.messages[c.messages.length - 2].text
-      : "";
+    const last = c.messages[c.messages.length - 1];
+    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user"
+      ? c.messages[c.messages.length - 2].text : "";
     if (!last || last.role !== "assistant") return;
     last.text = "";
     delete last.error;
     await runGen(c, prev);
   }
 
-  /* Reliable clipboard copy compatible with sandboxed iframes */
-  function copyText(text, btn) {
-    try {
-      var ta = document.createElement("textarea");
-      ta.value = String(text || "");
-      ta.setAttribute("readonly", "");
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-    } catch (_) {}
-    if (btn) {
-      var prev = btn.textContent;
-      btn.textContent = "Copied";
-      setTimeout(function() { btn.textContent = prev || "Copy"; }, 1200);
-    }
-  }
+  function handleAction(act, el, ev){
+    if (ev && ev.stopPropagation) ev.stopPropagation();
 
-  function handleAction(act, btn, ev) {
-    if (ev && typeof ev.stopPropagation === "function") ev.stopPropagation();
-
-    if (act === "toggle-theme") {
-      var cur = document.documentElement.getAttribute("data-theme");
+    if (act === "toggle-theme"){
+      const cur = document.documentElement.getAttribute("data-theme");
       applyTheme(cur === "dark" ? "light" : "dark");
-    } else if (act === "demo-login") {
+    } else if (act === "demo-login"){
       $("a-err").textContent = "";
       enterApp({ email: "demo@gavio.ai", name: "Demo User" });
-    } else if (act === "tab-login") {
+    } else if (act === "tab-login"){
       setAuthTab("login");
-    } else if (act === "tab-register") {
+    } else if (act === "tab-register"){
       setAuthTab("register");
-    } else if (act === "google-open") {
+    } else if (act === "google-modal-open"){
       openGoogleModal();
-    } else if (act === "google-close") {
-      closeGoogleModal();
-    } else if (act === "google-pick") {
-      gState.email = btn.dataset.gemail || "";
-      gState.name = btn.dataset.gname || gState.email.split("@")[0];
-      gState.step = 2;
-      renderGoogleStep();
-    } else if (act === "google-another") {
-      gState.email = "";
-      gState.name = "";
-      gState.step = 2;
-      renderGoogleStep();
-    } else if (act === "google-autofill") {
-      $("g-code-inp").value = gState.code;
+    } else if (act === "google-modal-close"){
+      $("ov-google").classList.remove("open");
+    } else if (act === "google-use-other"){
       $("g-err").textContent = "";
-      $("g-code-inp").focus();
-    } else if (act === "google-back") {
-      if (gState.step <= 1) closeGoogleModal();
-      else {
-        gState.step -= 1;
-        renderGoogleStep();
+      $("g-email-inp").value = "";
+      $("g-pass-inp").value = "";
+      $("g-step-1").style.display = "none";
+      $("g-step-2").style.display = "flex";
+      $("g-step-3").style.display = "none";
+    } else if (act === "google-back-1"){
+      openGoogleModal();
+    } else if (act === "google-back-2"){
+      $("g-step-1").style.display = "none";
+      $("g-step-2").style.display = "flex";
+      $("g-step-3").style.display = "none";
+    } else if (act === "google-pick-saved"){
+      const em = el?.dataset?.email || "";
+      const found = accs.googleAccounts.find(x => x.email === em);
+      if (found) startGoogleVerify(found.email, found.name);
+    } else if (act === "google-send-code"){
+      const em = ($("g-email-inp").value || "").trim().toLowerCase();
+      const pw = $("g-pass-inp").value || "";
+      if (!em || !em.includes("@")){ $("g-err").textContent = "Please enter a valid Google email."; return; }
+      if (!pw || pw.length < 4){ $("g-err").textContent = "Please enter your Google account password."; return; }
+      const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      startGoogleVerify(em, nm);
+    } else if (act === "google-fill-code"){
+      $("g-code-inp").value = gPending.code;
+    } else if (act === "google-verify-finish"){
+      const typed = ($("g-code-inp").value || "").trim();
+      if (typed !== gPending.code){
+        $("g-err").textContent = "Invalid 6-digit security code. Check the code shown above.";
+        return;
       }
-    } else if (act === "google-next") {
-      advanceGoogleStep();
-    } else if (act === "auth-submit") {
+      if (!accs.googleAccounts.some(x => x.email === gPending.email)){
+        accs.googleAccounts.unshift({ email: gPending.email, name: gPending.name });
+        saveAccs();
+      }
+      $("ov-google").classList.remove("open");
+      enterApp({ email: gPending.email, name: gPending.name });
+    } else if (act === "auth-submit"){
       doEmailAuth();
-    } else if (act === "new-chat") {
+    } else if (act === "new-chat"){
       abortFlag = true;
-      if (activeController) { try { activeController.abort(); } catch (_) {} }
       busy = false;
       editingChatId = null;
       ws.active = null;
@@ -1735,149 +1254,130 @@ header{
       renderAll();
       $("side").classList.remove("open");
       $("inp").focus();
-    } else if (act === "clear-search") {
+    } else if (act === "clear-search"){
       searchQuery = "";
       $("c-search").value = "";
       $("c-search-clear").classList.remove("show");
       renderList();
       $("c-search").focus();
-    } else if (act === "pick-chat") {
+    } else if (act === "pick-chat"){
       if (busy) return;
       editingChatId = null;
-      ws.active = btn.dataset.cid;
+      ws.active = el.dataset.cid;
       saveWs();
       renderAll();
       $("side").classList.remove("open");
-    } else if (act === "ren-chat") {
+    } else if (act === "ren-chat"){
       if (busy) return;
-      editingChatId = btn.dataset.cid;
+      editingChatId = el.dataset.cid;
       renderList();
-    } else if (act === "del-chat") {
+    } else if (act === "del-chat"){
       if (busy) return;
-      var cid = btn.dataset.cid;
+      const cid = el.dataset.cid;
       if (editingChatId === cid) editingChatId = null;
-      ws.chats = ws.chats.filter(function(x) { return x.id !== cid; });
+      ws.chats = ws.chats.filter(x => x.id !== cid);
       if (ws.active === cid) ws.active = null;
       saveWs();
       renderAll();
-    } else if (act === "toggle-side") {
-      var side = $("side");
-      if (window.innerWidth <= 760) {
-        side.classList.toggle("open");
-      } else {
-        side.classList.toggle("collapsed");
+    } else if (act === "toggle-side"){
+      $("side").classList.toggle("open");
+    } else if (act === "chip-send"){
+      sendMsg(el.textContent);
+    } else if (act === "send-or-stop"){
+      if (busy) abortFlag = true;
+      else sendMsg($("inp").value);
+    } else if (act === "copy-msg"){
+      const c = curC();
+      const m = c?.messages[Number(el.dataset.midx)];
+      if (m){
+        navigator.clipboard?.writeText(m.text || "");
+        el.textContent = "Copied";
+        setTimeout(() => { el.textContent = "Copy"; }, 1200);
       }
-    } else if (act === "chip-send") {
-      sendMsg(btn.dataset.prompt || btn.textContent);
-    } else if (act === "send-or-stop") {
-      if (busy) {
-        abortFlag = true;
-        if (activeController) { try { activeController.abort(); } catch (_) {} }
-      } else {
-        sendMsg($("inp").value);
+    } else if (act === "copy-code"){
+      const code = el.parentElement?.querySelector("code");
+      if (code){
+        navigator.clipboard?.writeText(code.innerText);
+        el.textContent = "Copied";
+        setTimeout(() => { el.textContent = "Copy"; }, 1200);
       }
-    } else if (act === "copy-msg") {
-      var c = curC();
-      var m = c && c.messages[Number(btn.dataset.midx)];
-      if (m) copyText(m.text || "", btn);
-    } else if (act === "copy-code") {
-      var code = btn.parentElement && btn.parentElement.querySelector("code");
-      if (code) copyText(code.innerText, btn);
-    } else if (act === "regen") {
+    } else if (act === "regen"){
       regen();
-    } else if (act === "open-set") {
+    } else if (act === "open-set"){
+      $("k-inp").value = ws.cfg.apiKey || "";
       $("th-inp").value = document.documentElement.getAttribute("data-theme") || "dark";
       $("s-inp").value = ws.cfg.system || "";
-      $("t-inp").value = ws.cfg.temp != null ? ws.cfg.temp : 0.7;
+      $("t-inp").value = ws.cfg.temp ?? 0.7;
       $("t-val").textContent = $("t-inp").value;
       $("ov-set").classList.add("open");
-    } else if (act === "close-set") {
+    } else if (act === "close-set"){
       $("ov-set").classList.remove("open");
-    } else if (act === "save-set") {
+    } else if (act === "save-set"){
       applyTheme($("th-inp").value);
       ws.cfg = {
+        apiKey: ($("k-inp").value || "").trim(),
         system: $("s-inp").value,
         temp: Number($("t-inp").value) || 0.7
       };
       saveWs();
       $("ov-set").classList.remove("open");
       renderAll();
-    } else if (act === "open-prof") {
-      var u = accs.session;
+    } else if (act === "open-prof"){
+      const u = accs.session;
       if (!u) return;
       $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
       $("p-nm").textContent = u.name || u.email;
       $("p-em").textContent = u.email;
       $("ov-prof").classList.add("open");
-    } else if (act === "close-prof") {
+    } else if (act === "close-prof"){
       $("ov-prof").classList.remove("open");
-    } else if (act === "sign-out") {
+    } else if (act === "sign-out"){
       exitApp();
     }
   }
 
-  window.GavioApp = { act: handleAction };
+  window.Gavio = { act: handleAction };
 
-  /* Delegated click listener with deduplication */
-  document.addEventListener("click", function(e) {
-    var btn = e.target.closest("[data-act]");
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("[data-act]");
     if (!btn) return;
     if (btn.hasAttribute("onclick")) return;
     handleAction(btn.dataset.act, btn, e);
   });
 
-  $("c-search").addEventListener("input", function(e) {
+  $("c-search").addEventListener("input", e => {
     searchQuery = e.target.value || "";
     $("c-search-clear").classList.toggle("show", Boolean(searchQuery));
     renderList();
   });
 
-  var inp = $("inp");
-  inp.addEventListener("input", function() {
+  const inp = $("inp");
+  inp.addEventListener("input", () => {
     inp.style.height = "auto";
     inp.style.height = Math.min(inp.scrollHeight, 200) + "px";
     syncSendBtn();
   });
-
-  inp.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+  inp.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing){
       e.preventDefault();
       sendMsg(inp.value);
     }
   });
-
-  document.addEventListener("keydown", function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
       e.preventDefault();
-      if (!busy && accs.session) {
-        editingChatId = null;
-        ws.active = null;
-        saveWs();
-        renderAll();
-        inp.focus();
-      }
+      if (!busy){ editingChatId = null; ws.active = null; saveWs(); renderAll(); inp.focus(); }
     }
   });
-
-  $("t-inp").addEventListener("input", function(e) {
-    $("t-val").textContent = e.target.value;
-  });
-
-  $("g-email-inp").addEventListener("keydown", function(e) { if (e.key === "Enter") advanceGoogleStep(); });
-  $("g-name-inp").addEventListener("keydown", function(e) { if (e.key === "Enter") advanceGoogleStep(); });
-  $("g-pw-inp").addEventListener("keydown", function(e) { if (e.key === "Enter") advanceGoogleStep(); });
-  $("g-code-inp").addEventListener("keydown", function(e) { if (e.key === "Enter") advanceGoogleStep(); });
-  $("in-pw").addEventListener("keydown", function(e) { if (e.key === "Enter") doEmailAuth(); });
-
-  $("scroll").addEventListener("click", function(e) {
+  $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
+  $("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
+  $("g-pass-inp").addEventListener("keydown", e => { if (e.key === "Enter") handleAction("google-send-code"); });
+  $("g-code-inp").addEventListener("keydown", e => { if (e.key === "Enter") handleAction("google-verify-finish"); });
+  $("scroll").addEventListener("click", e => {
     if (!e.target.closest("[data-act]")) $("side").classList.remove("open");
   });
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", applyAuth);
-  } else {
-    applyAuth();
-  }
+  applyAuth();
 })();
 </script>
 </body>
