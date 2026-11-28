@@ -97,13 +97,6 @@ button:active{transform:scale(.97)}
   border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:600;
 }
 
-.demo-btn{
-  width:100%;padding:10.5px 14px;border-radius:11px;
-  border:1px solid rgba(16,185,129,.45);
-  background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(99,102,241,.18));
-  font-weight:600;font-size:13.5px;
-}
-
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
 .tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
 .tbtn.on{background:var(--panel2);color:var(--txt)}
@@ -302,8 +295,6 @@ header{
     </div>
     <p class="sub">Sign in or register to open your isolated Gavio AI workspace.</p>
 
-    <button type="button" class="demo-btn" data-act="demo-login" onclick="window.Gavio && window.Gavio.act('demo-login',this,event)">⚡ Instant Demo Sign In</button>
-
     <div class="tabs">
       <button type="button" class="tbtn on" id="tab-in" data-act="tab-login" onclick="window.Gavio && window.Gavio.act('tab-login',this,event)">Sign In</button>
       <button type="button" class="tbtn" id="tab-up" data-act="tab-register" onclick="window.Gavio && window.Gavio.act('tab-register',this,event)">Register</button>
@@ -318,17 +309,17 @@ header{
 
     <div class="grp" id="name-grp" style="display:none">
       <label for="in-name">Name</label>
-      <input id="in-name" type="text" placeholder="Your name">
+      <input id="in-name" type="text" placeholder="Your name" autocomplete="name">
     </div>
 
     <div class="grp">
       <label for="in-mail">Email</label>
-      <input id="in-mail" type="email" placeholder="you@example.com">
+      <input id="in-mail" type="email" placeholder="you@example.com" autocomplete="email">
     </div>
 
     <div class="grp">
       <label for="in-pw">Password</label>
-      <input id="in-pw" type="password" placeholder="Password">
+      <input id="in-pw" type="password" placeholder="Password" autocomplete="current-password">
     </div>
 
     <div class="err-txt" id="a-err"></div>
@@ -337,7 +328,7 @@ header{
   </div>
 </div>
 
-<div id="ws">
+<div id="ws" class="hide">
   <aside id="side">
     <div class="s-head">
       <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px">G</div>
@@ -351,8 +342,8 @@ header{
     <div id="c-list"></div>
     <div class="s-foot">
       <button type="button" data-act="open-prof" onclick="window.Gavio && window.Gavio.act('open-prof',this,event)">
-        <span class="av" id="s-av">D</span>
-        <span class="u-nm" id="s-nm">Demo User</span>
+        <span class="av" id="s-av">U</span>
+        <span class="u-nm" id="s-nm">Account</span>
       </button>
       <button type="button" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">⚙ Settings & API Key</button>
       <button type="button" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err)">↪ Sign out</button>
@@ -409,7 +400,7 @@ header{
         <input id="g-pass-inp" type="password" placeholder="Enter your password">
       </label>
       <div class="mrow">
-        <button type="button" class="b2" data-act="google-back-1" onclick="window.Gavio && window.Gavio.act('google-back-1',this,event)">Back</button>
+        <button type="button" class="b2" id="g-back-1-btn" data-act="google-back-1" onclick="window.Gavio && window.Gavio.act('google-back-1',this,event)">Back</button>
         <button type="button" class="b1" data-act="google-send-code" onclick="window.Gavio && window.Gavio.act('google-send-code',this,event)">Next</button>
       </div>
     </div>
@@ -463,10 +454,10 @@ header{
   <div class="mcard">
     <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-prof" onclick="window.Gavio && window.Gavio.act('close-prof',this,event)">✕</button></h2>
     <div style="display:flex;align-items:center;gap:12px">
-      <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">D</div>
+      <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">U</div>
       <div>
-        <div id="p-nm" style="font-weight:600">Demo User</div>
-        <div id="p-em" style="color:var(--mut);font-size:13px">demo@gavio.ai</div>
+        <div id="p-nm" style="font-weight:600">User</div>
+        <div id="p-em" style="color:var(--mut);font-size:13px">user@example.com</div>
       </div>
     </div>
     <small>All chats, API keys, and settings are isolated strictly to this signed-in user account.</small>
@@ -508,28 +499,30 @@ header{
     document.documentElement.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.color = mode === "light" ? "#0f172a" : "#eef1f8";
-    wr("gavio_theme_v13", mode);
+    wr("gavio_theme_v14", mode);
     const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v13") || "dark");
+  applyTheme(rd("gavio_theme_v14") || "dark");
 
   let accs = { users: {}, googleAccounts: [], session: null };
   try {
-    const p = JSON.parse(rd("gavio_accs_v13") || "null");
+    const p = JSON.parse(rd("gavio_accs_v14") || "null");
     if (p && typeof p === "object") {
       accs.users = p.users || {};
       accs.googleAccounts = Array.isArray(p.googleAccounts) ? p.googleAccounts : [];
-      accs.session = p.session || null;
+      if (p.session && p.session.email && p.session.email !== "demo@gavio.ai") {
+        accs.session = p.session;
+      }
     }
   } catch {}
-  function saveAccs(){ wr("gavio_accs_v13", JSON.stringify(accs)); }
+  function saveAccs(){ wr("gavio_accs_v14", JSON.stringify(accs)); }
 
   const defCfg = { apiKey: "", system: "", temp: 0.7 };
   let ws = { chats: [], active: null, cfg: { ...defCfg } };
 
   function userBucketKey(email){
-    return "gavio_u13_" + encodeURIComponent(String(email).trim().toLowerCase());
+    return "gavio_u14_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
   function loadWs(){
@@ -684,6 +677,7 @@ header{
     $("tab-in").classList.toggle("on", !isUp);
     $("tab-up").classList.toggle("on", isUp);
     $("name-grp").style.display = isUp ? "flex" : "none";
+    $("in-pw").setAttribute("autocomplete", isUp ? "new-password" : "current-password");
     $("a-go").textContent = isUp ? "Create Account" : "Sign In";
     $("a-err").textContent = "";
   }
@@ -705,10 +699,14 @@ header{
       $("g-step-1").style.display = "flex";
       $("g-step-2").style.display = "none";
       $("g-step-3").style.display = "none";
+      if ($("g-back-1-btn")) $("g-back-1-btn").style.display = "inline-block";
     } else {
+      $("g-email-inp").value = "";
+      $("g-pass-inp").value = "";
       $("g-step-1").style.display = "none";
       $("g-step-2").style.display = "flex";
       $("g-step-3").style.display = "none";
+      if ($("g-back-1-btn")) $("g-back-1-btn").style.display = "none";
     }
     $("ov-google").classList.add("open");
   }
@@ -723,6 +721,7 @@ header{
     $("g-step-1").style.display = "none";
     $("g-step-2").style.display = "none";
     $("g-step-3").style.display = "flex";
+    requestAnimationFrame(() => $("g-code-inp").focus());
   }
 
   function doEmailAuth(){
@@ -732,7 +731,7 @@ header{
     const pw = $("in-pw").value || "";
     const nm = ($("in-name").value || "").trim();
 
-    if (!em || !em.includes("@")) { err.textContent = "Enter a valid email address."; return; }
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { err.textContent = "Enter a valid email address."; return; }
     if (!pw || pw.length < 4) { err.textContent = "Enter a password (at least 4 characters)."; return; }
 
     if (mode === "register"){
@@ -1194,9 +1193,6 @@ header{
     if (act === "toggle-theme"){
       const cur = document.documentElement.getAttribute("data-theme");
       applyTheme(cur === "dark" ? "light" : "dark");
-    } else if (act === "demo-login"){
-      $("a-err").textContent = "";
-      enterApp({ email: "demo@gavio.ai", name: "Demo User" });
     } else if (act === "tab-login"){
       setAuthTab("login");
     } else if (act === "tab-register"){
@@ -1212,9 +1208,11 @@ header{
       $("g-step-1").style.display = "none";
       $("g-step-2").style.display = "flex";
       $("g-step-3").style.display = "none";
+      if ($("g-back-1-btn")) $("g-back-1-btn").style.display = accs.googleAccounts.length ? "inline-block" : "none";
     } else if (act === "google-back-1"){
       openGoogleModal();
     } else if (act === "google-back-2"){
+      $("g-err").textContent = "";
       $("g-step-1").style.display = "none";
       $("g-step-2").style.display = "flex";
       $("g-step-3").style.display = "none";
@@ -1225,12 +1223,13 @@ header{
     } else if (act === "google-send-code"){
       const em = ($("g-email-inp").value || "").trim().toLowerCase();
       const pw = $("g-pass-inp").value || "";
-      if (!em || !em.includes("@")){ $("g-err").textContent = "Please enter a valid Google email."; return; }
+      if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ $("g-err").textContent = "Please enter a valid Google email."; return; }
       if (!pw || pw.length < 4){ $("g-err").textContent = "Please enter your Google account password."; return; }
       const nm = (em.split("@")[0] || "User").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
       startGoogleVerify(em, nm);
     } else if (act === "google-fill-code"){
       $("g-code-inp").value = gPending.code;
+      $("g-err").textContent = "";
     } else if (act === "google-verify-finish"){
       const typed = ($("g-code-inp").value || "").trim();
       if (typed !== gPending.code){
@@ -1345,6 +1344,16 @@ header{
     handleAction(btn.dataset.act, btn, e);
   });
 
+  // Close overlays when clicking backdrop
+  ["ov-google", "ov-set", "ov-prof"].forEach(id => {
+    const ov = $(id);
+    if (ov){
+      ov.addEventListener("click", e => {
+        if (e.target === ov) ov.classList.remove("open");
+      });
+    }
+  });
+
   $("c-search").addEventListener("input", e => {
     searchQuery = e.target.value || "";
     $("c-search-clear").classList.toggle("show", Boolean(searchQuery));
@@ -1366,11 +1375,13 @@ header{
   document.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
       e.preventDefault();
-      if (!busy){ editingChatId = null; ws.active = null; saveWs(); renderAll(); inp.focus(); }
+      if (!busy && accs.session){ editingChatId = null; ws.active = null; saveWs(); renderAll(); inp.focus(); }
     }
   });
   $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
   $("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
+  $("in-mail").addEventListener("keydown", e => { if (e.key === "Enter") $("in-pw").focus(); });
+  $("g-email-inp").addEventListener("keydown", e => { if (e.key === "Enter") $("g-pass-inp").focus(); });
   $("g-pass-inp").addEventListener("keydown", e => { if (e.key === "Enter") handleAction("google-send-code"); });
   $("g-code-inp").addEventListener("keydown", e => { if (e.key === "Enter") handleAction("google-verify-finish"); });
   $("scroll").addEventListener("click", e => {
