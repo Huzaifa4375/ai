@@ -187,7 +187,7 @@ button:active{transform:scale(.97)}
 
 .main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
 header{
-  display:flex;align-items:center;gap:10px;padding:11px 18px;
+  display:flex;align-items:center;gap:8px;padding:11px 18px;
   border-bottom:1px solid var(--line);background:var(--panel);
 }
 #m-btn{display:none;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:5px 10px}
@@ -195,7 +195,10 @@ header{
 .h-btn{
   border:1px solid var(--line);background:var(--panel2);color:var(--txt);
   border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;
 }
+.vps-dot{width:7px;height:7px;border-radius:50%;background:var(--mut)}
+.vps-dot.on{background:var(--mint);box-shadow:0 0 8px var(--mint)}
 #m-pill{
   font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mint);
   background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);
@@ -205,7 +208,7 @@ header{
 #scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
 .col{max-width:780px;margin:0 auto;padding:24px 20px 14px}
 
-.empty{padding-top:8vh;animation:fadeUp .25s ease}
+.empty{padding-top:7vh;animation:fadeUp .25s ease}
 .empty h1{
   margin:0 0 8px;
   font-size:clamp(28px,4.5vw,40px);
@@ -214,7 +217,7 @@ header{
   background-clip:text;
   color:transparent;
 }
-.empty p{margin:0 0 22px;color:var(--mut);max-width:52ch;font-size:15px}
+.empty p{margin:0 0 22px;color:var(--mut);max-width:54ch;font-size:15px}
 .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .chip{
   border:1px solid var(--line);background:var(--panel);border-radius:14px;
@@ -239,6 +242,18 @@ header{
 .acts button{border:0;background:none;color:var(--mut);padding:3px 8px;border-radius:6px;font-size:12.5px}
 .acts button:hover{background:var(--panel2);color:var(--txt)}
 
+.term-card{
+  background:var(--code);border:1px solid var(--line);border-radius:12px;
+  padding:11px 13px;margin:0 0 11px;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+  color:#cbd5e1;overflow-x:auto;
+}
+.term-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11.5px;color:var(--mint);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.08);
+}
+.term-cmd{color:#93c5fd;margin-bottom:6px;white-space:pre-wrap;word-break:break-all}
+.term-out{color:#e2e8f0;white-space:pre-wrap;max-height:240px;overflow-y:auto}
+
 .cursor{display:inline-block;width:7px;height:15px;background:var(--acc2);vertical-align:middle;margin-left:3px;border-radius:2px;animation:blink .75s infinite}
 
 .pill{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);margin-bottom:8px}
@@ -255,16 +270,29 @@ header{
 #send.dim{opacity:.45}
 .hint{text-align:center;color:var(--mut);font-size:12px;margin-top:7px}
 
-.ov{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+.ov{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
 .ov.open{display:flex;animation:fadeUp .16s ease}
-.mcard{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px;animation:popIn .18s ease;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.mcard{width:min(490px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px;animation:popIn .18s ease;box-shadow:0 24px 60px rgba(0,0,0,.5);margin:auto}
 .mcard h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 .mcard label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500}
-.mcard small{color:var(--mut);font-weight:400;font-size:12px}
+.mcard small{color:var(--mut);font-weight:400;font-size:12px;line-height:1.45}
 .mcard input,.mcard textarea,.mcard select{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:10px;padding:9px 11px;font:inherit;width:100%}
-.mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;flex-wrap:wrap}
 .b2{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 14px;font-size:13.5px;font-weight:500}
 .b1{border:0;background:var(--acc);color:#fff;border-radius:10px;padding:8px 16px;font-size:13.5px;font-weight:600}
+
+.cmd-box{
+  position:relative;background:var(--code);border:1px solid var(--line);
+  border-radius:11px;padding:12px 68px 12px 12px;
+  font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#a5f3fc;
+  word-break:break-all;user-select:all;
+}
+.cmd-box .cp{top:8px;right:8px}
+.vps-status-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;font-size:12.5px;
+}
 
 .g-acc-item{
   display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;
@@ -341,6 +369,10 @@ header{
     </div>
     <div id="c-list"></div>
     <div class="s-foot">
+      <button type="button" data-act="open-vps" onclick="window.Gavio && window.Gavio.act('open-vps',this,event)">
+        <span class="vps-dot" id="s-vps-dot"></span>
+        <span id="s-vps-lbl">Connect VPS / Machine</span>
+      </button>
       <button type="button" data-act="open-prof" onclick="window.Gavio && window.Gavio.act('open-prof',this,event)">
         <span class="av" id="s-av">U</span>
         <span class="u-nm" id="s-nm">Account</span>
@@ -354,6 +386,10 @@ header{
     <header>
       <button type="button" id="m-btn" data-act="toggle-side" onclick="window.Gavio && window.Gavio.act('toggle-side',this,event)">☰</button>
       <div id="c-title">New chat</div>
+      <button type="button" class="h-btn" id="vps-hbtn" data-act="open-vps" onclick="window.Gavio && window.Gavio.act('open-vps',this,event)">
+        <span class="vps-dot" id="h-vps-dot"></span>
+        <span id="h-vps-txt">Connect VPS</span>
+      </button>
       <button type="button" class="h-btn" id="theme-btn" data-act="toggle-theme" onclick="window.Gavio && window.Gavio.act('toggle-theme',this,event)">Light Mode</button>
       <span id="m-pill">gavio-core</span>
     </header>
@@ -362,10 +398,48 @@ header{
     </div>
     <div class="comp">
       <div class="cbox">
-        <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything…"></textarea>
+        <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything—or type /vps <command> to run on your server…"></textarea>
         <button type="button" id="send" class="dim" data-act="send-or-stop" onclick="window.Gavio && window.Gavio.act('send-or-stop',this,event)" aria-label="Send message">↑</button>
       </div>
-      <div class="hint">Enter to send · Shift+Enter for new line</div>
+      <div class="hint">Enter to send · Shift+Enter for new line · Prefix with <code>/vps</code> or ask naturally when VPS is connected</div>
+    </div>
+  </div>
+</div>
+
+<!-- One-Command VPS / Machine Connect Modal -->
+<div class="ov" id="ov-vps">
+  <div class="mcard">
+    <h2>
+      <span>Connect VPS / Machine</span>
+      <button type="button" class="b2" style="padding:3px 9px" data-act="close-vps" onclick="window.Gavio && window.Gavio.act('close-vps',this,event)">✕</button>
+    </h2>
+    <small>Paste this <strong>one command</strong> on your Ubuntu/Debian VPS or Linux machine. It installs a lightweight Node bridge + Cloudflare Quick Tunnel (HTTPS, zero open firewall ports) and prints your <strong>Bridge URL</strong>:</small>
+
+    <div class="cmd-box">
+      <div id="vps-one-cmd"></div>
+      <button type="button" class="cp" data-act="copy-vps-cmd" onclick="window.Gavio && window.Gavio.act('copy-vps-cmd',this,event)">Copy</button>
+    </div>
+
+    <label>1. Paste the printed Bridge URL (<code>https://....trycloudflare.com</code> or your domain)
+      <input id="vps-url-inp" type="url" placeholder="https://your-tunnel.trycloudflare.com">
+    </label>
+
+    <label>2. Machine Token (Auto-embedded in the one-command above)
+      <div style="display:flex;gap:8px">
+        <input id="vps-tok-inp" type="text" readonly>
+        <button type="button" class="b2" data-act="regen-vps-tok" onclick="window.Gavio && window.Gavio.act('regen-vps-tok',this,event)" title="Generate new token">↻</button>
+      </div>
+    </label>
+
+    <div class="vps-status-bar">
+      <span id="vps-test-status" style="color:var(--mut)">Not connected yet</span>
+      <button type="button" class="b2" style="padding:5px 11px;font-size:12.5px" data-act="test-vps" onclick="window.Gavio && window.Gavio.act('test-vps',this,event)">Test Connection</button>
+    </div>
+
+    <div class="mrow">
+      <button type="button" class="b2" id="vps-disc-btn" data-act="disconnect-vps" onclick="window.Gavio && window.Gavio.act('disconnect-vps',this,event)" style="color:var(--err);display:none">Disconnect</button>
+      <button type="button" class="b2" data-act="close-vps" onclick="window.Gavio && window.Gavio.act('close-vps',this,event)">Cancel</button>
+      <button type="button" class="b1" data-act="save-vps" onclick="window.Gavio && window.Gavio.act('save-vps',this,event)">Save & Connect</button>
     </div>
   </div>
 </div>
@@ -455,7 +529,7 @@ header{
         <div id="p-em" style="color:var(--mut);font-size:13px">user@example.com</div>
       </div>
     </div>
-    <small>All chats and settings are isolated strictly to this signed-in user account.</small>
+    <small>All chats, VPS connections, and settings are isolated strictly to this signed-in user account.</small>
     <div class="mrow">
       <button type="button" class="b2" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
@@ -477,6 +551,13 @@ header{
     try { window.localStorage.setItem(k, String(v)); } catch {}
   }
 
+  function genToken(){
+    const arr = new Uint8Array(18);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(arr);
+    else for (let i = 0; i < arr.length; i++) arr[i] = Math.floor(Math.random() * 256);
+    return "gv_" + Array.from(arr, b => b.toString(16).padStart(2, "0")).join("");
+  }
+
   function hsh(salt, pw){
     const s = salt + ":" + pw;
     let a = 0x811c9dc5, b = 0x01000193;
@@ -494,15 +575,15 @@ header{
     document.documentElement.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.color = mode === "light" ? "#0f172a" : "#eef1f8";
-    wr("gavio_theme_v15", mode);
+    wr("gavio_theme_v16", mode);
     const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v15") || "dark");
+  applyTheme(rd("gavio_theme_v16") || "dark");
 
   let accs = { users: {}, googleAccounts: [], session: null };
   try {
-    const p = JSON.parse(rd("gavio_accs_v15") || "null");
+    const p = JSON.parse(rd("gavio_accs_v16") || "null");
     if (p && typeof p === "object") {
       accs.users = p.users || {};
       accs.googleAccounts = Array.isArray(p.googleAccounts) ? p.googleAccounts : [];
@@ -511,18 +592,19 @@ header{
       }
     }
   } catch {}
-  function saveAccs(){ wr("gavio_accs_v15", JSON.stringify(accs)); }
+  function saveAccs(){ wr("gavio_accs_v16", JSON.stringify(accs)); }
 
   const defCfg = { system: "", temp: 0.7 };
-  let ws = { chats: [], active: null, cfg: { ...defCfg } };
+  const defVps = { url: "", token: "", connected: false, host: "" };
+  let ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
 
   function userBucketKey(email){
-    return "gavio_u15_" + encodeURIComponent(String(email).trim().toLowerCase());
+    return "gavio_u16_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
   function loadWs(){
     if (!accs.session || !accs.session.email) {
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
       return;
     }
     try {
@@ -531,17 +613,37 @@ header{
         ws.chats = Array.isArray(r.chats) ? r.chats : [];
         ws.active = typeof r.active === "string" ? r.active : null;
         ws.cfg = Object.assign({}, defCfg, r.cfg || {});
+        ws.vps = Object.assign({}, defVps, r.vps || {});
       } else {
-        ws = { chats: [], active: null, cfg: { ...defCfg } };
+        ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
       }
     } catch {
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
     }
+    if (!ws.vps.token) ws.vps.token = genToken();
+    syncVpsBadges();
   }
 
   function saveWs(){
     if (!accs.session || !accs.session.email) return;
     wr(userBucketKey(accs.session.email), JSON.stringify(ws));
+    syncVpsBadges();
+  }
+
+  function syncVpsBadges(){
+    const on = Boolean(ws.vps && ws.vps.connected && ws.vps.url);
+    const hDot = $("h-vps-dot"), sDot = $("s-vps-dot");
+    const hTxt = $("h-vps-txt"), sLbl = $("s-vps-lbl");
+    if (hDot) hDot.classList.toggle("on", on);
+    if (sDot) sDot.classList.toggle("on", on);
+    if (hTxt) hTxt.textContent = on ? (ws.vps.host ? `VPS: ${ws.vps.host}` : "VPS Connected") : "Connect VPS";
+    if (sLbl) sLbl.textContent = on ? (ws.vps.host ? `VPS (${ws.vps.host})` : "VPS Connected") : "Connect VPS / Machine";
+  }
+
+  function buildOneLineInstallCmd(tok){
+    const serverCode = `const http=require("http"),{exec}=require("child_process"),os=require("os");const T=process.env.GAVIO_TOKEN;http.createServer((q,r)=>{r.setHeader("Access-Control-Allow-Origin","*");r.setHeader("Access-Control-Allow-Headers","Content-Type,Authorization");r.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS");if(q.method==="OPTIONS")return r.writeHead(204).end();if(q.headers.authorization!=="Bearer "+T)return r.writeHead(401).end(JSON.stringify({error:"Unauthorized"}));if(q.url==="/ping")return r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:true,host:os.hostname(),platform:os.platform()+" "+os.arch()}));if(q.method==="POST"&&q.url==="/exec"){let b="";q.on("data",c=>b+=c);q.on("end",()=>{let cmd="";try{cmd=JSON.parse(b||"{}").cmd||""}catch{};if(!cmd)return r.writeHead(400).end(JSON.stringify({error:"Missing cmd"}));exec(cmd,{timeout:25000,maxBuffer:1048576,shell:"/bin/bash"},(e,o,er)=>{r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:!e,code:e?e.code||1:0,stdout:o||"",stderr:er||(e?e.message:"")}))})});return}r.writeHead(404).end()}).listen(8787,"127.0.0.1");`;
+    const b64 = btoa(serverCode);
+    return `bash -c 'set -e; mkdir -p ~/.gavio-agent && cd ~/.gavio-agent; command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs); command -v cloudflared >/dev/null || (curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$(dpkg --print-architecture) -o cloudflared && chmod +x cloudflared && sudo mv cloudflared /usr/local/bin/); echo "${b64}" | base64 -d > agent.js; pkill -f "gavio-agent/agent.js" || true; nohup env GAVIO_TOKEN="${tok}" node ~/.gavio-agent/agent.js > agent.log 2>&1 & pkill -f "cloudflared tunnel --url http://127.0.0.1:8787" || true; nohup cloudflared tunnel --url http://127.0.0.1:8787 > tunnel.log 2>&1 & echo "Starting Gavio VPS Bridge..."; for i in $(seq 1 20); do URL=$(grep -oE "https://[a-zA-Z0-9-]+\\.trycloudflare\\.com" tunnel.log | head -n1); [ -n "$URL" ] && break; sleep 1; done; echo ""; echo "========================================"; echo "GAVIO VPS BRIDGE READY!"; echo "Bridge URL : $URL"; echo "Token      : ${tok}"; echo "========================================"'`;
   }
 
   let busy = false, abortFlag = false, liveMd = null, livePill = null, raf = 0, mode = "login";
@@ -628,7 +730,7 @@ header{
       abortFlag = true;
       busy = false;
       editingChatId = null;
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
       $("msgs").replaceChildren();
       $("c-list").replaceChildren();
     }
@@ -650,6 +752,7 @@ header{
     $("ov-prof").classList.remove("open");
     $("ov-set").classList.remove("open");
     $("ov-google").classList.remove("open");
+    $("ov-vps").classList.remove("open");
     accs.session = null;
     saveAccs();
     applyAuth();
@@ -664,6 +767,57 @@ header{
     $("in-pw").setAttribute("autocomplete", isUp ? "new-password" : "current-password");
     $("a-go").textContent = isUp ? "Create Account" : "Sign In";
     $("a-err").textContent = "";
+  }
+
+  function openVpsModal(){
+    if (!ws.vps.token) ws.vps.token = genToken();
+    $("vps-tok-inp").value = ws.vps.token;
+    $("vps-url-inp").value = ws.vps.url || "";
+    $("vps-one-cmd").textContent = buildOneLineInstallCmd(ws.vps.token);
+    const st = $("vps-test-status");
+    if (ws.vps.connected && ws.vps.url){
+      st.style.color = "var(--mint)";
+      st.textContent = `● Connected${ws.vps.host ? " to " + ws.vps.host : ""}`;
+      $("vps-disc-btn").style.display = "inline-block";
+    } else {
+      st.style.color = "var(--mut)";
+      st.textContent = "Not connected yet";
+      $("vps-disc-btn").style.display = "none";
+    }
+    $("ov-vps").classList.add("open");
+  }
+
+  async function pingVps(url, tok){
+    const clean = String(url || "").trim().replace(/\/+$/, "");
+    if (!clean) throw new Error("Enter the Bridge URL first.");
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const res = await fetch(clean + "/ping", {
+      method: "GET",
+      headers: { "Authorization": "Bearer " + tok },
+      signal: ctrl.signal
+    });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error("Bridge returned HTTP " + res.status);
+    return await res.json();
+  }
+
+  async function execVpsCmd(cmd){
+    const clean = String(ws.vps.url || "").trim().replace(/\/+$/, "");
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 28000);
+    const res = await fetch(clean + "/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + ws.vps.token
+      },
+      signal: ctrl.signal,
+      body: JSON.stringify({ cmd })
+    });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error("VPS bridge error: HTTP " + res.status);
+    return await res.json();
   }
 
   function openGoogleModal(){
@@ -831,15 +985,25 @@ header{
 
     if (!c || !c.messages.length){
       const fn = (accs.session?.name || "there").split(" ")[0];
-      const prompts = [
-        "How to install Pterodactyl Panel on Ubuntu with all commands",
-        "What is evaporation and how does it work?",
-        "Write a clean Python script to parse JSON",
-        "Explain async/await in JavaScript simply"
-      ];
+      const vpsOn = Boolean(ws.vps && ws.vps.connected && ws.vps.url);
+      const prompts = vpsOn
+        ? [
+            "/vps uname -a && uptime && df -h /",
+            "Check memory, CPU load, and running services on my VPS",
+            "Install Docker and Docker Compose on my VPS",
+            "Show active network ports and firewall status on my VPS"
+          ]
+        : [
+            "How to install Pterodactyl Panel on Ubuntu with all commands",
+            "Check disk & RAM on my VPS (connect VPS first)",
+            "Write a clean Python script to parse JSON",
+            "Explain async/await in JavaScript simply"
+          ];
       box.innerHTML = `<div class="empty">
         <h1>Hello, ${esc(fn)}</h1>
-        <p>Ask Gavio AI anything—code, server setup commands, science, writing, or fast answers.</p>
+        <p>${vpsOn
+          ? `Connected to <strong>${esc(ws.vps.host || "your VPS")}</strong>. Ask Gavio AI to run tasks on your server or use <code>/vps &lt;command&gt;</code>.`
+          : `Ask Gavio AI anything, or click <strong>Connect VPS</strong> in the header to link any Linux machine with one paste command.`}</p>
         <div class="chips">${prompts.map(q => `<button type="button" class="chip" data-act="chip-send" onclick="window.Gavio && window.Gavio.act('chip-send',this,event)">${esc(q)}</button>`).join("")}</div>
       </div>`;
       return;
@@ -867,6 +1031,15 @@ header{
           livePill = p;
         } else if (m.step && !m.error){
           w.appendChild(pillEl(m.step, false));
+        }
+
+        if (m.vpsLog){
+          const tc = document.createElement("div");
+          tc.className = "term-card";
+          tc.innerHTML = `<div class="term-hdr"><span>⚡ VPS Shell (${esc(m.vpsLog.host || "remote")})</span><span>exit ${esc(m.vpsLog.code ?? 0)}</span></div>` +
+            `<div class="term-cmd">$ ${esc(m.vpsLog.cmd)}</div>` +
+            `<div class="term-out">${esc((m.vpsLog.output || "(no output)").trim())}</div>`;
+          w.appendChild(tc);
         }
 
         const body = document.createElement("div");
@@ -940,17 +1113,18 @@ header{
     });
   }
 
-  async function tryServerEndpoint(history, userName){
+  async function tryServerEndpoint(history, userName, extraSystem){
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 12000);
+      const t = setTimeout(() => ctrl.abort(), 14000);
+      const sys = [ws.cfg.system || "", extraSystem || ""].filter(Boolean).join("\n\n");
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
           messages: history.slice(-16),
-          system: ws.cfg.system || "",
+          system: sys,
           temperature: Number(ws.cfg.temp) || 0.7,
           userName
         })
@@ -964,12 +1138,13 @@ header{
     }
   }
 
-  async function tryLiveCompletion(history, userName){
+  async function tryLiveCompletion(history, userName, extraSystem){
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 8500);
-      const sys = (ws.cfg.system || "").trim() ||
-        `You are Gavio AI, a helpful, natural, concise AI assistant chatting with ${userName}. Answer any question directly and clearly.`;
+      const t = setTimeout(() => ctrl.abort(), 9500);
+      const baseSys = (ws.cfg.system || "").trim() ||
+        `You are Gavio AI, a helpful, concise AI operator chatting with ${userName}.`;
+      const sys = [baseSys, extraSystem || ""].filter(Boolean).join("\n\n");
       const msgs = [{ role: "system", content: sys }].concat(
         history.slice(-10).map(m => ({ role: m.role, content: m.text }))
       );
@@ -1021,47 +1196,18 @@ header{
 
     if (/^(h+e+l+o+w*|h+i+|h+e+y+|y+o+|s+u+p+|h+o+l+a+|a+s+s+a+l+a+m|good\s*(morning|afternoon|evening))(\s+(dude|bro|man|there|gavio|ai|mate|friend|wsp|wassup|what'?s\s*up))?$/i.test(ql) ||
         /^(hey\s+dude\s+wsp|wsp|wassup|what'?s\s*up|how\s+are\s+you|how\s+r\s+u|how'?s\s+it\s+going)$/i.test(ql)){
-      return `Hey ${first}! Doing great—what's up? Ask me anything (coding, Linux/server commands, science, math, or writing).`;
+      return `Hey ${first}! Doing great—what's up? Ask me anything, or click **Connect VPS** in the top bar to link your machine with one command.`;
     }
 
     if (/pterodactyl/i.test(ql)){
-      return `Here are the complete commands to install **Pterodactyl Panel** on Ubuntu 22.04/24.04:\n\n### 1. Update System & Install Dependencies\n\`\`\`bash\napt update && apt upgrade -y\napt -y install software-properties-common curl apt-transport-https ca-certificates gnupg\nLC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php\ncurl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg\necho "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list\napt update\napt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server\ncurl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\n\`\`\`\n\n### 2. Download Pterodactyl Panel\n\`\`\`bash\nmkdir -p /var/www/pterodactyl && cd /var/www/pterodactyl\ncurl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz\ntar -xzvf panel.tar.gz\nchmod -R 755 storage/* bootstrap/cache/\n\`\`\`\n\n### 3. Configure Database & Environment\n\`\`\`bash\nmariadb -u root -e "CREATE DATABASE panel; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'StrongPassword123!'; GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH PRIVILEGES;"\ncp .env.example .env\nCOMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader\nphp artisan key:generate --force\nphp artisan p:environment:setup\nphp artisan p:environment:database\nphp artisan migrate --seed --force\nphp artisan p:user:make\nchown -R www-data:www-data /var/www/pterodactyl/*\n\`\`\`\n\n### 4. Queue Worker & Cron\n\`\`\`bash\n(crontab -l 2>/dev/null; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1") | crontab -\nsystemctl enable --now redis-server\n\`\`\`\n\nWant the **Nginx SSL config** and **Wings daemon** commands too? Just ask!`;
+      return `Here are the complete commands to install **Pterodactyl Panel** on Ubuntu 22.04/24.04:\n\n\`\`\`bash\napt update && apt upgrade -y\napt -y install software-properties-common curl apt-transport-https ca-certificates gnupg\nLC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php\ncurl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg\necho "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list\napt update\napt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server\ncurl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\n\`\`\``;
     }
 
     if (/evapouration|evaporation/i.test(ql)){
-      return "**Evaporation** is the process where a liquid turns into a gas (vapor) at temperatures below its boiling point.\n\n- **How it happens:** Faster-moving molecules near the surface gain enough kinetic energy to break free from the liquid into the air.\n- **Cooling effect:** Because the highest-energy molecules escape first, the remaining liquid cools down (which is why sweat cools your skin).";
+      return "**Evaporation** is the process where a liquid turns into a gas (vapor) at temperatures below its boiling point.";
     }
 
-    if (/photosynthesis/i.test(ql)){
-      return "**Photosynthesis** is the process plants, algae, and some bacteria use to convert **light energy** into **chemical energy (glucose)**.\n\n- **Inputs:** Carbon dioxide (`CO₂`), water (`H₂O`), and sunlight\n- **Outputs:** Glucose (`C₆H₁₂O₆`) and oxygen (`O₂`)";
-    }
-
-    const pctMatch = ql.match(/(\d+(?:\.\d+)?)\s*%\s*of\s*(\d+(?:\.\d+)?)/);
-    if (pctMatch){
-      const pct = Number(pctMatch[1]), base = Number(pctMatch[2]);
-      return `**${pct}% of ${base}** is **${Number(((pct / 100) * base).toFixed(6))}**.`;
-    }
-    const mathMatch = ql.match(/^(?:what\s+is\s+|calculate\s+|solve\s+)?([0-9+\-*/().\s^]+)$/);
-    if (mathMatch && /[+\-*/^]/.test(mathMatch[1])){
-      try {
-        const expr = mathMatch[1].replace(/\^/g, "**");
-        if (/^[0-9+\-*/().\s*]+$/.test(expr)){
-          const val = Function(`"use strict"; return (${expr});`)();
-          if (typeof val === "number" && Number.isFinite(val)){
-            return `**${mathMatch[1].trim()}** = **${val}**`;
-          }
-        }
-      } catch {}
-    }
-
-    if (/python.*json|parse json/i.test(ql)){
-      return "Here is a clean Python snippet to parse JSON:\n\n```python\nimport json\nfrom pathlib import Path\n\ndata = json.loads(Path(\"data.json\").read_text(encoding=\"utf-8\"))\nprint(json.dumps(data, indent=2))\n```";
-    }
-    if (/async|await/i.test(ql)){
-      return "**`async` and `await`** let you write asynchronous JavaScript that reads like synchronous code:\n\n```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
-    }
-
-    return `Could not reach the backend \`/api/chat\` endpoint right now for **"${q}"**. Ensure this file is deployed on Vercel with \`/api/chat\` and \`GEMINI_API_KEY\` configured.`;
+    return `Could not reach \`/api/chat\` right now for **"${q}"**. Deploy this file on Vercel with \`/api/chat\` and \`GEMINI_API_KEY\` configured.`;
   }
 
   async function runGen(c, prompt){
@@ -1072,19 +1218,81 @@ header{
     m.text = "";
     m.step = stepText(prompt, "");
     delete m.error;
+    delete m.vpsLog;
     abortFlag = false;
     busy = true;
     renderAll();
+
+    const vpsOn = Boolean(ws.vps && ws.vps.connected && ws.vps.url);
+    const directVps = prompt.trim().match(/^\/vps\s+([\s\S]+)$/i);
+
+    // 1) Direct /vps <command> execution on connected machine
+    if (directVps){
+      if (!vpsOn){
+        m.error = "No VPS connected yet. Click 'Connect VPS' in the header and paste the 1-line setup command on your server.";
+        m.step = "VPS not connected";
+        busy = false;
+        saveWs();
+        renderAll();
+        return;
+      }
+      const cmd = directVps[1].trim();
+      m.step = `Running on ${ws.vps.host || "VPS"}…`;
+      renderAll();
+      try {
+        const res = await execVpsCmd(cmd);
+        const combined = [res.stdout, res.stderr].filter(Boolean).join("\n").trim();
+        m.vpsLog = { host: ws.vps.host || "VPS", cmd, code: res.code ?? (res.ok ? 0 : 1), output: combined || "(command finished with no output)" };
+        m.text = res.ok ? `Executed \`${cmd}\` on **${ws.vps.host || "VPS"}**.` : `Command exited with code **${res.code ?? 1}**.`;
+        m.step = "VPS Done";
+      } catch (err){
+        m.error = err?.message || "Failed to execute command on VPS.";
+        m.step = "VPS Error";
+      }
+      busy = false;
+      saveWs();
+      renderAll();
+      return;
+    }
 
     const history = c.messages
       .slice(0, -1)
       .filter(x => x && typeof x.text === "string" && x.text.trim())
       .map(x => ({ role: x.role, text: x.text }));
 
-    let fullText = await tryServerEndpoint(history, ownerName);
-    if (!fullText) fullText = await tryLiveCompletion(history, ownerName);
-    if (!fullText) fullText = await tryWikiLookup(prompt);
-    if (!fullText) fullText = smartOfflineReply(prompt, ownerName);
+    // 2) If VPS is connected, let the AI emit a [[VPS_EXEC: ...]] command when the user asks to inspect/manage the server
+    const vpsSystemHint = vpsOn
+      ? `The user has a live Linux VPS connected (hostname: ${ws.vps.host || "remote-vps"}). If the user asks you to check, inspect, install, or run anything on their VPS/server/machine, output ONLY a single tag in the exact format [[VPS_EXEC: <bash command>]] on the first line so the client can execute it and return the terminal output to you.`
+      : "";
+
+    let fullText = await tryServerEndpoint(history, ownerName, vpsSystemHint);
+    if (!fullText) fullText = await tryLiveCompletion(history, ownerName, vpsSystemHint);
+
+    if (vpsOn && fullText){
+      const execMatch = fullText.match(/\[\[VPS_EXEC:\s*([^\]]+?)\s*\]\]/);
+      if (execMatch){
+        const cmd = execMatch[1].trim();
+        m.step = `Running on ${ws.vps.host || "VPS"}: ${cmd.slice(0, 32)}…`;
+        renderAll();
+        try {
+          const res = await execVpsCmd(cmd);
+          const combined = [res.stdout, res.stderr].filter(Boolean).join("\n").trim();
+          m.vpsLog = { host: ws.vps.host || "VPS", cmd, code: res.code ?? (res.ok ? 0 : 1), output: combined || "(no output)" };
+          const followHist = history.concat([{
+            role: "user",
+            text: `Terminal output from VPS (${ws.vps.host || "VPS"}) for \`${cmd}\`:\n\`\`\`\n${combined.slice(0, 6000)}\n\`\`\`\nSummarize the result clearly for the user.`
+          }]);
+          const summary = await tryServerEndpoint(followHist, ownerName, "") || await tryLiveCompletion(followHist, ownerName, "");
+          fullText = summary || `Executed \`${cmd}\` on **${ws.vps.host || "VPS"}**.`;
+        } catch (err){
+          m.error = err?.message || "VPS execution failed.";
+          fullText = "";
+        }
+      }
+    }
+
+    if (!fullText && !m.error) fullText = await tryWikiLookup(prompt);
+    if (!fullText && !m.error) fullText = smartOfflineReply(prompt, ownerName);
 
     const outText = fullText || "";
     const chunks = outText.match(/.{1,8}/gs) || (outText ? [outText] : []);
@@ -1095,7 +1303,7 @@ header{
         queueDraw(m, prompt);
         await new Promise(r => setTimeout(r, 10));
       }
-      m.step = "Done";
+      m.step = m.vpsLog ? "VPS Done" : "Done";
     } finally {
       busy = false;
       if (accs.session && accs.session.email === ownerEmail){
@@ -1134,6 +1342,7 @@ header{
     if (!last || last.role !== "assistant") return;
     last.text = "";
     delete last.error;
+    delete last.vpsLog;
     await runGen(c, prev);
   }
 
@@ -1143,6 +1352,62 @@ header{
     if (act === "toggle-theme"){
       const cur = document.documentElement.getAttribute("data-theme");
       applyTheme(cur === "dark" ? "light" : "dark");
+    } else if (act === "open-vps"){
+      openVpsModal();
+    } else if (act === "close-vps"){
+      $("ov-vps").classList.remove("open");
+    } else if (act === "copy-vps-cmd"){
+      const cmd = $("vps-one-cmd").textContent || "";
+      navigator.clipboard?.writeText(cmd);
+      el.textContent = "Copied";
+      setTimeout(() => { el.textContent = "Copy"; }, 1300);
+    } else if (act === "regen-vps-tok"){
+      ws.vps.token = genToken();
+      $("vps-tok-inp").value = ws.vps.token;
+      $("vps-one-cmd").textContent = buildOneLineInstallCmd(ws.vps.token);
+      saveWs();
+    } else if (act === "test-vps"){
+      const url = ($("vps-url-inp").value || "").trim();
+      const tok = ($("vps-tok-inp").value || "").trim();
+      const st = $("vps-test-status");
+      st.style.color = "var(--mut)";
+      st.textContent = "Testing connection…";
+      pingVps(url, tok).then(info => {
+        ws.vps = { url: url.replace(/\/+$/, ""), token: tok, connected: true, host: info.host || "VPS" };
+        saveWs();
+        st.style.color = "var(--mint)";
+        st.textContent = `● Connected to ${ws.vps.host} (${info.platform || "Linux"})`;
+        $("vps-disc-btn").style.display = "inline-block";
+        renderMsgs();
+      }).catch(err => {
+        st.style.color = "var(--err)";
+        st.textContent = "✕ " + (err?.message || "Connection failed");
+      });
+    } else if (act === "save-vps"){
+      const url = ($("vps-url-inp").value || "").trim().replace(/\/+$/, "");
+      const tok = ($("vps-tok-inp").value || "").trim();
+      if (!url){
+        $("vps-test-status").style.color = "var(--err)";
+        $("vps-test-status").textContent = "Paste the Bridge URL first.";
+        return;
+      }
+      const st = $("vps-test-status");
+      st.style.color = "var(--mut)";
+      st.textContent = "Verifying VPS…";
+      pingVps(url, tok).then(info => {
+        ws.vps = { url, token: tok, connected: true, host: info.host || "VPS" };
+        saveWs();
+        $("ov-vps").classList.remove("open");
+        renderAll();
+      }).catch(err => {
+        st.style.color = "var(--err)";
+        st.textContent = "✕ " + (err?.message || "Could not reach Bridge URL");
+      });
+    } else if (act === "disconnect-vps"){
+      ws.vps = { url: "", token: genToken(), connected: false, host: "" };
+      saveWs();
+      $("ov-vps").classList.remove("open");
+      renderAll();
     } else if (act === "tab-login"){
       setAuthTab("login");
     } else if (act === "tab-register"){
@@ -1292,7 +1557,7 @@ header{
     handleAction(btn.dataset.act, btn, e);
   });
 
-  ["ov-google", "ov-set", "ov-prof"].forEach(id => {
+  ["ov-google", "ov-set", "ov-prof", "ov-vps"].forEach(id => {
     const ov = $(id);
     if (ov){
       ov.addEventListener("click", e => {
