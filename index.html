@@ -413,7 +413,7 @@ header{
       <span>Connect VPS / Machine</span>
       <button type="button" class="b2" style="padding:3px 9px" data-act="close-vps" onclick="window.Gavio && window.Gavio.act('close-vps',this,event)">✕</button>
     </h2>
-    <small>Paste this <strong>one command</strong> on your Ubuntu/Debian VPS or Linux machine. It installs a lightweight Node bridge + Cloudflare Quick Tunnel (HTTPS, zero open firewall ports) and prints your <strong>Bridge URL</strong>:</small>
+    <small>Paste this <strong>one command</strong> on your Ubuntu/Debian VPS or Linux machine. It starts a local bridge + Cloudflare HTTPS Quick Tunnel (zero open firewall ports) and prints your <strong>Bridge URL</strong>:</small>
 
     <div class="cmd-box">
       <div id="vps-one-cmd"></div>
@@ -641,9 +641,10 @@ header{
   }
 
   function buildOneLineInstallCmd(tok){
-    const serverCode = `const http=require("http"),{exec}=require("child_process"),os=require("os");const T=process.env.GAVIO_TOKEN;http.createServer((q,r)=>{r.setHeader("Access-Control-Allow-Origin","*");r.setHeader("Access-Control-Allow-Headers","Content-Type,Authorization");r.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS");if(q.method==="OPTIONS")return r.writeHead(204).end();if(q.headers.authorization!=="Bearer "+T)return r.writeHead(401).end(JSON.stringify({error:"Unauthorized"}));if(q.url==="/ping")return r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:true,host:os.hostname(),platform:os.platform()+" "+os.arch()}));if(q.method==="POST"&&q.url==="/exec"){let b="";q.on("data",c=>b+=c);q.on("end",()=>{let cmd="";try{cmd=JSON.parse(b||"{}").cmd||""}catch{};if(!cmd)return r.writeHead(400).end(JSON.stringify({error:"Missing cmd"}));exec(cmd,{timeout:25000,maxBuffer:1048576,shell:"/bin/bash"},(e,o,er)=>{r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:!e,code:e?e.code||1:0,stdout:o||"",stderr:er||(e?e.message:"")}))})});return}r.writeHead(404).end()}).listen(8787,"127.0.0.1");`;
-    const b64 = btoa(serverCode);
-    return `bash -c 'set -e; mkdir -p ~/.gavio-agent && cd ~/.gavio-agent; command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs); command -v cloudflared >/dev/null || (curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$(dpkg --print-architecture) -o cloudflared && chmod +x cloudflared && sudo mv cloudflared /usr/local/bin/); echo "${b64}" | base64 -d > agent.js; pkill -f "gavio-agent/agent.js" || true; nohup env GAVIO_TOKEN="${tok}" node ~/.gavio-agent/agent.js > agent.log 2>&1 & pkill -f "cloudflared tunnel --url http://127.0.0.1:8787" || true; nohup cloudflared tunnel --url http://127.0.0.1:8787 > tunnel.log 2>&1 & echo "Starting Gavio VPS Bridge..."; for i in $(seq 1 20); do URL=$(grep -oE "https://[a-zA-Z0-9-]+\\.trycloudflare\\.com" tunnel.log | head -n1); [ -n "$URL" ] && break; sleep 1; done; echo ""; echo "========================================"; echo "GAVIO VPS BRIDGE READY!"; echo "Bridge URL : $URL"; echo "Token      : ${tok}"; echo "========================================"'`;
+    return `bash -c 'set -e; mkdir -p ~/.gavio-agent && cd ~/.gavio-agent; command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs); command -v cloudflared >/dev/null || (curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-$(dpkg --print-architecture) -o cloudflared && chmod +x cloudflared && sudo mv cloudflared /usr/local/bin/); cat << "EOF" > agent.js
+const http=require("http"),{exec}=require("child_process"),os=require("os");const T=process.env.GAVIO_TOKEN;http.createServer((q,r)=>{r.setHeader("Access-Control-Allow-Origin","*");r.setHeader("Access-Control-Allow-Headers","Content-Type,Authorization");r.setHeader("Access-Control-Allow-Methods","POST,GET,OPTIONS");if(q.method==="OPTIONS")return r.writeHead(204).end();if(q.headers.authorization!=="Bearer "+T)return r.writeHead(401).end(JSON.stringify({error:"Unauthorized"}));if(q.url==="/ping")return r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:true,host:os.hostname(),platform:os.platform()+" "+os.arch()}));if(q.method==="POST"&&q.url==="/exec"){let b="";q.on("data",c=>b+=c);q.on("end",()=>{let cmd="";try{cmd=JSON.parse(b||"{}").cmd||""}catch{};if(!cmd)return r.writeHead(400).end(JSON.stringify({error:"Missing cmd"}));exec(cmd,{timeout:25000,maxBuffer:1048576,shell:"/bin/bash"},(e,o,er)=>{r.writeHead(200,{"Content-Type":"application/json"}).end(JSON.stringify({ok:!e,code:e?e.code||1:0,stdout:o||"",stderr:er||(e?e.message:"")}))})});return}r.writeHead(404).end()}).listen(8787,"127.0.0.1");
+EOF
+pkill -f "gavio-agent/agent.js" || true; nohup env GAVIO_TOKEN="${tok}" node ~/.gavio-agent/agent.js > agent.log 2>&1 & pkill -f "cloudflared tunnel --url http://127.0.0.1:8787" || true; nohup cloudflared tunnel --url http://127.0.0.1:8787 > tunnel.log 2>&1 & echo "Starting Gavio VPS Bridge..."; for i in $(seq 1 20); do URL=$(grep -oE "https://[a-zA-Z0-9-]+\\.trycloudflare\\.com" tunnel.log | head -n1); [ -n "$URL" ] && break; sleep 1; done; echo ""; echo "========================================"; echo "GAVIO VPS BRIDGE READY!"; echo "Bridge URL : $URL"; echo "Token      : ${tok}"; echo "========================================"'`;
   }
 
   let busy = false, abortFlag = false, liveMd = null, livePill = null, raf = 0, mode = "login";
@@ -1226,7 +1227,6 @@ header{
     const vpsOn = Boolean(ws.vps && ws.vps.connected && ws.vps.url);
     const directVps = prompt.trim().match(/^\/vps\s+([\s\S]+)$/i);
 
-    // 1) Direct /vps <command> execution on connected machine
     if (directVps){
       if (!vpsOn){
         m.error = "No VPS connected yet. Click 'Connect VPS' in the header and paste the 1-line setup command on your server.";
@@ -1260,7 +1260,6 @@ header{
       .filter(x => x && typeof x.text === "string" && x.text.trim())
       .map(x => ({ role: x.role, text: x.text }));
 
-    // 2) If VPS is connected, let the AI emit a [[VPS_EXEC: ...]] command when the user asks to inspect/manage the server
     const vpsSystemHint = vpsOn
       ? `The user has a live Linux VPS connected (hostname: ${ws.vps.host || "remote-vps"}). If the user asks you to check, inspect, install, or run anything on their VPS/server/machine, output ONLY a single tag in the exact format [[VPS_EXEC: <bash command>]] on the first line so the client can execute it and return the terminal output to you.`
       : "";
