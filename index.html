@@ -1,415 +1,254 @@
 <!doctype html>
-<html lang="en" data-theme="dark" style="background:#0b0d12;color:#eef1f8">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gavio AI</title>
 <style>
 :root[data-theme="dark"]{
-  --bg:#0b0d12;
-  --panel:#121620;
-  --panel2:#1a202e;
-  --side:#080a0e;
-  --line:#242c3d;
-  --txt:#eef1f8;
-  --mut:#949eb3;
-  --acc:#6366f1;
-  --acc2:#818cf8;
-  --mint:#10b981;
-  --user:#1d2538;
-  --code:#07090d;
-  --err:#fb7185;
-  --errbg:#2b1018;
-  color-scheme:dark;
+  --bg:#0b0d12;--panel:#121620;--panel2:#1a202e;--side:#080a0e;
+  --line:#242c3d;--txt:#eef1f8;--mut:#949eb3;--acc:#6366f1;
+  --acc2:#818cf8;--mint:#10b981;--user:#1d2538;--code:#07090d;
+  --err:#fb7185;--errbg:#2b1018;color-scheme:dark;
 }
 :root[data-theme="light"]{
-  --bg:#f5f7fb;
-  --panel:#ffffff;
-  --panel2:#edf1f8;
-  --side:#e8edf6;
-  --line:#d4dce9;
-  --txt:#0f172a;
-  --mut:#526075;
-  --acc:#4f46e5;
-  --acc2:#4338ca;
-  --mint:#059669;
-  --user:#e0e7ff;
-  --code:#0f172a;
-  --err:#e11d48;
-  --errbg:#ffe4e6;
-  color-scheme:light;
+  --bg:#f5f7fb;--panel:#ffffff;--panel2:#edf1f8;--side:#e8edf6;
+  --line:#d4dce9;--txt:#0f172a;--mut:#526075;--acc:#4f46e5;
+  --acc2:#4338ca;--mint:#059669;--user:#e0e7ff;--code:#0f172a;
+  --err:#e11d48;--errbg:#ffe4e6;color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--txt)}
-body{
-  font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  display:flex;
-  overflow:hidden;
-  transition:background-color .2s ease,color .2s ease;
-}
+body{font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;overflow:hidden}
 button,input,textarea,select{font:inherit;color:inherit}
-button{
-  cursor:pointer;
-  touch-action:manipulation;
-  transition:transform .12s ease,background-color .16s ease,border-color .16s ease,opacity .16s ease;
-}
-button:hover{filter:brightness(1.06)}
-button:active{transform:scale(.97)}
+button{cursor:pointer;transition:background-color .15s,border-color .15s,transform .1s}
+button:active{transform:scale(.98)}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes rot{to{transform:rotate(360deg)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
 #auth{
-  position:fixed;inset:0;z-index:9999;
-  background:
-    radial-gradient(640px 300px at 50% 0%, rgba(99,102,241,.22), transparent),
-    radial-gradient(520px 280px at 85% 15%, rgba(16,185,129,.12), transparent),
-    var(--bg);
-  display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto;
+  position:fixed;inset:0;z-index:999;
+  background:radial-gradient(600px 280px at 50% 0%,rgba(99,102,241,.2),transparent),var(--bg);
+  display:none;align-items:center;justify-content:center;padding:16px;
 }
-#auth.show{display:flex;animation:fadeUp .2s ease}
-
-.auth-card{
-  width:min(410px,100%);
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:24px;
-  box-shadow:0 24px 64px rgba(0,0,0,.45);
-  display:flex;flex-direction:column;gap:12px;
-  margin:auto;
-  animation:popIn .22s ease;
+#auth.show{display:flex}
+.acard{
+  width:min(400px,100%);background:var(--panel);border:1px solid var(--line);
+  border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
 }
-.top-b{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top-b{display:flex;align-items:center;justify-content:space-between}
 .brand-l{display:flex;align-items:center;gap:10px}
 .badge{
-  width:34px;height:34px;border-radius:10px;
+  width:32px;height:32px;border-radius:10px;
   background:linear-gradient(135deg,var(--acc),var(--mint));
-  display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;
+  display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0;
 }
-.top-b h1{margin:0;font-size:21px;font-weight:700}
+.top-b h1{margin:0;font-size:20px;font-weight:700}
 .sub{margin:0;color:var(--mut);font-size:13px}
-
-.theme-pill{
-  border:1px solid var(--line);background:var(--panel2);color:var(--txt);
-  border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:600;
-}
-
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border-radius:11px;border:1px solid var(--line)}
-.tbtn{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--mut)}
+.tbtn{border:0;background:transparent;padding:7px;border-radius:8px;font-weight:600;font-size:13px;color:var(--mut)}
 .tbtn.on{background:var(--panel2);color:var(--txt)}
-
-.gbtn{
-  width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--line);
-  background:var(--panel2);display:flex;align-items:center;justify-content:center;gap:9px;
-  font-weight:500;font-size:13.5px;
-}
-
-.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px}
-.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
-
-.grp{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:500;color:var(--mut)}
-.grp input{
-  border:1px solid var(--line);background:var(--bg);border-radius:10px;
-  padding:9px 11px;font-size:14px;width:100%;
-}
+.grp{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--mut)}
+.grp input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 11px;font-size:14px;width:100%}
 .grp input:focus{border-color:var(--acc2);outline:none}
-
-.go-auth{
-  width:100%;padding:10.5px 14px;border-radius:11px;border:0;
-  background:linear-gradient(135deg,var(--acc),#4f46e5);
-  color:#fff;font-weight:600;font-size:14px;
-}
-.err-txt{min-height:18px;font-size:12.5px;color:var(--err)}
+.go-auth{width:100%;padding:10px;border-radius:11px;border:0;background:var(--acc);color:#fff;font-weight:600}
+.gbtn{width:100%;padding:9px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);font-size:13px}
+.err-txt{min-height:16px;font-size:12.5px;color:var(--err)}
 
 #ws{display:flex;width:100%;height:100%}
 #ws.hide{display:none}
-
-#side{
-  width:270px;background:var(--side);border-right:1px solid var(--line);
-  display:flex;flex-direction:column;flex-shrink:0;
-  transition:transform .22s ease,background-color .2s ease;
-}
+#side{width:272px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
 .s-head{padding:15px 14px 8px;display:flex;align-items:center;gap:10px}
 .s-head span{font-weight:700;font-size:18px}
-#new-c{
-  margin:8px 12px 8px;padding:9px 12px;border-radius:10px;
-  border:1px solid var(--line);background:var(--panel);
-  display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:500;
-}
-#new-c kbd{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);background:var(--bg);padding:2px 6px;border-radius:5px;border:1px solid var(--line)}
-
-.s-search{
-  margin:0 12px 10px;position:relative;display:flex;align-items:center;
-}
-.s-search input{
-  width:100%;padding:7px 28px 7px 10px;border-radius:9px;
-  border:1px solid var(--line);background:var(--panel);
-  font-size:13px;color:var(--txt);
-}
-.s-search input::placeholder{color:var(--mut)}
-.s-search input:focus{border-color:var(--acc2);outline:none}
-.s-clear{
-  position:absolute;right:5px;border:0;background:none;color:var(--mut);
-  padding:2px 6px;border-radius:6px;font-size:11.5px;display:none;
-}
+#new-c{margin:8px 12px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:space-between;font-size:13.5px}
+#new-c kbd{font:11px ui-monospace,monospace;color:var(--mut);background:var(--bg);padding:2px 6px;border-radius:5px;border:1px solid var(--line)}
+.s-search{margin:0 12px 10px;position:relative;display:flex;align-items:center}
+.s-search input{width:100%;padding:7px 26px 7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.s-clear{position:absolute;right:6px;border:0;background:none;color:var(--mut);display:none}
 .s-clear.show{display:block}
-.s-clear:hover{color:var(--txt);background:var(--panel2)}
-
 #c-list{flex:1;overflow-y:auto;padding:0 8px}
 .c-empty{padding:14px 10px;text-align:center;color:var(--mut);font-size:12.5px}
 .c-row{display:flex;align-items:center;gap:2px;border-radius:9px;padding:0 4px 0 10px;margin-bottom:2px}
 .c-row:hover,.c-row.on{background:var(--panel2)}
 .c-row .pick{flex:1;min-width:0;padding:8px 0;border:0;background:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
-.c-row .ren,.c-row .del{border:0;background:none;color:var(--mut);padding:4px 6px;border-radius:6px;opacity:.65;font-size:12px;flex-shrink:0}
-.c-row:hover .ren,.c-row:hover .del{opacity:1}
-.c-row .ren:hover{color:var(--acc2);background:var(--panel)}
-.c-row .del:hover{color:var(--err);background:var(--errbg)}
-.c-ren-inp{
-  flex:1;min-width:0;margin:4px 4px 4px 0;padding:4px 7px;border-radius:6px;
-  border:1px solid var(--acc2);background:var(--bg);color:var(--txt);font-size:13px;
-}
-
+.c-row .ren,.c-row .del{border:0;background:none;color:var(--mut);padding:4px 6px;border-radius:6px;font-size:12px}
+.c-ren-inp{flex:1;min-width:0;margin:4px 4px 4px 0;padding:4px 7px;border-radius:6px;border:1px solid var(--acc2);background:var(--bg);font-size:13px}
 .s-foot{padding:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
-.s-foot button{
-  width:100%;padding:8px 10px;border-radius:9px;border:0;background:none;
-  display:flex;align-items:center;gap:10px;text-align:left;color:var(--mut);font-size:13.5px;
-}
+.s-foot button{width:100%;padding:8px 10px;border-radius:9px;border:0;background:none;display:flex;align-items:center;gap:9px;text-align:left;color:var(--mut);font-size:13.5px}
 .s-foot button:hover{background:var(--panel);color:var(--txt)}
-.av{
-  width:24px;height:24px;border-radius:50%;
-  background:linear-gradient(135deg,var(--acc),var(--mint));
-  color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;
-}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut);flex-shrink:0}
+.dot.on{background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--mint));color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0}
 .u-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt);font-weight:500}
 
 .main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%}
-header{
-  display:flex;align-items:center;gap:8px;padding:11px 18px;
-  border-bottom:1px solid var(--line);background:var(--panel);
-}
+header{display:flex;align-items:center;gap:8px;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
 #m-btn{display:none;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:5px 10px}
 #c-title{font-weight:600;font-size:14.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.h-btn{
-  border:1px solid var(--line);background:var(--panel2);color:var(--txt);
-  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;
-  display:inline-flex;align-items:center;gap:6px;
-}
-.srv-dot{width:7px;height:7px;border-radius:50%;background:var(--mut)}
-.srv-dot.on{background:var(--mint);box-shadow:0 0 8px var(--mint)}
-#m-pill{
-  font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mint);
-  background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);
-  border-radius:999px;padding:3px 11px;
-}
+.h-btn{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+#m-pill{font:12px ui-monospace,monospace;color:var(--mint);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);border-radius:999px;padding:3px 11px}
 
-#scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
+#scroll{flex:1;overflow-y:auto}
 .col{max-width:780px;margin:0 auto;padding:24px 20px 14px}
-
-.empty{padding-top:7vh;animation:fadeUp .25s ease}
-.empty h1{
-  margin:0 0 8px;
-  font-size:clamp(28px,4.5vw,40px);
-  background:linear-gradient(135deg,var(--txt),var(--acc2));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-.empty p{margin:0 0 22px;color:var(--mut);max-width:54ch;font-size:15px}
+.empty{padding-top:6vh;animation:fadeUp .2s ease}
+.empty h1{margin:0 0 8px;font-size:clamp(26px,4vw,36px)}
+.empty p{margin:0 0 20px;color:var(--mut);max-width:56ch}
 .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.chip{
-  border:1px solid var(--line);background:var(--panel);border-radius:14px;
-  padding:13px 15px;font-size:13.5px;text-align:left;line-height:1.45;
-}
-.chip:hover{border-color:var(--acc2);background:var(--panel2);transform:translateY(-1px)}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:13px 15px;font-size:13.5px;text-align:left}
+.chip:hover{border-color:var(--acc2);background:var(--panel2)}
 
-.msg{margin:0 0 20px;animation:fadeUp .18s ease}
+.msg{margin:0 0 18px;animation:fadeUp .15s ease}
 .msg.u{display:flex;justify-content:flex-end}
-.msg.u .b{background:var(--user);border:1px solid var(--line);padding:10px 15px;border-radius:18px 18px 4px 18px;max-width:82%;white-space:pre-wrap;font-size:14.5px}
+.msg.u .b{background:var(--user);border:1px solid var(--line);padding:10px 15px;border-radius:18px 18px 4px 18px;max-width:82%;white-space:pre-wrap}
 .msg.a{display:flex;gap:12px;align-items:flex-start}
 .msg.a .w{min-width:0;flex:1}
-.md>:first-child{margin-top:0}.md>:last-child{margin-bottom:0}
-.md p,.md ul,.md ol,.md pre,.md table,.md blockquote{margin:0 0 12px}
-.md h1,.md h2,.md h3{margin:14px 0 8px;line-height:1.3}
-.md a{color:var(--acc2)}
-.md pre{position:relative;background:var(--code);border-radius:11px;overflow:hidden;border:1px solid var(--line)}
-.md pre code{display:block;background:none;padding:14px;overflow-x:auto;color:#e6ecff;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
-.md code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--panel2);padding:2px 6px;border-radius:5px}
-.cp{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--panel2);color:#f3f5fa;border-radius:7px;padding:3px 9px;font-size:12px}
-.acts{display:flex;gap:4px;margin-top:6px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font:12px ui-monospace,monospace;color:var(--mut);margin-bottom:8px}
+.sp{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--acc2);animation:rot .65s linear infinite}
+.dt{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.md{line-height:1.65}
+.md p{margin:0 0 10px}
+.md pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:11px;padding:14px;overflow-x:auto;margin:0 0 12px;color:#e6ecff;font:13px/1.5 ui-monospace,monospace}
+.md code{font:13px ui-monospace,monospace;background:var(--panel2);padding:2px 6px;border-radius:5px}
+.md pre code{background:none;padding:0}
+.cp-code{position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--panel2);color:#eef1f8;border-radius:6px;padding:2px 8px;font-size:11.5px}
+.cursor{display:inline-block;width:7px;height:15px;background:var(--acc2);vertical-align:middle;margin-left:3px;border-radius:2px;animation:blink .75s infinite}
+.acts{display:flex;gap:6px;margin-top:6px}
 .acts button{border:0;background:none;color:var(--mut);padding:3px 8px;border-radius:6px;font-size:12.5px}
 .acts button:hover{background:var(--panel2);color:var(--txt)}
 
-.cursor{display:inline-block;width:7px;height:15px;background:var(--acc2);vertical-align:middle;margin-left:3px;border-radius:2px;animation:blink .75s infinite}
-
-.pill{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);margin-bottom:8px}
-.pill.done{opacity:.75}
-.sp{width:11px;height:11px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--acc2);animation:rot .65s linear infinite}
-.dt{width:8px;height:8px;border-radius:50%;background:var(--mint)}
-.errb{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:13.5px;white-space:pre-wrap}
-
 .comp{padding:0 20px 18px;background:var(--bg)}
-.cbox{max-width:780px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;display:flex;align-items:flex-end;gap:8px;padding:9px 10px 9px 18px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.cbox{max-width:780px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;display:flex;align-items:flex-end;gap:8px;padding:9px 10px 9px 18px}
 .cbox:focus-within{border-color:var(--acc2)}
 #inp{flex:1;border:0;background:none;color:inherit;font:inherit;resize:none;max-height:200px;padding:6px 0;outline:none}
 #send{border:0;background:var(--acc);color:#fff;border-radius:50%;width:36px;height:36px;font-size:17px;flex-shrink:0;font-weight:700}
 #send.dim{opacity:.45}
 .hint{text-align:center;color:var(--mut);font-size:12px;margin-top:7px}
 
-.ov{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
-.ov.open{display:flex;animation:fadeUp .16s ease}
-.mcard{width:min(470px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:13px;animation:popIn .18s ease;box-shadow:0 24px 60px rgba(0,0,0,.5);margin:auto}
+.ov{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.ov.open{display:flex}
+.mcard{width:min(490px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;margin:auto}
 .mcard h2{margin:0;font-size:18px;display:flex;justify-content:space-between;align-items:center}
 .mcard label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:500}
 .mcard small{color:var(--mut);font-weight:400;font-size:12px;line-height:1.45}
-.mcard input,.mcard textarea,.mcard select{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:10px;padding:9px 11px;font:inherit;width:100%}
-.mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;flex-wrap:wrap}
-.b2{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 14px;font-size:13.5px;font-weight:500}
-.b1{border:0;background:var(--acc);color:#fff;border-radius:10px;padding:8px 16px;font-size:13.5px;font-weight:600}
-
-.status-bar{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  background:var(--bg);border:1px solid var(--line);border-radius:10px;
-  padding:9px 12px;font-size:12.5px;
-}
+.mcard input,.mcard textarea,.mcard select{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:10px;padding:9px 11px;width:100%}
+.mrow{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+.b1{border:0;background:var(--acc);color:#fff;border-radius:10px;padding:8px 15px;font-weight:600;font-size:13.5px}
+.b2{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 14px;font-size:13.5px}
+.sbox{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cmd-prev{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:12px/1.45 ui-monospace,monospace;color:#cbd5e1;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
 
 @media (max-width:760px){
-  #side{position:fixed;inset:0 auto 0 0;z-index:30;transform:translateX(-100%)}
+  #side{position:fixed;inset:0 auto 0 0;z-index:30;transform:translateX(-100%);transition:transform .2s}
   #side.open{transform:none}
   #m-btn{display:block}
   #m-pill,#new-c kbd{display:none}
 }
 </style>
 </head>
-<body style="background:#0b0d12;color:#eef1f8">
+<body>
 
 <div id="auth">
-  <div class="auth-card">
+  <div class="acard">
     <div class="top-b">
-      <div class="brand-l">
-        <div class="badge">G</div>
-        <h1>Gavio AI</h1>
-      </div>
-      <button type="button" class="theme-pill" id="btn-auth-theme">☀ / ☾</button>
+      <div class="brand-l"><div class="badge">G</div><h1>Gavio AI</h1></div>
+      <button type="button" class="b2" style="padding:4px 10px;font-size:12px" id="btn-auth-theme">Theme</button>
     </div>
-    <p class="sub">Sign in or create an account to open your isolated Gavio AI workspace.</p>
-
+    <p class="sub">Sign in or register to access your isolated workspace and VPS bridge.</p>
     <div class="tabs">
       <button type="button" class="tbtn on" id="tab-in">Sign In</button>
       <button type="button" class="tbtn" id="tab-up">Register</button>
     </div>
-
     <div class="grp" id="name-grp" style="display:none">
-      <label for="in-name">Display Name</label>
-      <input id="in-name" type="text" placeholder="Your name" autocomplete="name">
+      <label for="in-name">Name</label>
+      <input id="in-name" type="text" placeholder="Your name">
     </div>
-
     <div class="grp">
       <label for="in-mail">Email</label>
-      <input id="in-mail" type="email" placeholder="you@example.com" autocomplete="email">
+      <input id="in-mail" type="email" placeholder="you@example.com">
     </div>
-
     <div class="grp">
-      <label for="in-pw">Workspace Passcode</label>
-      <input id="in-pw" type="password" placeholder="At least 4 characters" autocomplete="current-password">
+      <label for="in-pw">Passcode</label>
+      <input id="in-pw" type="password" placeholder="At least 4 characters">
     </div>
-
     <div class="err-txt" id="a-err"></div>
-
     <button type="button" class="go-auth" id="a-go">Sign In</button>
-
-    <div class="or">or</div>
-
-    <button type="button" class="gbtn" id="btn-guest">
-      <span>Quick Guest Session (Isolated)</span>
-    </button>
+    <button type="button" class="gbtn" id="btn-guest">Continue as Isolated Guest</button>
   </div>
 </div>
 
 <div id="ws" class="hide">
   <aside id="side">
-    <div class="s-head">
-      <div class="badge" style="width:28px;height:28px;font-size:14px;border-radius:9px">G</div>
-      <span>Gavio AI</span>
-    </div>
+    <div class="s-head"><div class="badge" style="width:28px;height:28px;font-size:14px">G</div><span>Gavio AI</span></div>
     <button type="button" id="new-c"><span>+ New chat</span><kbd>Ctrl K</kbd></button>
     <div class="s-search">
-      <input id="c-search" type="search" placeholder="Search chats…" autocomplete="off">
-      <button type="button" class="s-clear" id="c-search-clear" aria-label="Clear search">✕</button>
+      <input id="c-search" type="search" placeholder="Search chats...">
+      <button type="button" class="s-clear" id="c-clear">x</button>
     </div>
     <div id="c-list"></div>
     <div class="s-foot">
-      <button type="button" id="btn-side-api">
-        <span class="srv-dot" id="s-srv-dot"></span>
-        <span id="s-srv-lbl">API Endpoint</span>
-      </button>
-      <button type="button" id="btn-side-prof">
-        <span class="av" id="s-av">U</span>
-        <span class="u-nm" id="s-nm">Account</span>
-      </button>
-      <button type="button" id="btn-side-set">⚙ Settings</button>
-      <button type="button" id="btn-side-out" style="color:var(--err)">↪ Sign out</button>
+      <button type="button" id="btn-side-vps"><span class="dot" id="s-vps-dot"></span><span id="s-vps-lbl">VPS Bridge</span></button>
+      <button type="button" id="btn-side-prof"><span class="av" id="s-av">U</span><span class="u-nm" id="s-nm">Account</span></button>
+      <button type="button" id="btn-side-set">Settings</button>
+      <button type="button" id="btn-side-out" style="color:var(--err)">Sign out</button>
     </div>
   </aside>
 
   <div class="main">
     <header>
-      <button type="button" id="m-btn">☰</button>
+      <button type="button" id="m-btn">Menu</button>
       <div id="c-title">New chat</div>
-      <button type="button" class="h-btn" id="btn-hdr-api">
-        <span class="srv-dot" id="h-srv-dot"></span>
-        <span id="h-srv-txt">/api/chat</span>
-      </button>
+      <button type="button" class="h-btn" id="btn-hdr-vps"><span class="dot" id="h-vps-dot"></span><span id="h-vps-txt">VPS: Off</span></button>
       <button type="button" class="h-btn" id="theme-btn">Light Mode</button>
-      <span id="m-pill">gavio-core</span>
+      <span id="m-pill">/api/chat</span>
     </header>
-    <div id="scroll">
-      <div class="col" id="msgs"></div>
-    </div>
+    <div id="scroll"><div class="col" id="msgs"></div></div>
     <div class="comp">
       <div class="cbox">
-        <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything…"></textarea>
-        <button type="button" id="send" class="dim" aria-label="Send message">↑</button>
+        <textarea id="inp" rows="1" placeholder="Ask anything or run /vps uptime ..."></textarea>
+        <button type="button" id="send" class="dim">↑</button>
       </div>
-      <div class="hint">Enter to send · Shift+Enter for new line</div>
+      <div class="hint">Prefix commands with <code>/vps</code> when connected · Enter to send</div>
     </div>
   </div>
 </div>
 
-<!-- API Endpoint Configuration Modal -->
-<div class="ov" id="ov-api">
+<!-- VPS Connection Modal -->
+<div class="ov" id="ov-vps">
   <div class="mcard">
-    <h2>
-      <span>Chat Backend Endpoint</span>
-      <button type="button" class="b2" style="padding:3px 9px" id="btn-close-api">✕</button>
-    </h2>
-    <small>By default, Gavio AI sends requests to <code>/api/chat</code> on your Vercel deployment. You can also point this workspace to a custom backend endpoint.</small>
+    <h2><span>VPS Connection Bridge</span><button type="button" class="b2" style="padding:3px 9px" id="btn-close-vps">x</button></h2>
+    <small>Connect your VPS bridge endpoint (HTTPS URL or reverse-proxy route) to run <code>/vps &lt;command&gt;</code> directly from Gavio AI chat.</small>
 
-    <label>Endpoint Path or URL
-      <input id="api-url-inp" type="text" placeholder="/api/chat">
+    <label>VPS Bridge URL
+      <input id="vps-url" type="url" placeholder="https://vps.yourdomain.com">
     </label>
 
-    <label>Optional Bearer Key (stored per user session)
-      <input id="api-key-inp" type="password" placeholder="Leave blank if handled by Vercel env">
+    <label>Bridge Secret Token
+      <input id="vps-tok" type="password" placeholder="Paste your VPS bridge token">
     </label>
 
-    <div class="status-bar">
-      <span id="api-status-txt" style="color:var(--mint)">● Ready (/api/chat)</span>
-      <button type="button" class="b2" style="padding:4px 10px;font-size:12px" id="btn-reset-api">Reset Default</button>
+    <div class="sbox">
+      <span id="vps-stat">Status: Not connected</span>
+      <button type="button" class="b2" style="padding:4px 10px;font-size:12px" id="btn-vps-test">Test Ping</button>
     </div>
+
+    <small>Minimal Node.js listener for your VPS (run behind HTTPS/Caddy/Nginx):</small>
+    <div class="cmd-prev" id="vps-snippet"></div>
 
     <div class="mrow">
-      <button type="button" class="b2" id="btn-cancel-api">Cancel</button>
-      <button type="button" class="b1" id="btn-save-api">Save Endpoint</button>
+      <button type="button" class="b2" id="btn-copy-snip">Copy Server Snippet</button>
+      <button type="button" class="b2" id="btn-vps-disc" style="color:var(--err)">Disconnect</button>
+      <button type="button" class="b1" id="btn-vps-save">Save & Connect</button>
     </div>
   </div>
 </div>
 
+<!-- Settings Modal -->
 <div class="ov" id="ov-set">
   <div class="mcard">
-    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" id="btn-close-set">✕</button></h2>
+    <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" id="btn-close-set">x</button></h2>
     <label>Appearance
       <select id="th-inp">
         <option value="dark">Dark Mode</option>
@@ -429,17 +268,18 @@ header{
   </div>
 </div>
 
+<!-- Profile Modal -->
 <div class="ov" id="ov-prof">
   <div class="mcard">
-    <h2><span>Profile</span><button type="button" class="b2" style="padding:3px 9px" id="btn-close-prof">✕</button></h2>
+    <h2><span>Account Profile</span><button type="button" class="b2" style="padding:3px 9px" id="btn-close-prof">x</button></h2>
     <div style="display:flex;align-items:center;gap:12px">
-      <div class="av" id="p-av" style="width:42px;height:42px;font-size:17px">U</div>
+      <div class="av" id="p-av" style="width:40px;height:40px;font-size:16px">U</div>
       <div>
         <div id="p-nm" style="font-weight:600">User</div>
         <div id="p-em" style="color:var(--mut);font-size:13px">user@example.com</div>
       </div>
     </div>
-    <small>All chats, endpoint settings, and preferences are isolated to this signed-in account.</small>
+    <small>Chats, VPS credentials, and settings are isolated per signed-in user.</small>
     <div class="mrow">
       <button type="button" class="b2" id="btn-prof-out" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
@@ -449,160 +289,88 @@ header{
 <script>
 (function(){
   const $ = id => document.getElementById(id);
-  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c]));
 
+  // Safe storage wrapper (never throws SecurityError in restricted iframes)
   const mem = {};
-  const storeRef = (function(){
-    try { return window["local" + "Storage"]; } catch { return null; }
-  })();
-
+  const ls = (() => { try { return window["local" + "Storage"]; } catch { return null; } })();
   function rd(k){
-    try { if (storeRef){ const v = storeRef.getItem(k); if (v !== null) return v; } } catch {}
+    try { if (ls){ const v = ls.getItem(k); if (v !== null) return v; } } catch {}
     return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
   }
   function wr(k, v){
     mem[k] = String(v);
-    try { if (storeRef) storeRef.setItem(k, String(v)); } catch {}
+    try { if (ls) ls.setItem(k, String(v)); } catch {}
   }
 
-  function simpleHash(salt, pw){
+  function hashPw(salt, pw){
     const s = salt + ":" + pw;
     let h = 5381;
-    for (let i = 0; i < s.length; i++){
-      h = ((h << 5) + h) ^ s.charCodeAt(i);
-    }
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h) ^ s.charCodeAt(i);
     return (h >>> 0).toString(16).padStart(8, "0");
   }
 
   function applyTheme(t){
-    const mode = t === "light" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", mode);
-    document.documentElement.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
-    document.body.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
-    document.body.style.color = mode === "light" ? "#0f172a" : "#eef1f8";
-    wr("gavio_theme_v17", mode);
-    const tb = $("theme-btn");
-    if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
+    const m = t === "light" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", m);
+    wr("gavio_th_v20", m);
+    $("theme-btn").textContent = m === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v17") || "dark");
+  applyTheme(rd("gavio_th_v20") || "dark");
 
   let accs = { users: {}, session: null };
   try {
-    const p = JSON.parse(rd("gavio_accs_v17") || "null");
+    const p = JSON.parse(rd("gavio_accs_v20") || "null");
     if (p && typeof p === "object"){
       accs.users = p.users || {};
       if (p.session && p.session.email) accs.session = p.session;
     }
   } catch {}
-  function saveAccs(){ wr("gavio_accs_v17", JSON.stringify(accs)); }
+  const saveAccs = () => wr("gavio_accs_v20", JSON.stringify(accs));
 
-  const defCfg = { system: "", temp: 0.7, endpoint: "/api/chat", apiKey: "" };
-  let ws = { chats: [], active: null, cfg: { ...defCfg } };
+  const defCfg = { system: "", temp: 0.7 };
+  const defVps = { url: "", token: "", connected: false, label: "" };
+  let ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
+  let busy = false, abortFlag = false, mode = "login", searchQuery = "", editingChatId = null;
 
-  function userBucketKey(email){
-    return "gavio_u17_" + encodeURIComponent(String(email).trim().toLowerCase());
-  }
+  const uKey = em => "gavio_u20_" + encodeURIComponent(String(em).trim().toLowerCase());
 
-  function syncApiBadges(){
-    const ep = (ws.cfg.endpoint || "/api/chat").trim();
-    const custom = ep !== "/api/chat";
-    const hDot = $("h-srv-dot"), sDot = $("s-srv-dot");
-    const hTxt = $("h-srv-txt"), sLbl = $("s-srv-lbl");
-    if (hDot) hDot.classList.add("on");
-    if (sDot) sDot.classList.add("on");
-    if (hTxt) hTxt.textContent = custom ? "Custom API" : "/api/chat";
-    if (sLbl) sLbl.textContent = custom ? "Custom Endpoint" : "API: /api/chat";
+  function syncVpsBadges(){
+    const on = Boolean(ws.vps && ws.vps.connected && ws.vps.url);
+    $("h-vps-dot").classList.toggle("on", on);
+    $("s-vps-dot").classList.toggle("on", on);
+    if (on){
+      let host = ws.vps.url;
+      try { host = new URL(ws.vps.url).hostname; } catch {}
+      $("h-vps-txt").textContent = "VPS: " + host;
+      $("s-vps-lbl").textContent = "VPS (" + host + ")";
+    } else {
+      $("h-vps-txt").textContent = "VPS: Off";
+      $("s-vps-lbl").textContent = "VPS Bridge";
+    }
   }
 
   function loadWs(){
-    if (!accs.session || !accs.session.email){
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
-      return;
-    }
+    if (!accs.session){ ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } }; return; }
     try {
-      const r = JSON.parse(rd(userBucketKey(accs.session.email)) || "null");
+      const r = JSON.parse(rd(uKey(accs.session.email)) || "null");
       if (r && typeof r === "object"){
         ws.chats = Array.isArray(r.chats) ? r.chats : [];
         ws.active = typeof r.active === "string" ? r.active : null;
         ws.cfg = Object.assign({}, defCfg, r.cfg || {});
+        ws.vps = Object.assign({}, defVps, r.vps || {});
       } else {
-        ws = { chats: [], active: null, cfg: { ...defCfg } };
+        ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
       }
     } catch {
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
+      ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
     }
-    syncApiBadges();
+    syncVpsBadges();
   }
 
   function saveWs(){
-    if (!accs.session || !accs.session.email) return;
-    wr(userBucketKey(accs.session.email), JSON.stringify(ws));
-    syncApiBadges();
-  }
-
-  let busy = false, abortFlag = false, liveMd = null, livePill = null, raf = 0, mode = "login";
-  let searchQuery = "", editingChatId = null;
-
-  function renderMarkdown(src){
-    const text = String(src || "");
-    const blocks = [];
-    let safe = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
-      const idx = blocks.length;
-      blocks.push(`<pre><code class="lang-${esc(lang)}">${esc(code.replace(/\n$/,""))}</code><button type="button" class="cp" data-copy-code="1">Copy</button></pre>`);
-      return `\u0000BLOCK${idx}\u0000`;
-    });
-    safe = esc(safe)
-      .replace(/`([^`\n]+)`/g, "<code>$1</code>")
-      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*([^*\n]+)\*/g, "<em>$1</em>")
-      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-      .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-    const lines = safe.split("\n");
-    let out = "", inUl = false, inOl = false;
-    for (const ln of lines){
-      const ul = ln.match(/^\s*[-*]\s+(.+)/);
-      const ol = ln.match(/^\s*\d+\.\s+(.+)/);
-      if (ul){
-        if (inOl){ out += "</ol>"; inOl = false; }
-        if (!inUl){ out += "<ul>"; inUl = true; }
-        out += `<li>${ul[1]}</li>`;
-      } else if (ol){
-        if (inUl){ out += "</ul>"; inUl = false; }
-        if (!inOl){ out += "<ol>"; inOl = true; }
-        out += `<li>${ol[1]}</li>`;
-      } else {
-        if (inUl){ out += "</ul>"; inUl = false; }
-        if (inOl){ out += "</ol>"; inOl = false; }
-        if (ln.trim().startsWith("<h") || ln.includes("\u0000BLOCK")) out += ln;
-        else if (ln.trim() === "") out += "";
-        else out += `<p>${ln}</p>`;
-      }
-    }
-    if (inUl) out += "</ul>";
-    if (inOl) out += "</ol>";
-    return out.replace(/\u0000BLOCK(\d+)\u0000/g, (_, i) => blocks[Number(i)] || "");
-  }
-
-  function stepText(p, t){
-    const pl = (p||"").toLowerCase(), tl = (t||"").toLowerCase();
-    if (tl.includes("```")) return "Writing code";
-    if (/\b(code|script|python|js|html|css|json|function|pterodactyl|install|linux|ubuntu|bash)\b/.test(pl)) return t ? "Generating commands" : "Preparing commands";
-    return t ? "Streaming response" : "Thinking";
-  }
-
-  function pillEl(label, spin){
-    const d = document.createElement("div");
-    d.className = "pill" + (spin ? "" : " done");
-    const i = document.createElement("span");
-    i.className = spin ? "sp" : "dt";
-    const t = document.createElement("span");
-    t.className = "pt";
-    t.textContent = label;
-    d.append(i, t);
-    return d;
+    if (!accs.session) return;
+    wr(uKey(accs.session.email), JSON.stringify(ws));
+    syncVpsBadges();
   }
 
   function applyAuth(){
@@ -615,25 +383,23 @@ header{
       $("s-av").textContent = nm[0].toUpperCase();
       searchQuery = "";
       editingChatId = null;
-      if ($("c-search")) $("c-search").value = "";
-      if ($("c-search-clear")) $("c-search-clear").classList.remove("show");
+      $("c-search").value = "";
+      $("c-clear").classList.remove("show");
       loadWs();
       renderAll();
     } else {
       abortFlag = true;
       busy = false;
-      editingChatId = null;
-      ws = { chats: [], active: null, cfg: { ...defCfg } };
-      $("msgs").replaceChildren();
-      $("c-list").replaceChildren();
+      ws = { chats: [], active: null, cfg: { ...defCfg }, vps: { ...defVps } };
+      $("msgs").textContent = "";
+      $("c-list").textContent = "";
     }
   }
 
   function enterApp(u){
-    const cleanEmail = String(u.email).trim().toLowerCase();
-    const cleanName = String(u.name || cleanEmail.split("@")[0]).trim();
-    const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    accs.session = { email: cleanEmail, name: cleanName, token };
+    const em = String(u.email).trim().toLowerCase();
+    const nm = String(u.name || em.split("@")[0]).trim();
+    accs.session = { email: em, name: nm };
     saveAccs();
     abortFlag = false;
     applyAuth();
@@ -642,9 +408,7 @@ header{
   function exitApp(){
     abortFlag = true;
     busy = false;
-    $("ov-prof").classList.remove("open");
-    $("ov-set").classList.remove("open");
-    $("ov-api").classList.remove("open");
+    ["ov-vps", "ov-set", "ov-prof"].forEach(id => $(id).classList.remove("open"));
     accs.session = null;
     saveAccs();
     applyAuth();
@@ -652,12 +416,11 @@ header{
 
   function setAuthTab(m){
     mode = m;
-    const isUp = mode === "register";
-    $("tab-in").classList.toggle("on", !isUp);
-    $("tab-up").classList.toggle("on", isUp);
-    $("name-grp").style.display = isUp ? "flex" : "none";
-    $("in-pw").setAttribute("autocomplete", isUp ? "new-password" : "current-password");
-    $("a-go").textContent = isUp ? "Create Account" : "Sign In";
+    const up = mode === "register";
+    $("tab-in").classList.toggle("on", !up);
+    $("tab-up").classList.toggle("on", up);
+    $("name-grp").style.display = up ? "flex" : "none";
+    $("a-go").textContent = up ? "Create Account" : "Sign In";
     $("a-err").textContent = "";
   }
 
@@ -667,60 +430,78 @@ header{
     const em = ($("in-mail").value || "").trim().toLowerCase();
     const pw = $("in-pw").value || "";
     const nm = ($("in-name").value || "").trim();
-
-    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err.textContent = "Enter a valid email address."; return; }
-    if (!pw || pw.length < 4){ err.textContent = "Enter a passcode (at least 4 characters)."; return; }
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err.textContent = "Enter a valid email."; return; }
+    if (pw.length < 4){ err.textContent = "Passcode must be at least 4 characters."; return; }
 
     if (mode === "register"){
-      if (accs.users[em]){ err.textContent = "Email already registered. Switch to Sign In."; return; }
+      if (accs.users[em]){ err.textContent = "Email already registered."; return; }
       const salt = Math.random().toString(36).slice(2, 10);
-      const disp = nm || em.split("@")[0] || "User";
-      accs.users[em] = { email: em, name: disp, salt, hash: simpleHash(salt, pw) };
+      const disp = nm || em.split("@")[0];
+      accs.users[em] = { email: em, name: disp, salt, hash: hashPw(salt, pw) };
       saveAccs();
       $("in-pw").value = "";
       enterApp({ email: em, name: disp });
     } else {
       const acc = accs.users[em];
-      if (!acc){ err.textContent = "No account found. Click Register first."; return; }
-      if (simpleHash(acc.salt || "", pw) !== acc.hash){ err.textContent = "Incorrect passcode."; return; }
+      if (!acc){ err.textContent = "Account not found. Click Register first."; return; }
+      if (hashPw(acc.salt, pw) !== acc.hash){ err.textContent = "Incorrect passcode."; return; }
       $("in-pw").value = "";
       enterApp({ email: acc.email, name: acc.name });
     }
   }
 
-  const curC = () => ws.chats.find(c => c.id === ws.active);
+  const curC = () => ws.chats.find(c => c.id === ws.active) || null;
 
-  function commitRename(cid, rawTitle){
-    const c = ws.chats.find(x => x.id === cid);
-    if (c){
-      const next = String(rawTitle || "").trim();
-      if (next) c.title = next.slice(0, 60);
-      saveWs();
+  function renderFormattedBody(container, text){
+    container.textContent = "";
+    const parts = String(text || "").split(/(```[\s\S]*?```)/g);
+    for (const part of parts){
+      if (!part) continue;
+      if (part.startsWith("```") && part.endsWith("```")){
+        const inner = part.slice(3, -3).replace(/^[a-zA-Z0-9_-]+\n/, "");
+        const pre = document.createElement("pre");
+        const code = document.createElement("code");
+        code.textContent = inner.replace(/\n$/, "");
+        const cp = document.createElement("button");
+        cp.type = "button";
+        cp.className = "cp-code";
+        cp.textContent = "Copy";
+        cp.onclick = () => {
+          if (navigator.clipboard) navigator.clipboard.writeText(code.textContent);
+          cp.textContent = "Copied";
+          setTimeout(() => { cp.textContent = "Copy"; }, 1100);
+        };
+        pre.append(code, cp);
+        container.appendChild(pre);
+      } else {
+        const p = document.createElement("p");
+        p.style.whiteSpace = "pre-wrap";
+        p.textContent = part.trim();
+        if (p.textContent) container.appendChild(p);
+      }
     }
-    editingChatId = null;
-    renderAll();
   }
 
   function renderList(){
     const w = $("c-list");
+    w.textContent = "";
     const q = searchQuery.trim().toLowerCase();
-    const filtered = q
+    const list = q
       ? ws.chats.filter(c =>
-          (c.title || "New chat").toLowerCase().includes(q) ||
-          (Array.isArray(c.messages) && c.messages.some(m => (m.text || "").toLowerCase().includes(q)))
+          (c.title || "").toLowerCase().includes(q) ||
+          (c.messages || []).some(m => (m.text || "").toLowerCase().includes(q))
         )
       : ws.chats;
 
-    if (!filtered.length){
-      const empty = document.createElement("div");
-      empty.className = "c-empty";
-      empty.textContent = q ? "No matching chats." : "No saved chats yet.";
-      w.replaceChildren(empty);
+    if (!list.length){
+      const d = document.createElement("div");
+      d.className = "c-empty";
+      d.textContent = q ? "No matching chats." : "No saved chats yet.";
+      w.appendChild(d);
       return;
     }
 
-    const f = document.createDocumentFragment();
-    filtered.forEach(c => {
+    for (const c of list){
       const r = document.createElement("div");
       r.className = "c-row" + (c.id === ws.active ? " on" : "");
 
@@ -729,101 +510,101 @@ header{
         inp.type = "text";
         inp.className = "c-ren-inp";
         inp.value = c.title || "New chat";
-        inp.maxLength = 60;
-        inp.addEventListener("keydown", ev => {
-          if (ev.key === "Enter"){ ev.preventDefault(); commitRename(c.id, inp.value); }
-          else if (ev.key === "Escape"){ ev.preventDefault(); editingChatId = null; renderList(); }
-        });
-        inp.addEventListener("blur", () => {
-          if (editingChatId === c.id) commitRename(c.id, inp.value);
-        });
+        const done = () => {
+          const v = inp.value.trim();
+          if (v) c.title = v.slice(0, 60);
+          editingChatId = null;
+          saveWs();
+          renderAll();
+        };
+        inp.onkeydown = e => {
+          if (e.key === "Enter"){ e.preventDefault(); done(); }
+          if (e.key === "Escape"){ editingChatId = null; renderList(); }
+        };
+        inp.onblur = done;
         r.appendChild(inp);
-        f.appendChild(r);
+        w.appendChild(r);
         requestAnimationFrame(() => { inp.focus(); inp.select(); });
-        return;
+        continue;
       }
 
       const b = document.createElement("button");
       b.type = "button";
       b.className = "pick";
       b.textContent = c.title || "New chat";
-      b.addEventListener("click", () => {
+      b.onclick = () => {
         if (busy) return;
-        editingChatId = null;
         ws.active = c.id;
         saveWs();
         renderAll();
         $("side").classList.remove("open");
-      });
+      };
 
       const rn = document.createElement("button");
       rn.type = "button";
       rn.className = "ren";
-      rn.title = "Rename chat";
-      rn.textContent = "✎";
-      rn.addEventListener("click", ev => {
-        ev.stopPropagation();
+      rn.textContent = "Edit";
+      rn.onclick = e => {
+        e.stopPropagation();
         if (busy) return;
         editingChatId = c.id;
         renderList();
-      });
+      };
 
-      const d = document.createElement("button");
-      d.type = "button";
-      d.className = "del";
-      d.title = "Delete chat";
-      d.textContent = "✕";
-      d.addEventListener("click", ev => {
-        ev.stopPropagation();
+      const dl = document.createElement("button");
+      dl.type = "button";
+      dl.className = "del";
+      dl.textContent = "Del";
+      dl.onclick = e => {
+        e.stopPropagation();
         if (busy) return;
-        if (editingChatId === c.id) editingChatId = null;
         ws.chats = ws.chats.filter(x => x.id !== c.id);
         if (ws.active === c.id) ws.active = null;
         saveWs();
         renderAll();
-      });
+      };
 
-      r.append(b, rn, d);
-      f.appendChild(r);
-    });
-    w.replaceChildren(f);
+      r.append(b, rn, dl);
+      w.appendChild(r);
+    }
   }
 
   function renderMsgs(){
     const box = $("msgs");
-    liveMd = null;
-    livePill = null;
+    box.textContent = "";
     const c = curC();
     $("c-title").textContent = c ? (c.title || "New chat") : "New chat";
 
     if (!c || !c.messages.length){
       const fn = (accs.session?.name || "there").split(" ")[0];
-      const prompts = [
-        "How to install Pterodactyl Panel on Ubuntu with all commands",
-        "Write a clean Node.js serverless handler for /api/chat",
-        "Write a Python script to parse and filter JSON logs",
-        "Explain async/await and Promises in JavaScript"
-      ];
       const wrap = document.createElement("div");
       wrap.className = "empty";
-      wrap.innerHTML = `<h1>Hello, ${esc(fn)}</h1><p>Ask Gavio AI anything. Your conversations and settings stay isolated to your account.</p>`;
+      const h1 = document.createElement("h1");
+      h1.textContent = "Hello, " + fn;
+      const p = document.createElement("p");
+      p.textContent = "Ask Gavio AI anything, or connect your VPS Bridge in the sidebar to run /vps commands.";
       const grid = document.createElement("div");
       grid.className = "chips";
-      prompts.forEach(q => {
+      for (const sample of [
+        "/vps uptime",
+        "/vps df -h && free -m",
+        "How to install Pterodactyl Panel on Ubuntu with all commands",
+        "Write a Node.js /api/chat serverless handler for Gemini"
+      ]){
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "chip";
-        btn.textContent = q;
-        btn.addEventListener("click", () => sendMsg(q));
+        btn.textContent = sample;
+        btn.onclick = () => sendMsg(sample);
         grid.appendChild(btn);
-      });
-      wrap.appendChild(grid);
-      box.replaceChildren(wrap);
+      }
+      wrap.append(h1, p, grid);
+      box.appendChild(wrap);
       return;
     }
 
-    const f = document.createDocumentFragment();
-    c.messages.forEach((m, i) => {
+    for (let i = 0; i < c.messages.length; i++){
+      const m = c.messages[i];
       const el = document.createElement("div");
       if (m.role === "user"){
         el.className = "msg u";
@@ -833,66 +614,67 @@ header{
         el.appendChild(b);
       } else {
         el.className = "msg a";
-        el.innerHTML = `<div class="badge" style="width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px">G</div><div class="w"></div>`;
-        const w = el.querySelector(".w");
-        const last = i === c.messages.length - 1;
-        const prev = i > 0 && c.messages[i-1]?.role === "user" ? c.messages[i-1].text : "";
+        const av = document.createElement("div");
+        av.className = "badge";
+        av.style.cssText = "width:26px;height:26px;font-size:13px;border-radius:8px;margin-top:2px";
+        av.textContent = "G";
+        const w = document.createElement("div");
+        w.className = "w";
+        const isLive = busy && i === c.messages.length - 1;
 
-        if (last && busy){
-          const p = pillEl(m.step || stepText(prev, m.text), true);
-          w.appendChild(p);
-          livePill = p;
-        } else if (m.step && !m.error){
-          w.appendChild(pillEl(m.step, false));
+        if (m.step){
+          const pill = document.createElement("div");
+          pill.className = "pill";
+          const ind = document.createElement("span");
+          ind.className = isLive ? "sp" : "dt";
+          const lbl = document.createElement("span");
+          lbl.textContent = m.step;
+          pill.append(ind, lbl);
+          w.appendChild(pill);
         }
 
         const body = document.createElement("div");
         body.className = "md";
-        if (last && busy) liveMd = body;
-        if (m.text) body.innerHTML = renderMarkdown(m.text) + (last && busy ? '<span class="cursor"></span>' : "");
-        else if (last && busy) body.innerHTML = '<span class="cursor"></span>';
+        renderFormattedBody(body, m.text);
+        if (isLive){
+          const cur = document.createElement("span");
+          cur.className = "cursor";
+          body.appendChild(cur);
+        }
         w.appendChild(body);
 
-        if (m.error){
-          const e = document.createElement("div");
-          e.className = "errb";
-          e.textContent = m.error;
-          w.appendChild(e);
-        }
-
-        if (!(last && busy)){
-          const a = document.createElement("div");
-          a.className = "acts";
+        if (!isLive){
+          const acts = document.createElement("div");
+          acts.className = "acts";
           const cp = document.createElement("button");
           cp.type = "button";
           cp.textContent = "Copy";
-          cp.addEventListener("click", () => {
-            navigator.clipboard?.writeText(m.text || "");
+          cp.onclick = () => {
+            if (navigator.clipboard) navigator.clipboard.writeText(m.text || "");
             cp.textContent = "Copied";
-            setTimeout(() => { cp.textContent = "Copy"; }, 1200);
-          });
-          a.appendChild(cp);
-          if (last){
+            setTimeout(() => { cp.textContent = "Copy"; }, 1100);
+          };
+          acts.appendChild(cp);
+          if (i === c.messages.length - 1){
             const rg = document.createElement("button");
             rg.type = "button";
             rg.textContent = "Regenerate";
-            rg.addEventListener("click", () => regen());
-            a.appendChild(rg);
+            rg.onclick = () => regen();
+            acts.appendChild(rg);
           }
-          w.appendChild(a);
+          w.appendChild(acts);
         }
+        el.append(av, w);
       }
-      f.appendChild(el);
-    });
-    box.replaceChildren(f);
+      box.appendChild(el);
+    }
     $("scroll").scrollTop = $("scroll").scrollHeight;
   }
 
   function syncSendBtn(){
     const b = $("send");
-    const hasTxt = Boolean($("inp").value.trim());
     b.textContent = busy ? "■" : "↑";
-    b.classList.toggle("dim", !busy && !hasTxt);
+    b.classList.toggle("dim", !busy && !$("inp").value.trim());
   }
 
   function renderAll(){
@@ -902,112 +684,101 @@ header{
     syncSendBtn();
   }
 
-  function queueDraw(m, p){
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = 0;
-      const nx = stepText(p, m.text);
-      m.step = nx;
-      if (livePill){
-        const t = livePill.querySelector(".pt");
-        if (t && t.textContent !== nx) t.textContent = nx;
-      }
-      if (liveMd){
-        liveMd.innerHTML = renderMarkdown(m.text) + '<span class="cursor"></span>';
-        const s = $("scroll");
-        if (s.scrollHeight - s.scrollTop - s.clientHeight < 220) s.scrollTop = s.scrollHeight;
-      }
+  async function execVpsCmd(cmd){
+    if (!ws.vps || !ws.vps.connected || !ws.vps.url){
+      return "VPS Bridge is not connected yet. Click **VPS Bridge** in the sidebar to enter your VPS URL and secret token.";
+    }
+    const base = ws.vps.url.replace(/\/+$/, "");
+    const res = await fetch(base + "/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-bridge-token": ws.vps.token || ""
+      },
+      body: JSON.stringify({ cmd })
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return "VPS HTTP " + res.status + ": " + (data.error || "Command rejected");
+    const out = (data.output || data.stdout || "(no output)").trim();
+    return "```\n$ " + cmd + "\n" + out + "\n```";
   }
 
-  async function tryServerEndpoint(history, userName){
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 16000);
-      const endpoint = (ws.cfg.endpoint || "/api/chat").trim() || "/api/chat";
-      const headers = { "Content-Type": "application/json" };
-      if (ws.cfg.apiKey && ws.cfg.apiKey.trim()){
-        headers["Authorization"] = "Bearer " + ws.cfg.apiKey.trim();
-      }
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers,
-        signal: ctrl.signal,
-        body: JSON.stringify({
-          messages: history.slice(-16),
-          system: ws.cfg.system || "",
-          temperature: Number(ws.cfg.temp) || 0.7,
-          userName
-        })
-      });
-      clearTimeout(t);
-      if (!res.ok) return null;
-      const data = await res.json().catch(() => null);
-      return data?.reply && typeof data.reply === "string" ? data.reply.trim() : null;
-    } catch {
-      return null;
-    }
-  }
-
-  function smartFallbackReply(prompt, userName){
-    const q = prompt.trim();
-    const ql = q.toLowerCase().replace(/[!?.,]+$/g, "").trim();
-    const first = (userName || "there").split(/\s+/)[0];
-
-    if (/^(h+e+l+o+w*|h+i+|h+e+y+|y+o+|s+u+p+|h+o+l+a+|good\s*(morning|afternoon|evening))(\s+(dude|bro|man|there|gavio|ai|mate|friend|wsp|wassup|what'?s\s*up))?$/i.test(ql) ||
-        /^(hey\s+dude\s+wsp|wsp|wassup|what'?s\s*up|how\s+are\s+you|how\s+r\s+u|how'?s\s+it\s+going)$/i.test(ql)){
-      return `Hey ${first}! Ready to help—ask me anything, or make sure \`/api/chat\` is deployed on Vercel with \`GEMINI_API_KEY\` set for live model responses.`;
-    }
-
-    if (/pterodactyl/i.test(ql)){
-      return `Here are the complete steps to install **Pterodactyl Panel** on Ubuntu 22.04/24.04:\n\n\`\`\`bash\napt update && apt upgrade -y\napt -y install software-properties-common curl apt-transport-https ca-certificates gnupg\nLC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php\ncurl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg\necho "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/redis.list\napt update\napt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server\ncurl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\n\`\`\``;
-    }
-
-    return `Could not reach \`${ws.cfg.endpoint || "/api/chat"}\` right now for **"${q}"**. Deploy \`index.html\` alongside your \`/api/chat\` serverless route on Vercel with \`GEMINI_API_KEY\` configured.`;
+  async function queryChatApi(history, userName){
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: history.slice(-16),
+        system: ws.cfg.system || "",
+        temperature: Number(ws.cfg.temp) || 0.7,
+        userName
+      })
+    });
+    if (!res.ok) return null;
+    const data = await res.json().catch(() => null);
+    return data && typeof data.reply === "string" ? data.reply.trim() : null;
   }
 
   async function runGen(c, prompt){
     if (!accs.session) return;
-    const ownerEmail = accs.session.email;
-    const ownerName = accs.session.name || ownerEmail;
+    const owner = accs.session.email;
     const m = c.messages[c.messages.length - 1];
+    const isVps = /^\/vps(\s|$)/i.test(prompt.trim());
     m.text = "";
-    m.step = stepText(prompt, "");
-    delete m.error;
+    m.step = isVps ? "Connecting to VPS bridge" : "Thinking";
     abortFlag = false;
     busy = true;
     renderAll();
 
-    const history = c.messages
-      .slice(0, -1)
-      .filter(x => x && typeof x.text === "string" && x.text.trim())
-      .map(x => ({ role: x.role, text: x.text }));
-
-    let fullText = await tryServerEndpoint(history, ownerName);
-    if (!fullText) fullText = smartFallbackReply(prompt, ownerName);
-
-    const chunks = fullText.match(/.{1,8}/gs) || (fullText ? [fullText] : []);
+    let finalReply = "";
     try {
-      for (const part of chunks){
-        if (abortFlag || !accs.session || accs.session.email !== ownerEmail) break;
-        m.text += part;
-        queueDraw(m, prompt);
-        await new Promise(r => setTimeout(r, 10));
+      if (isVps){
+        const cmd = prompt.trim().replace(/^\/vps\s*/i, "");
+        if (!cmd){
+          finalReply = "Usage: `/vps <command>` (for example: `/vps uptime`).";
+        } else {
+          m.step = "Running command on VPS";
+          renderMsgs();
+          finalReply = await execVpsCmd(cmd);
+        }
+      } else {
+        m.step = "Contacting /api/chat";
+        renderMsgs();
+        const hist = c.messages.slice(0, -1).map(x => ({ role: x.role, text: x.text }));
+        const apiReply = await queryChatApi(hist, accs.session.name || owner).catch(() => null);
+        if (apiReply){
+          finalReply = apiReply;
+        } else if (/pterodactyl/i.test(prompt)){
+          finalReply = "Install **Pterodactyl Panel** dependencies on Ubuntu:\n\n```bash\napt update && apt upgrade -y\napt -y install software-properties-common curl apt-transport-https ca-certificates gnupg\nLC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php\napt update\napt -y install php8.3 php8.3-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server\n```";
+        } else {
+          finalReply = "Could not reach `/api/chat` right now. Ensure `index.html` and `/api/chat` are deployed on Vercel with `GEMINI_API_KEY` set.";
+        }
       }
-      m.step = "Done";
-    } finally {
-      busy = false;
-      if (accs.session && accs.session.email === ownerEmail){
-        saveWs();
-        renderAll();
-      }
+    } catch (err){
+      finalReply = "Request error: " + (err && err.message ? err.message : "Connection failed");
+    }
+
+    const chunks = finalReply.match(/.{1,12}/gs) || [finalReply];
+    m.step = isVps ? "Streaming VPS output" : "Writing response";
+    for (const part of chunks){
+      if (abortFlag || !accs.session || accs.session.email !== owner) break;
+      m.text += part;
+      renderMsgs();
+      await new Promise(r => setTimeout(r, 8));
+    }
+
+    m.step = "Done";
+    busy = false;
+    if (accs.session && accs.session.email === owner){
+      saveWs();
+      renderAll();
     }
   }
 
   async function sendMsg(raw){
     if (!accs.session || busy) return;
     const t = (raw || "").trim();
-    if (!t){ $("inp").focus(); return; }
+    if (!t) return;
     let c = curC();
     if (!c){
       c = { id: "c_" + Date.now().toString(36), title: t.slice(0, 44), messages: [] };
@@ -1017,7 +788,7 @@ header{
       c.title = t.slice(0, 44);
     }
     c.messages.push({ role: "user", text: t });
-    c.messages.push({ role: "assistant", text: "", step: stepText(t, "") });
+    c.messages.push({ role: "assistant", text: "", step: "Thinking" });
     saveWs();
     $("inp").value = "";
     $("inp").style.height = "auto";
@@ -1026,152 +797,151 @@ header{
 
   async function regen(){
     const c = curC();
-    if (!c || busy) return;
-    const last = c.messages[c.messages.length - 1];
-    const prev = c.messages.length > 1 && c.messages[c.messages.length - 2]?.role === "user"
-      ? c.messages[c.messages.length - 2].text : "";
-    if (!last || last.role !== "assistant") return;
-    last.text = "";
-    delete last.error;
+    if (!c || busy || c.messages.length < 2) return;
+    const prev = c.messages[c.messages.length - 2].text || "";
+    c.messages[c.messages.length - 1].text = "";
     await runGen(c, prev);
   }
 
-  // Event listeners
-  $("btn-auth-theme").addEventListener("click", () => {
-    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  });
-  $("theme-btn").addEventListener("click", () => {
-    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  });
-  $("tab-in").addEventListener("click", () => setAuthTab("login"));
-  $("tab-up").addEventListener("click", () => setAuthTab("register"));
-  $("a-go").addEventListener("click", doEmailAuth);
-  $("btn-guest").addEventListener("click", () => {
+  const vpsServerCode = [
+    "// Save as bridge.js on your VPS and run behind HTTPS",
+    "const http = require('http');",
+    "const { exec } = require('child_process');",
+    "const TOKEN = process.env.BRIDGE_TOKEN || 'change-me';",
+    "http.createServer((req, res) => {",
+    "  res.setHeader('Access-Control-Allow-Origin', '*');",
+    "  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-bridge-token');",
+    "  if (req.method === 'OPTIONS') return res.writeHead(204).end();",
+    "  if (req.headers['x-bridge-token'] !== TOKEN) return res.writeHead(401).end('{\"error\":\"Unauthorized\"}');",
+    "  if (req.url === '/ping') return res.writeHead(200, {'Content-Type':'application/json'}).end('{\"ok\":true}');",
+    "  if (req.url === '/exec' && req.method === 'POST') {",
+    "    let b = ''; req.on('data', d => b += d);",
+    "    req.on('end', () => {",
+    "      const { cmd } = JSON.parse(b || '{}');",
+    "      exec(cmd, { timeout: 25000 }, (err, stdout, stderr) => {",
+    "        res.writeHead(200, {'Content-Type':'application/json'});",
+    "        res.end(JSON.stringify({ output: (stdout || '') + (stderr || '') || (err ? err.message : '') }));",
+    "      });",
+    "    });",
+    "  }",
+    "}).listen(8787);"
+  ].join("\n");
+  $("vps-snippet").textContent = vpsServerCode;
+
+  // Bind UI controls
+  $("btn-auth-theme").onclick = () => applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  $("theme-btn").onclick = () => applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  $("tab-in").onclick = () => setAuthTab("login");
+  $("tab-up").onclick = () => setAuthTab("register");
+  $("a-go").onclick = doEmailAuth;
+  $("btn-guest").onclick = () => {
     const id = Math.floor(1000 + Math.random() * 9000);
-    enterApp({ email: `guest${id}@gavio.local`, name: `Guest ${id}` });
-  });
+    enterApp({ email: "guest" + id + "@gavio.local", name: "Guest " + id });
+  };
+  $("in-pw").onkeydown = e => { if (e.key === "Enter") doEmailAuth(); };
 
-  $("new-c").addEventListener("click", () => {
-    abortFlag = true;
-    busy = false;
-    editingChatId = null;
-    ws.active = null;
-    saveWs();
-    renderAll();
-    $("side").classList.remove("open");
-    $("inp").focus();
-  });
-
-  $("c-search").addEventListener("input", e => {
+  $("new-c").onclick = () => {
+    abortFlag = true; busy = false; editingChatId = null; ws.active = null;
+    saveWs(); renderAll(); $("side").classList.remove("open"); $("inp").focus();
+  };
+  $("c-search").oninput = e => {
     searchQuery = e.target.value || "";
-    $("c-search-clear").classList.toggle("show", Boolean(searchQuery));
+    $("c-clear").classList.toggle("show", Boolean(searchQuery));
     renderList();
-  });
-  $("c-search-clear").addEventListener("click", () => {
-    searchQuery = "";
-    $("c-search").value = "";
-    $("c-search-clear").classList.remove("show");
-    renderList();
-    $("c-search").focus();
-  });
+  };
+  $("c-clear").onclick = () => {
+    searchQuery = ""; $("c-search").value = ""; $("c-clear").classList.remove("show"); renderList();
+  };
 
-  function openApiModal(){
-    $("api-url-inp").value = ws.cfg.endpoint || "/api/chat";
-    $("api-key-inp").value = ws.cfg.apiKey || "";
-    $("api-status-txt").textContent = "● Active: " + ($("api-url-inp").value || "/api/chat");
-    $("ov-api").classList.add("open");
+  function openVpsModal(){
+    $("vps-url").value = ws.vps.url || "";
+    $("vps-tok").value = ws.vps.token || "";
+    $("vps-stat").textContent = ws.vps.connected ? "Status: Connected (" + ws.vps.url + ")" : "Status: Not connected";
+    $("ov-vps").classList.add("open");
   }
-  $("btn-side-api").addEventListener("click", openApiModal);
-  $("btn-hdr-api").addEventListener("click", openApiModal);
-  $("btn-close-api").addEventListener("click", () => $("ov-api").classList.remove("open"));
-  $("btn-cancel-api").addEventListener("click", () => $("ov-api").classList.remove("open"));
-  $("btn-reset-api").addEventListener("click", () => {
-    $("api-url-inp").value = "/api/chat";
-    $("api-key-inp").value = "";
-    $("api-status-txt").textContent = "● Reset to /api/chat";
-  });
-  $("btn-save-api").addEventListener("click", () => {
-    ws.cfg.endpoint = ($("api-url-inp").value || "/api/chat").trim() || "/api/chat";
-    ws.cfg.apiKey = ($("api-key-inp").value || "").trim();
+  $("btn-side-vps").onclick = openVpsModal;
+  $("btn-hdr-vps").onclick = openVpsModal;
+  $("btn-close-vps").onclick = () => $("ov-vps").classList.remove("open");
+  $("btn-copy-snip").onclick = () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(vpsServerCode);
+    $("btn-copy-snip").textContent = "Copied!";
+    setTimeout(() => { $("btn-copy-snip").textContent = "Copy Server Snippet"; }, 1200);
+  };
+  $("btn-vps-test").onclick = async () => {
+    const url = ($("vps-url").value || "").trim().replace(/\/+$/, "");
+    const tok = ($("vps-tok").value || "").trim();
+    if (!url){ $("vps-stat").textContent = "Enter a VPS URL first."; return; }
+    $("vps-stat").textContent = "Pinging...";
+    try {
+      const res = await fetch(url + "/ping", { headers: { "x-bridge-token": tok } });
+      $("vps-stat").textContent = res.ok ? "Ping OK! Ready to save." : "Ping returned HTTP " + res.status;
+    } catch {
+      $("vps-stat").textContent = "Ping failed (check HTTPS & CORS).";
+    }
+  };
+  $("btn-vps-save").onclick = () => {
+    const url = ($("vps-url").value || "").trim().replace(/\/+$/, "");
+    const tok = ($("vps-tok").value || "").trim();
+    if (!url){ $("vps-stat").textContent = "Enter a valid VPS URL."; return; }
+    ws.vps = { url, token: tok, connected: true };
     saveWs();
-    $("ov-api").classList.remove("open");
-  });
+    $("ov-vps").classList.remove("open");
+  };
+  $("btn-vps-disc").onclick = () => {
+    ws.vps = { ...defVps };
+    saveWs();
+    $("ov-vps").classList.remove("open");
+  };
 
-  $("btn-side-set").addEventListener("click", () => {
+  $("btn-side-set").onclick = () => {
     $("th-inp").value = document.documentElement.getAttribute("data-theme") || "dark";
     $("s-inp").value = ws.cfg.system || "";
     $("t-inp").value = ws.cfg.temp ?? 0.7;
     $("t-val").textContent = $("t-inp").value;
     $("ov-set").classList.add("open");
-  });
-  $("btn-close-set").addEventListener("click", () => $("ov-set").classList.remove("open"));
-  $("btn-cancel-set").addEventListener("click", () => $("ov-set").classList.remove("open"));
-  $("btn-save-set").addEventListener("click", () => {
+  };
+  $("btn-close-set").onclick = () => $("ov-set").classList.remove("open");
+  $("btn-cancel-set").onclick = () => $("ov-set").classList.remove("open");
+  $("btn-save-set").onclick = () => {
     applyTheme($("th-inp").value);
     ws.cfg.system = $("s-inp").value;
     ws.cfg.temp = Number($("t-inp").value) || 0.7;
     saveWs();
     $("ov-set").classList.remove("open");
-    renderAll();
-  });
+  };
+  $("t-inp").oninput = e => { $("t-val").textContent = e.target.value; };
 
-  $("btn-side-prof").addEventListener("click", () => {
+  $("btn-side-prof").onclick = () => {
     const u = accs.session;
     if (!u) return;
     $("p-av").textContent = (u.name || u.email)[0].toUpperCase();
     $("p-nm").textContent = u.name || u.email;
     $("p-em").textContent = u.email;
     $("ov-prof").classList.add("open");
-  });
-  $("btn-close-prof").addEventListener("click", () => $("ov-prof").classList.remove("open"));
-  $("btn-prof-out").addEventListener("click", exitApp);
-  $("btn-side-out").addEventListener("click", exitApp);
-  $("m-btn").addEventListener("click", () => $("side").classList.toggle("open"));
+  };
+  $("btn-close-prof").onclick = () => $("ov-prof").classList.remove("open");
+  $("btn-prof-out").onclick = exitApp;
+  $("btn-side-out").onclick = exitApp;
+  $("m-btn").onclick = () => $("side").classList.toggle("open");
 
-  $("send").addEventListener("click", () => {
-    if (busy) abortFlag = true;
-    else sendMsg($("inp").value);
-  });
-
-  document.addEventListener("click", e => {
-    const cpBtn = e.target.closest("[data-copy-code]");
-    if (cpBtn){
-      const code = cpBtn.parentElement?.querySelector("code");
-      if (code){
-        navigator.clipboard?.writeText(code.innerText);
-        cpBtn.textContent = "Copied";
-        setTimeout(() => { cpBtn.textContent = "Copy"; }, 1200);
-      }
-    }
-  });
-
-  ["ov-api", "ov-set", "ov-prof"].forEach(id => {
-    const ov = $(id);
-    if (ov) ov.addEventListener("click", e => { if (e.target === ov) ov.classList.remove("open"); });
-  });
-
-  const inp = $("inp");
-  inp.addEventListener("input", () => {
-    inp.style.height = "auto";
-    inp.style.height = Math.min(inp.scrollHeight, 200) + "px";
+  $("send").onclick = () => { if (busy) abortFlag = true; else sendMsg($("inp").value); };
+  $("inp").oninput = () => {
+    $("inp").style.height = "auto";
+    $("inp").style.height = Math.min($("inp").scrollHeight, 200) + "px";
     syncSendBtn();
-  });
-  inp.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey && !e.isComposing){
-      e.preventDefault();
-      sendMsg(inp.value);
-    }
-  });
+  };
+  $("inp").onkeydown = e => {
+    if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); sendMsg($("inp").value); }
+  };
   document.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k"){
       e.preventDefault();
-      if (!busy && accs.session){ editingChatId = null; ws.active = null; saveWs(); renderAll(); inp.focus(); }
+      if (!busy && accs.session){ ws.active = null; saveWs(); renderAll(); $("inp").focus(); }
     }
   });
-  $("t-inp").addEventListener("input", e => { $("t-val").textContent = e.target.value; });
-  $("in-pw").addEventListener("keydown", e => { if (e.key === "Enter") doEmailAuth(); });
-  $("in-mail").addEventListener("keydown", e => { if (e.key === "Enter") $("in-pw").focus(); });
-  $("scroll").addEventListener("click", () => $("side").classList.remove("open"));
+  ["ov-vps", "ov-set", "ov-prof"].forEach(id => {
+    $(id).onclick = e => { if (e.target === $(id)) $(id).classList.remove("open"); };
+  });
 
   applyAuth();
 })();
