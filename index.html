@@ -345,7 +345,7 @@ header{
         <span class="av" id="s-av">U</span>
         <span class="u-nm" id="s-nm">Account</span>
       </button>
-      <button type="button" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">⚙ Settings & API Key</button>
+      <button type="button" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">⚙ Settings</button>
       <button type="button" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err)">↪ Sign out</button>
     </div>
   </aside>
@@ -354,7 +354,6 @@ header{
     <header>
       <button type="button" id="m-btn" data-act="toggle-side" onclick="window.Gavio && window.Gavio.act('toggle-side',this,event)">☰</button>
       <div id="c-title">New chat</div>
-      <button type="button" class="h-btn" id="key-badge" data-act="open-set" onclick="window.Gavio && window.Gavio.act('open-set',this,event)">+ Add API Key</button>
       <button type="button" class="h-btn" id="theme-btn" data-act="toggle-theme" onclick="window.Gavio && window.Gavio.act('toggle-theme',this,event)">Light Mode</button>
       <span id="m-pill">gavio-core</span>
     </header>
@@ -366,7 +365,7 @@ header{
         <textarea id="inp" rows="1" placeholder="Ask Gavio AI anything…"></textarea>
         <button type="button" id="send" class="dim" data-act="send-or-stop" onclick="window.Gavio && window.Gavio.act('send-or-stop',this,event)" aria-label="Send message">↑</button>
       </div>
-      <div class="hint">Enter to send · Shift+Enter for new line · Add your API key in Settings for full live answers</div>
+      <div class="hint">Enter to send · Shift+Enter for new line</div>
     </div>
   </div>
 </div>
@@ -427,10 +426,6 @@ header{
 <div class="ov" id="ov-set">
   <div class="mcard">
     <h2><span>Settings</span><button type="button" class="b2" style="padding:3px 9px" data-act="close-set" onclick="window.Gavio && window.Gavio.act('close-set',this,event)">✕</button></h2>
-    <label>API Key (Stored privately in your account session)
-      <input id="k-inp" type="password" placeholder="Paste your AIza... API key here">
-      <small>Enables live AI responses for any topic directly in your browser or via Vercel.</small>
-    </label>
     <label>Appearance
       <select id="th-inp">
         <option value="dark">Dark Mode</option>
@@ -460,7 +455,7 @@ header{
         <div id="p-em" style="color:var(--mut);font-size:13px">user@example.com</div>
       </div>
     </div>
-    <small>All chats, API keys, and settings are isolated strictly to this signed-in user account.</small>
+    <small>All chats and settings are isolated strictly to this signed-in user account.</small>
     <div class="mrow">
       <button type="button" class="b2" data-act="sign-out" onclick="window.Gavio && window.Gavio.act('sign-out',this,event)" style="color:var(--err);border-color:var(--err)">Sign out</button>
     </div>
@@ -499,15 +494,15 @@ header{
     document.documentElement.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.background = mode === "light" ? "#f5f7fb" : "#0b0d12";
     document.body.style.color = mode === "light" ? "#0f172a" : "#eef1f8";
-    wr("gavio_theme_v14", mode);
+    wr("gavio_theme_v15", mode);
     const tb = $("theme-btn");
     if (tb) tb.textContent = mode === "dark" ? "Light Mode" : "Dark Mode";
   }
-  applyTheme(rd("gavio_theme_v14") || "dark");
+  applyTheme(rd("gavio_theme_v15") || "dark");
 
   let accs = { users: {}, googleAccounts: [], session: null };
   try {
-    const p = JSON.parse(rd("gavio_accs_v14") || "null");
+    const p = JSON.parse(rd("gavio_accs_v15") || "null");
     if (p && typeof p === "object") {
       accs.users = p.users || {};
       accs.googleAccounts = Array.isArray(p.googleAccounts) ? p.googleAccounts : [];
@@ -516,13 +511,13 @@ header{
       }
     }
   } catch {}
-  function saveAccs(){ wr("gavio_accs_v14", JSON.stringify(accs)); }
+  function saveAccs(){ wr("gavio_accs_v15", JSON.stringify(accs)); }
 
-  const defCfg = { apiKey: "", system: "", temp: 0.7 };
+  const defCfg = { system: "", temp: 0.7 };
   let ws = { chats: [], active: null, cfg: { ...defCfg } };
 
   function userBucketKey(email){
-    return "gavio_u14_" + encodeURIComponent(String(email).trim().toLowerCase());
+    return "gavio_u15_" + encodeURIComponent(String(email).trim().toLowerCase());
   }
 
   function loadWs(){
@@ -542,22 +537,11 @@ header{
     } catch {
       ws = { chats: [], active: null, cfg: { ...defCfg } };
     }
-    syncKeyBadge();
   }
 
   function saveWs(){
     if (!accs.session || !accs.session.email) return;
     wr(userBucketKey(accs.session.email), JSON.stringify(ws));
-    syncKeyBadge();
-  }
-
-  function syncKeyBadge(){
-    const kb = $("key-badge");
-    if (!kb) return;
-    const hasKey = Boolean((ws.cfg.apiKey || "").trim());
-    kb.textContent = hasKey ? "● API Key Active" : "+ Add API Key";
-    kb.style.color = hasKey ? "var(--mint)" : "var(--txt)";
-    kb.style.borderColor = hasKey ? "rgba(16,185,129,.45)" : "var(--line)";
   }
 
   let busy = false, abortFlag = false, liveMd = null, livePill = null, raf = 0, mode = "login";
@@ -956,44 +940,16 @@ header{
     });
   }
 
-  async function tryUserDirectKey(history){
-    const key = (ws.cfg.apiKey || "").trim();
-    if (!key) return null;
-    const contents = history.slice(-16).map(m => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.text }]
-    }));
-    const payload = {
-      contents,
-      generationConfig: { temperature: Number(ws.cfg.temp) || 0.7 }
-    };
-    if ((ws.cfg.system || "").trim()){
-      payload.systemInstruction = { parts: [{ text: ws.cfg.system.trim() }] };
-    }
-    const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key);
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json().catch(() => null);
-    if (!res.ok) {
-      throw new Error(data?.error?.message || `API Key request failed (${res.status})`);
-    }
-    const txt = (data?.candidates?.[0]?.content?.parts || []).map(p => p?.text || "").join("").trim();
-    return txt || null;
-  }
-
   async function tryServerEndpoint(history, userName){
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 5500);
+      const t = setTimeout(() => ctrl.abort(), 12000);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: ctrl.signal,
         body: JSON.stringify({
-          messages: history.slice(-14),
+          messages: history.slice(-16),
           system: ws.cfg.system || "",
           temperature: Number(ws.cfg.temp) || 0.7,
           userName
@@ -1011,7 +967,7 @@ header{
   async function tryLiveCompletion(history, userName){
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 7500);
+      const t = setTimeout(() => ctrl.abort(), 8500);
       const sys = (ws.cfg.system || "").trim() ||
         `You are Gavio AI, a helpful, natural, concise AI assistant chatting with ${userName}. Answer any question directly and clearly.`;
       const msgs = [{ role: "system", content: sys }].concat(
@@ -1065,7 +1021,7 @@ header{
 
     if (/^(h+e+l+o+w*|h+i+|h+e+y+|y+o+|s+u+p+|h+o+l+a+|a+s+s+a+l+a+m|good\s*(morning|afternoon|evening))(\s+(dude|bro|man|there|gavio|ai|mate|friend|wsp|wassup|what'?s\s*up))?$/i.test(ql) ||
         /^(hey\s+dude\s+wsp|wsp|wassup|what'?s\s*up|how\s+are\s+you|how\s+r\s+u|how'?s\s+it\s+going)$/i.test(ql)){
-      return `Hey ${first}! Doing great—what's up? Ask me anything (coding, Linux/server commands, science, math, or writing), or add your API key in **Settings** for full live cloud answers.`;
+      return `Hey ${first}! Doing great—what's up? Ask me anything (coding, Linux/server commands, science, math, or writing).`;
     }
 
     if (/pterodactyl/i.test(ql)){
@@ -1105,7 +1061,7 @@ header{
       return "**`async` and `await`** let you write asynchronous JavaScript that reads like synchronous code:\n\n```javascript\nasync function fetchJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return await res.json();\n}\n```";
     }
 
-    return `To get unrestricted live AI answers for **"${q}"** inside this preview iframe, click **+ Add API Key** in the top bar (or **Settings** in the sidebar) and paste your \`AIza...\` key—or deploy this file to Vercel with \`/api/chat\`.`;
+    return `Could not reach the backend \`/api/chat\` endpoint right now for **"${q}"**. Ensure this file is deployed on Vercel with \`/api/chat\` and \`GEMINI_API_KEY\` configured.`;
   }
 
   async function runGen(c, prompt){
@@ -1125,16 +1081,10 @@ header{
       .filter(x => x && typeof x.text === "string" && x.text.trim())
       .map(x => ({ role: x.role, text: x.text }));
 
-    let fullText = null;
-    try {
-      fullText = await tryUserDirectKey(history);
-    } catch (err) {
-      m.error = err?.message || "Invalid API Key.";
-    }
-    if (!fullText && !m.error) fullText = await tryServerEndpoint(history, ownerName);
-    if (!fullText && !m.error) fullText = await tryLiveCompletion(history, ownerName);
-    if (!fullText && !m.error) fullText = await tryWikiLookup(prompt);
-    if (!fullText && !m.error) fullText = smartOfflineReply(prompt, ownerName);
+    let fullText = await tryServerEndpoint(history, ownerName);
+    if (!fullText) fullText = await tryLiveCompletion(history, ownerName);
+    if (!fullText) fullText = await tryWikiLookup(prompt);
+    if (!fullText) fullText = smartOfflineReply(prompt, ownerName);
 
     const outText = fullText || "";
     const chunks = outText.match(/.{1,8}/gs) || (outText ? [outText] : []);
@@ -1303,7 +1253,6 @@ header{
     } else if (act === "regen"){
       regen();
     } else if (act === "open-set"){
-      $("k-inp").value = ws.cfg.apiKey || "";
       $("th-inp").value = document.documentElement.getAttribute("data-theme") || "dark";
       $("s-inp").value = ws.cfg.system || "";
       $("t-inp").value = ws.cfg.temp ?? 0.7;
@@ -1314,7 +1263,6 @@ header{
     } else if (act === "save-set"){
       applyTheme($("th-inp").value);
       ws.cfg = {
-        apiKey: ($("k-inp").value || "").trim(),
         system: $("s-inp").value,
         temp: Number($("t-inp").value) || 0.7
       };
@@ -1344,7 +1292,6 @@ header{
     handleAction(btn.dataset.act, btn, e);
   });
 
-  // Close overlays when clicking backdrop
   ["ov-google", "ov-set", "ov-prof"].forEach(id => {
     const ov = $(id);
     if (ov){
